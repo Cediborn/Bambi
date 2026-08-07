@@ -1,0 +1,387 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (toggled on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ---------- Semantic color system ----------
+     Each color has a job. Primary drives actions and focus, brand-2 is the
+     soft secondary, mint/good mean progress, warn is a nudge, info is
+     learning/focus, achievement is gold, bad is destructive. */
+  --color-brand: #8b5cf6; /* Primary — violet */
+  --color-brand-2: #a78bfa; /* Secondary — light violet */
+  --color-mint: #22c55e; /* Success — fills */
+  --color-good: #16a34a; /* Success — text */
+  --color-warn: #fb923c; /* Warning — ember orange */
+  --color-info: #3b82f6; /* Info — learning / focus */
+  --color-achievement: #facc15; /* Achievement — gold */
+  --color-bad: #ef4444; /* Danger */
+
+  --color-rose: #ec4899;
+  --color-tangerine: #f97316;
+  --color-teal: #14b8a6;
+  --color-sky: #0ea5e9;
+
+  /* Semantic tokens — flipped by .dark via CSS variables */
+  --color-bg: var(--t-bg);
+  --color-surface: var(--t-surface);
+  --color-card: var(--t-card);
+  --color-line: var(--t-line);
+  --color-ink: var(--t-ink);
+  --color-ink-soft: var(--t-ink-soft);
+
+  /* ---------- Typography ----------
+     Space Grotesk for display, Inter for body, JetBrains Mono for numbers.
+     The variables are injected by next/font at build time. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-display: var(--font-grotesk), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo,
+    Consolas, "Liberation Mono", monospace;
+
+  /* Shadows — warm-tinted so they sit naturally on the cream palette */
+  --shadow-card: 0 1px 2px rgb(56 44 24 / 0.06), 0 6px 16px -6px rgb(56 44 24 / 0.1);
+  --shadow-lift: 0 2px 4px rgb(56 44 24 / 0.08), 0 14px 28px -10px rgb(56 44 24 / 0.18);
+
+  /* Animations */
+  --animate-fade-up: fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.3s ease-out both;
+  --animate-pop: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-grow-y: grow-y 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes grow-y {
+    from {
+      height: 0;
+    }
+  }
+}
+
+/* ---------- Theme variables ---------- */
+:root {
+  /* Warm cream palette — BAMBI's paper: soft, off-white, never clinical */
+  --t-bg: #f6f3ea; /* warm cream background */
+  --t-surface: #fffdf6; /* warm white — inputs, chips, raised areas */
+  --t-card: #fffef9; /* warm white — cards */
+  --t-line: #e8e2d3; /* warm taupe borders */
+  --t-ink: #1e1b16; /* warm near-black text */
+  --t-ink-soft: #665f4f; /* warm gray secondary text — AA-safe on cream */
+}
+
+.dark {
+  --t-bg: #0f172a;
+  --t-surface: #1e293b;
+  --t-card: #1f2937;
+  --t-line: #334155;
+  --t-ink: #f8fafc;
+  --t-ink-soft: #94a3b8;
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--t-bg);
+  color: var(--t-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-brand) 25%, transparent);
+}
+
+/* ---------- Compact mode ----------
+   Tailwind v4 spacing utilities compile to calc(var(--spacing) * n), so
+   scaling the token on <html> tightens the whole interface at once. */
+.compact {
+  --spacing: 0.22rem;
+}
+
+/* Manual "reduce motion" (settings) — same guarantees as the media query. */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ---------- Card accent surfaces ----------
+   Barely-there tints that give each card family its own temperature.
+   In dark mode the tint mixes with translucent white so the card stays
+   glassy over the animated sky. */
+.card-tone-indigo {
+  background-color: color-mix(in srgb, var(--color-brand) 6%, var(--t-card));
+  border-color: color-mix(in srgb, var(--color-brand) 24%, var(--t-line));
+}
+.card-tone-emerald {
+  background-color: color-mix(in srgb, var(--color-mint) 5%, var(--t-card));
+  border-color: color-mix(in srgb, var(--color-mint) 22%, var(--t-line));
+}
+.card-tone-violet {
+  background-color: color-mix(in srgb, var(--color-brand-2) 6%, var(--t-card));
+  border-color: color-mix(in srgb, var(--color-brand-2) 24%, var(--t-line));
+}
+.card-tone-sky {
+  background-color: color-mix(in srgb, var(--color-info) 5%, var(--t-card));
+  border-color: color-mix(in srgb, var(--color-info) 22%, var(--t-line));
+}
+.card-tone-gold {
+  background-color: color-mix(in srgb, var(--color-achievement) 6%, var(--t-card));
+  border-color: color-mix(in srgb, var(--color-achievement) 24%, var(--t-line));
+}
+.card-tone-warn {
+  background-color: color-mix(in srgb, var(--color-warn) 5%, var(--t-card));
+  border-color: color-mix(in srgb, var(--color-warn) 22%, var(--t-line));
+}
+
+.dark .card-tone-indigo {
+  background-color: color-mix(in srgb, var(--color-brand) 7%, rgb(255 255 255 / 0.03));
+  border-color: color-mix(in srgb, var(--color-brand) 32%, rgb(255 255 255 / 0.06));
+}
+.dark .card-tone-emerald {
+  background-color: color-mix(in srgb, var(--color-mint) 6%, rgb(255 255 255 / 0.03));
+  border-color: color-mix(in srgb, var(--color-mint) 28%, rgb(255 255 255 / 0.06));
+}
+.dark .card-tone-violet {
+  background-color: color-mix(in srgb, var(--color-brand-2) 7%, rgb(255 255 255 / 0.03));
+  border-color: color-mix(in srgb, var(--color-brand-2) 32%, rgb(255 255 255 / 0.06));
+}
+.dark .card-tone-sky {
+  background-color: color-mix(in srgb, var(--color-info) 6%, rgb(255 255 255 / 0.03));
+  border-color: color-mix(in srgb, var(--color-info) 28%, rgb(255 255 255 / 0.06));
+}
+.dark .card-tone-gold {
+  background-color: color-mix(in srgb, var(--color-achievement) 6%, rgb(255 255 255 / 0.03));
+  border-color: color-mix(in srgb, var(--color-achievement) 28%, rgb(255 255 255 / 0.06));
+}
+.dark .card-tone-warn {
+  background-color: color-mix(in srgb, var(--color-warn) 6%, rgb(255 255 255 / 0.03));
+  border-color: color-mix(in srgb, var(--color-warn) 28%, rgb(255 255 255 / 0.06));
+}
+
+/* ---------- Background atmosphere (night sky) ---------- */
+
+/* Fine grain texture — SVG noise, very low opacity. */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* Star rendering is driven by a requestAnimationFrame loop in
+   components/decor/SparkleField.tsx — the engine writes transform +
+   opacity directly every frame, so the sky is guaranteed to move in
+   every browser (no CSS-variable-in-keyframes quirks). */
+.star-body {
+  will-change: transform, opacity;
+}
+
+/* The glyph itself: glow + depth blur + hover brightness, transitioned. */
+.star-glyph {
+  filter: drop-shadow(0 0 var(--glow, 4px) currentColor)
+    brightness(calc(1 + var(--bright, 0) * 0.9)) blur(var(--blur, 0));
+  transition: filter 0.7s ease;
+}
+
+/* Very subtle aurora — two huge blurred bands drifting on 40-60s cycles. */
+@keyframes aurora-a {
+  0%,
+  100% {
+    transform: translate3d(-5%, 0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 3%, 0) rotate(4deg) scale(1.1);
+  }
+}
+
+@keyframes aurora-b {
+  0%,
+  100% {
+    transform: translate3d(4%, 2%, 0) rotate(0deg) scale(1.05);
+  }
+  50% {
+    transform: translate3d(-6%, -3%, 0) rotate(-5deg) scale(1);
+  }
+}
+
+.aurora-a {
+  animation: aurora-a 52s ease-in-out infinite;
+  will-change: transform;
+}
+
+.aurora-b {
+  animation: aurora-b 44s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ---------- Feedback micro-animations ---------- */
+
+/* A tiny "+XP" chip that rises and fades after completing a goal. */
+@keyframes xp-float {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) scale(1);
+  }
+}
+
+.animate-xp-float {
+  animation: xp-float 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Soft mint glow ring — used for level-up moments. */
+@keyframes level-glow {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  35% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-mint) 55%, transparent),
+      0 0 28px 8px color-mix(in srgb, var(--color-mint) 40%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.animate-level-glow {
+  animation: level-glow 1.8s ease-out both;
+}
+
+/* Gentle shimmer used on the hero panel so it feels alive, not flat. */
+@keyframes hero-shimmer {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate3d(2%, -3%, 0) scale(1.08);
+  }
+}
+
+.animate-hero-shimmer {
+  animation: hero-shimmer 9s ease-in-out infinite;
+}
+
+/* Freshly watered: the whole tree sways slowly around the trunk base. */
+@keyframes tree-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(1.3deg);
+  }
+  70% {
+    transform: rotate(-1.1deg);
+  }
+}
+
+.tree-sway {
+  transform-box: view-box;
+  transform-origin: 100px 148px;
+  animation: tree-sway 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ---------- Rest scene ---------- */
+
+/* Leaves drifting gently upward around the resting tree — each leaf has
+   its own delay + duration via inline styles, so the loop never looks
+   mechanical. Reduced-motion rules below collapse it to a still frame. */
+@keyframes leaf-float {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) rotate(-10deg) scale(0.8);
+  }
+  18% {
+    opacity: 0.85;
+  }
+  55% {
+    transform: translateY(-14px) rotate(8deg) scale(1);
+  }
+  78% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) rotate(-6deg) scale(0.9);
+  }
+}
+
+.animate-leaf-float {
+  animation: leaf-float 7s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Very gentle idle breathing — used on the tree illustration so a resting
+   garden still feels alive, never mechanical. */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 6s ease-in-out infinite;
+  transform-origin: 50% 82%;
+  will-change: transform;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
