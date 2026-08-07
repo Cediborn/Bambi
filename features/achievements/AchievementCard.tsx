@@ -4,35 +4,8 @@ import type { Achievement, AchievementCategory } from "@/utils/achievements";
 import { HoverLift } from "@/components/ui/Motion";
 import { Card, type CardTone } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
-import {
-  BoltIcon,
-  BookIcon,
-  CheckCircleIcon,
-  CrownIcon,
-  FlameIcon,
-  HeartIcon,
-  LeafIcon,
-  LockIcon,
-  MedalIcon,
-  PenLineIcon,
-  StarIcon,
-  TargetIcon,
-  TrophyIcon,
-} from "@/components/icons";
-
-const ICONS = {
-  flame: FlameIcon,
-  trophy: TrophyIcon,
-  bolt: BoltIcon,
-  target: TargetIcon,
-  pen: PenLineIcon,
-  star: StarIcon,
-  crown: CrownIcon,
-  book: BookIcon,
-  leaf: LeafIcon,
-  medal: MedalIcon,
-  heart: HeartIcon,
-} as const;
+import { CheckCircleIcon, LockIcon } from "@/components/icons";
+import { ACHIEVEMENT_ICONS } from "./achievementMeta";
 
 /** Each category gets its own temperature on the card. */
 const CATEGORY_TONE: Record<AchievementCategory, CardTone> = {
@@ -47,7 +20,7 @@ const CATEGORY_TONE: Record<AchievementCategory, CardTone> = {
 };
 
 export function AchievementCard({ achievement }: { achievement: Achievement }) {
-  const Icon = ICONS[achievement.icon];
+  const Icon = ACHIEVEMENT_ICONS[achievement.icon];
   const progressPct = achievement.target > 0 ? achievement.progress / achievement.target : 0;
 
   return (

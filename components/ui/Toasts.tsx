@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  BoltIcon,
   CheckCircleIcon,
   SparklesIcon,
   TrophyIcon,
@@ -10,15 +11,28 @@ import {
 } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { useSounds } from "@/hooks/useSounds";
-import { evaluateAchievements } from "@/utils/achievements";
+import { evaluateAchievements, type Achievement } from "@/utils/achievements";
+import { ACHIEVEMENT_ICONS } from "@/features/achievements/achievementMeta";
 import { dailyQuest } from "@/utils/quests";
-import { XP_PER_QUEST } from "@/utils/xp";
+import { computeXp, levelForXp, levelTitle, XP_PER_QUEST } from "@/utils/xp";
 
 interface Toast {
   id: number;
-  kind: "badge" | "quest";
+  kind: "badge" | "quest" | "level";
   title: string;
   body: string;
+  /** Achievement glyph shown on badge toasts. */
+  iconKey?: Achievement["icon"];
+}
+
+/** The glyph inside a toast's colored chip — each celebration kind has its own. */
+function ToastGlyph({ toast }: { toast: Toast }) {
+  if (toast.kind === "badge") {
+    const Icon = toast.iconKey ? ACHIEVEMENT_ICONS[toast.iconKey] : TrophyIcon;
+    return <Icon size={20} />;
+  }
+  if (toast.kind === "level") return <BoltIcon size={20} />;
+  return <SparklesIcon size={20} />;
 }
 
 const TOAST_LIFETIME = 4600;
@@ -39,35 +53,50 @@ export function Toaster() {
   const idRef = useRef(0);
   const seenBadges = useRef<Set<string> | null>(null);
   const seenQuests = useRef<Set<string> | null>(null);
+  const levelRef = useRef<number | null>(null);
 
-  const push = (kind: Toast["kind"], title: string, body: string) => {
+  const push = (kind: Toast["kind"], title: string, body: string, iconKey?: Toast["iconKey"]) => {
     const id = ++idRef.current;
-    setToasts((prev) => [...prev.slice(-2), { id, kind, title, body }]);
+    setToasts((prev) => [...prev.slice(-2), { id, kind, title, body, iconKey }]);
     window.setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, TOAST_LIFETIME);
   };
 
   useEffect(() => {
+    const achievements = evaluateAchievements(state);
+
     // Achievements: diff the unlocked set against what we last saw.
     const unlocked = new Set(
-      evaluateAchievements(state)
-        .filter((a) => a.unlocked)
-        .map((a) => a.id)
+      achievements.filter((a) => a.unlocked).map((a) => a.id)
     );
     if (seenBadges.current) {
-      const fresh = [...unlocked].filter((id) => !seenBadges.current!.has(id));
+      const fresh = achievements.filter(
+        (a) => a.unlocked && !seenBadges.current!.has(a.id)
+      );
       // A backup restore can unlock many at once — celebrate only the
       // handful that happen during real play, so imports don't flood.
       if (fresh.length > 0 && fresh.length <= 2) {
-        const names = evaluateAchievements(state)
-          .filter((a) => fresh.includes(a.id))
-          .map((a) => a.title);
-        push("badge", fresh.length === 1 ? "Badge unlocked" : "Badges unlocked", names.join(", "));
+        push(
+          "badge",
+          fresh.length === 1 ? "Badge unlocked" : "Badges unlocked",
+          fresh.length === 1 ? fresh[0].description : fresh.map((a) => a.title).join(", "),
+          fresh.length === 1 ? fresh[0].icon : undefined
+        );
         sounds.badge();
       }
     }
     seenBadges.current = unlocked;
+
+    // Level: a climb anywhere in the app deserves a quiet toast + chime.
+    // Only a single-level step celebrates — a multi-level jump can only
+    // come from importing a backup, which we deliberately don't cheer.
+    const level = levelForXp(computeXp(state));
+    if (levelRef.current !== null && level === levelRef.current + 1) {
+      push("level", "Level up!", `Level ${level} — ${levelTitle(level)}`);
+      sounds.levelup();
+    }
+    levelRef.current = level;
 
     // Quest: one new completed date means a quest was finished (a jump of
     // more than one can only come from importing a backup).
@@ -92,21 +121,27 @@ export function Toaster() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.97 }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl border border-line bg-card/95 p-4 shadow-lift backdrop-blur-xl dark:border-white/10 dark:bg-surface/90"
+            className="pointer-events-auto relative flex w-full max-w-sm items-start gap-3 rounded-2xl border border-line bg-card/95 p-4 shadow-lift backdrop-blur-xl dark:border-white/10 dark:bg-surface/90"
           >
+            {toast.kind === "level" ? (
+              // One-shot mint ring on its own layer so the card keeps its
+              // resting shadow (animate-level-glow fills `both`).
+              <span
+                aria-hidden="true"
+                className="animate-level-glow pointer-events-none absolute inset-0 rounded-2xl"
+              />
+            ) : null}
             <span
               className={[
                 "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl",
                 toast.kind === "badge"
                   ? "bg-achievement/15 text-achievement"
-                  : "bg-brand/15 text-brand-2",
+                  : toast.kind === "level"
+                    ? "bg-mint/15 text-good"
+                    : "bg-brand/15 text-brand-2",
               ].join(" ")}
             >
-              {toast.kind === "badge" ? (
-                <TrophyIcon size={20} />
-              ) : (
-                <SparklesIcon size={20} />
-              )}
+              <ToastGlyph toast={toast} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-1.5 text-sm font-bold text-ink">

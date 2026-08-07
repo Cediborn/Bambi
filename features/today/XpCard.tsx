@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/Card";
 import { CountUp } from "@/components/ui/Motion";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { BoltIcon, SparklesIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
-import { useSounds } from "@/hooks/useSounds";
 import { isScheduledOn } from "@/utils/streaks";
 import { computeXp, levelForXp, levelProgress, levelTitle, xpToNextLevel, XP_PER_ENTRY, XP_PER_GOAL } from "@/utils/xp";
 import { todayKey } from "@/utils/dates";
@@ -14,18 +12,10 @@ import { todayKey } from "@/utils/dates";
 /** Level + XP card: how close the user is to the next level and what it unlocks. */
 export function XpCard() {
   const { state } = useApp();
-  const sounds = useSounds();
   const today = todayKey();
   const xp = computeXp(state);
   const level = levelForXp(xp);
   const next = level + 1;
-  const prevLevel = useRef(level);
-
-  // A quiet level-up chime when the level climbs.
-  useEffect(() => {
-    if (level > prevLevel.current) sounds.levelup();
-    prevLevel.current = level;
-  }, [level, sounds]);
 
   const goalsToday = state.habits.filter((h) => isScheduledOn(h, today));
   const goalsDoneToday = goalsToday.filter((h) => (state.completions[h.id] ?? []).includes(today)).length;
