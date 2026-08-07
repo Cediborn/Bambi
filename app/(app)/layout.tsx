@@ -4,6 +4,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
+import { TourProvider } from "@/features/tour/TourProvider";
 import { useApp } from "@/hooks/useApp";
 
 /** Subscription that never fires — used only to detect client hydration. */
@@ -29,5 +30,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   if (!mounted || !state.profile) return null;
 
-  return <AppShell>{children}</AppShell>;
+  return (
+    <TourProvider>
+      <AppShell>{children}</AppShell>
+    </TourProvider>
+  );
 }

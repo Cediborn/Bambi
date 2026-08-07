@@ -13,6 +13,7 @@ import {
   ActivityIcon,
   CircleIcon,
   CompactIcon,
+  CompassIcon,
   DownloadIcon,
   MoonIcon,
   MusicIcon,
@@ -24,6 +25,7 @@ import {
   VolumeIcon,
 } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
+import { useTour } from "@/features/tour/TourContext";
 import { AuthPanel } from "@/features/auth/AuthPanel";
 import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
@@ -69,6 +71,7 @@ export default function SettingsPage() {
   const [confirmReset, setConfirmReset] = useState(false);
   const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const tour = useTour();
 
   const saveName = () => {
     const trimmed = name.trim();
@@ -278,6 +281,22 @@ export default function SettingsPage() {
 
       <Reveal delay={0.13}>
         <PwaInstallCard />
+      </Reveal>
+
+      {/* Help & guidance */}
+      <Reveal delay={0.14}>
+        <Card size="featured" className="space-y-6">
+          <Row
+            icon={<CompassIcon size={20} />}
+            title="Help & guidance"
+            subtitle="Learn your way around BAMBI — from the garden to the vision board"
+            control={
+              <Button variant="secondary" onClick={tour.openChooser} icon={<CompassIcon size={16} />}>
+                Take a tour
+              </Button>
+            }
+          />
+        </Card>
       </Reveal>
 
       {/* Data */}

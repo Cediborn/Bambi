@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { Avatar, DEFAULT_AVATAR } from "@/components/ui/Avatar";
-import { BoltIcon, MoonIcon, SlidersIcon, SunIcon } from "@/components/icons";
+import { BoltIcon, CompassIcon, MoonIcon, SlidersIcon, SunIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
+import { useTour } from "@/features/tour/TourContext";
 import { computeXp, levelForXp, levelProgress } from "@/utils/xp";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 
@@ -12,6 +13,7 @@ export function TopBar() {
   const xp = computeXp(state);
   const level = levelForXp(xp);
   const dark = state.settings.theme === "dark";
+  const tour = useTour();
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-bg/80 backdrop-blur-xl">
@@ -53,6 +55,17 @@ export function TopBar() {
               Lv {level}
             </span>
           </div>
+
+          {/* Take a tour — the compass is BAMBI's "learn your way around" mark */}
+          <button
+            type="button"
+            onClick={() => tour.openChooser()}
+            aria-label="Take a tour"
+            title="Learn BAMBI"
+            className="flex size-10 items-center justify-center rounded-xl border border-line bg-card text-ink-soft shadow-card transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            <CompassIcon size={18} />
+          </button>
 
           {/* Theme toggle */}
           <button

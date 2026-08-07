@@ -41,9 +41,12 @@ export default function TodayPage() {
       <FocusBanner />
 
       {/* Centerpiece — fades in while the blur clears */}
-      <RevealBlur>
-        <HeroCard />
-      </RevealBlur>
+      {/* data-tour markers anchor the guided tour's spotlight. */}
+      <div data-tour="today-hero">
+        <RevealBlur>
+          <HeroCard />
+        </RevealBlur>
+      </div>
 
       {/* Full-width consistency rhythm — the visual proof that small daily steps add up */}
       <Reveal delay={0.06}>
@@ -54,17 +57,22 @@ export default function TodayPage() {
       <div className="grid items-start gap-6 lg:grid-cols-5 lg:gap-8">
         {/* Left — the garden & today's work */}
         <section className="space-y-6 lg:col-span-3" aria-label="Today's quest and focus">
-          <SlideIn from="left" delay={0.05}>
-            <QuestCard />
-          </SlideIn>
+          <div data-tour="today-quest">
+            <SlideIn from="left" delay={0.05}>
+              <QuestCard />
+            </SlideIn>
+          </div>
 
-          <ScaleReveal delay={0.1}>
-            <TreeCard />
-          </ScaleReveal>
+          <div data-tour="today-tree">
+            <ScaleReveal delay={0.1}>
+              <TreeCard />
+            </ScaleReveal>
+          </div>
 
-          <Reveal delay={0.15}>
-            <Card tone="indigo" size="featured">
-              <div className="mb-4 flex items-center justify-between gap-3">
+          <div data-tour="today-focus">
+            <Reveal delay={0.15}>
+              <Card tone="indigo" size="featured">
+                <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <h2 className="font-display text-base font-bold text-ink">Today&apos;s Focus</h2>
                   <p className="mt-0.5 text-xs text-ink-soft">
@@ -92,28 +100,33 @@ export default function TodayPage() {
                       onToggle={() => api.toggleCompletion(habit.id, today)}
                     />
                   ))}
-                  {allDone ? (
+                      {allDone ? (
                     <p className="animate-fade-in flex items-center gap-2 rounded-xl bg-mint/10 px-3.5 py-2.5 text-sm font-bold text-good">
                       Great work. Consistency builds remarkable results.
                     </p>
                   ) : null}
                 </div>
               )}
-            </Card>
-          </Reveal>
+              </Card>
+            </Reveal>
+          </div>
         </section>
 
         {/* Right — progress & reflection */}
         <aside className="space-y-6 lg:col-span-2" aria-label="Progress and reflection">
-          <Reveal delay={0.05}>
-            <XpCard />
-          </Reveal>
+          <div data-tour="today-xp">
+            <Reveal delay={0.05}>
+              <XpCard />
+            </Reveal>
+          </div>
           <Reveal delay={0.1}>
             <CheckInCard />
           </Reveal>
-          <Reveal delay={0.15}>
-            <WeekStrip />
-          </Reveal>
+          <div data-tour="today-week">
+            <Reveal delay={0.15}>
+              <WeekStrip />
+            </Reveal>
+          </div>
           <Reveal delay={0.2} y={8}>
             <QuoteCard />
           </Reveal>
