@@ -1,0 +1,5 @@
+npm notice run bambi@0.1.0 npx
+npm notice run vitest run tests/hero.test.ts
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90mC:/Users/damie/Desktop/FREEBUFF[39m
+
