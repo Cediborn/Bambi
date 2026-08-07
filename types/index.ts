@@ -124,3 +124,16 @@ export interface AppState {
   reflections: Reflection[];
   settings: Settings;
 }
+
+/* ---------- Auth ----------
+   Kept separate from AppState on purpose: signing in or out must never
+   touch the garden data itself. */
+
+export type AuthMode = "guest" | "account";
+
+/** Lightweight auth identity, persisted under its own key. */
+export interface AuthState {
+  mode: AuthMode;
+  email?: string;
+  userId?: string;
+}

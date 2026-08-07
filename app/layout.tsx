@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/db/AppProvider";
+import { AuthProvider } from "@/features/auth/AuthProvider";
+import { BootGate } from "@/components/loading/BootGate";
 import { PwaRegistrar } from "@/components/pwa/PwaRegistrar";
 
 /* Typography — all three fonts are downloaded once at build time and
@@ -79,7 +81,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <AppProvider>
-          {children}
+          <AuthProvider>
+            <BootGate>{children}</BootGate>
+          </AuthProvider>
           <PwaRegistrar />
         </AppProvider>
       </body>

@@ -374,6 +374,52 @@ body {
   will-change: transform;
 }
 
+/* ---------- Loading & skeletons ---------- */
+
+/* Reusable skeleton block — a quiet, theme-aware loading shape. The
+   shimmer comes from a ::after sweep, so the base stays a soft ink tint
+   that works in both themes. Pair with rounded-* to match the surface. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--t-ink) 6%, transparent);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--t-ink) 9%, transparent),
+    transparent
+  );
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* One-shot sweep across a row when its data refreshes locally — a quiet
+   "this just updated" cue instead of a page reload. */
+@keyframes flash-sweep {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-flash-sweep {
+  animation: flash-sweep 0.9s ease-out both;
+  pointer-events: none;
+}
+
 /* Respect users who prefer less motion */
 @media (prefers-reduced-motion: reduce) {
   *,

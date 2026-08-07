@@ -7,7 +7,7 @@ import { initialState } from "./appState";
  * remote read/write calls — the reducer and UI stay the same.
  */
 
-const STATE_KEY = "bambi:state:v1";
+export const STATE_KEY = "bambi:state:v1";
 const THEME_KEY = "bambi:theme";
 
 function isRecord(value: unknown): value is Record<string, unknown> {

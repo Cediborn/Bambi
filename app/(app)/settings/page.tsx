@@ -24,6 +24,7 @@ import {
   VolumeIcon,
 } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
+import { AuthPanel } from "@/features/auth/AuthPanel";
 import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
 import { exportState, importState } from "@/db/persistence";
@@ -367,6 +368,11 @@ export default function SettingsPage() {
             </div>
           </Field>
         </Card>
+      </Reveal>
+
+      {/* Account */}
+      <Reveal delay={0.19}>
+        <AuthPanel />
       </Reveal>
 
       {/* About + danger zone */}

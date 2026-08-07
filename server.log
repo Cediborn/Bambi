@@ -1,7 +1,0 @@
-npm notice run bambi@0.1.0 start
-npm notice run next start
-▲ Next.js 16.3.0
-- Local:         http://localhost:3000
-- Network:       http://10.18.216.161:3000
-✓ Ready in 714ms
-✓ Running next.config.ts took 110ms

@@ -194,9 +194,10 @@ export function HeroCard() {
                 <FlameIcon size={20} />
               </span>
               <div>
-                <p className="font-mono text-2xl font-bold tabular-nums tracking-tight sm:text-3xl">
-                  {streak}
-                </p>
+                <CountUp
+                  value={streak}
+                  className="font-mono text-2xl font-bold tabular-nums tracking-tight sm:text-3xl"
+                />
                 <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
                   Day streak
                 </p>

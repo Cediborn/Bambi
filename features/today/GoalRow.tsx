@@ -17,6 +17,7 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
   const color = habitColor(habit.color);
   const sounds = useSounds();
   const [xpFlash, setXpFlash] = useState(false);
+  const [flash, setFlash] = useState(false);
 
   const handleToggle = () => {
     if (!done) {
@@ -24,11 +25,20 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
       setXpFlash(true);
       window.setTimeout(() => setXpFlash(false), 1400);
     }
+    // A quiet one-shot sweep — "this row just updated", never a reload.
+    setFlash(true);
+    window.setTimeout(() => setFlash(false), 900);
     onToggle();
   };
 
   return (
     <div className="group relative flex items-center gap-3.5">
+      {flash ? (
+        <span
+          aria-hidden="true"
+          className="animate-flash-sweep absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-mint/20 to-transparent"
+        />
+      ) : null}
       <button
         type="button"
         onClick={handleToggle}

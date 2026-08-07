@@ -89,6 +89,13 @@ export default function OnboardingPage() {
                 Get started
                 <ArrowRightIcon size={17} />
               </Button>
+              <button
+                type="button"
+                onClick={() => router.push("/auth")}
+                className="mt-3 text-sm font-semibold text-ink-soft transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                Have an account? Sign in
+              </button>
             </div>
           )}
 

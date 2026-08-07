@@ -1,5 +1,0 @@
-npm notice run bambi@0.1.0 npx
-npm notice run vitest run tests/hero.test.ts -t rest mood|inactive days|anniversary|next level
-
-[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/damie/Desktop/FREEBUFF[39m
-
