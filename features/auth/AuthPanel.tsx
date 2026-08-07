@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Field, FieldError, Input } from "@/components/ui/Input";
 import {
   CloudIcon,
+  GoogleIcon,
   LockIcon,
   LogOutIcon,
   SparklesIcon,
@@ -91,6 +92,27 @@ export function AuthPanel({
         </p>
       ) : (
         <div>
+          <Button
+            variant="secondary"
+            fullWidth
+            disabled={auth.busy}
+            onClick={() => void auth.signInWithGoogle()}
+            icon={<GoogleIcon size={16} />}
+          >
+            Continue with Google
+          </Button>
+
+          <div className="relative my-5">
+            <div aria-hidden="true" className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-line dark:border-white/[0.06]" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-card px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+                or with email
+              </span>
+            </div>
+          </div>
+
           <div
             role="group"
             aria-label="Account"

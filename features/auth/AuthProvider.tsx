@@ -23,6 +23,7 @@ interface AuthApi {
   error: string | null;
   notice: string | null;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   continueAsGuest: () => void;
@@ -127,6 +128,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const signInWithGoogle = useCallback(async () => {
+    setError(null);
+    setNotice(null);
+    const supabase = getSupabase();
+    if (!supabase) {
+      setError(
+        "Accounts aren't switched on in this build yet — add the Supabase keys to enable them."
+      );
+      return;
+    }
+    setBusy(true);
+    try {
+      // Full-page redirect to Google; on return the session is picked up
+      // automatically (detectSessionInUrl is on). Redirect back to the
+      // app root so the existing gates route the user correctly.
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin },
+      });
+      if (error) setError(friendlyError(error.message));
+    } finally {
+      setBusy(false);
+    }
+  }, []);
+
   const signUp = useCallback(async (email: string, password: string) => {
     setError(null);
     setNotice(null);
@@ -178,12 +204,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       error,
       notice,
       signIn,
+      signInWithGoogle,
       signUp,
       signOut,
       continueAsGuest,
       clearMessages,
     }),
-    [auth, configured, busy, error, notice, signIn, signUp, signOut, continueAsGuest, clearMessages]
+    [
+      auth,
+      configured,
+      busy,
+      error,
+      notice,
+      signIn,
+      signInWithGoogle,
+      signUp,
+      signOut,
+      continueAsGuest,
+      clearMessages,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
