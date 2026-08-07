@@ -14,11 +14,12 @@ import { useSounds } from "@/hooks/useSounds";
 import { evaluateAchievements, type Achievement } from "@/utils/achievements";
 import { ACHIEVEMENT_ICONS } from "@/features/achievements/achievementMeta";
 import { dailyQuest } from "@/utils/quests";
-import { computeXp, levelForXp, levelTitle, XP_PER_QUEST } from "@/utils/xp";
+import { totalCompletions } from "@/utils/streaks";
+import { computeXp, levelForXp, levelTitle, XP_PER_GOAL, XP_PER_QUEST } from "@/utils/xp";
 
 interface Toast {
   id: number;
-  kind: "badge" | "quest" | "level";
+  kind: "badge" | "quest" | "level" | "xp";
   title: string;
   body: string;
   /** Achievement glyph shown on badge toasts. */
@@ -36,6 +37,8 @@ function ToastGlyph({ toast }: { toast: Toast }) {
 }
 
 const TOAST_LIFETIME = 4600;
+/** Small-win pills are quicker — they exist to punctuate, not to linger. */
+const XP_TOAST_LIFETIME = 2400;
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /**
@@ -54,13 +57,25 @@ export function Toaster() {
   const seenBadges = useRef<Set<string> | null>(null);
   const seenQuests = useRef<Set<string> | null>(null);
   const levelRef = useRef<number | null>(null);
+  const goalsRef = useRef<number | null>(null);
 
-  const push = (kind: Toast["kind"], title: string, body: string, iconKey?: Toast["iconKey"]) => {
+  const push = (kind: Toast["kind"], title: string, body = "", iconKey?: Toast["iconKey"]) => {
     const id = ++idRef.current;
-    setToasts((prev) => [...prev.slice(-2), { id, kind, title, body, iconKey }]);
+    setToasts((prev) => {
+      if (kind === "xp") {
+        // Small-win pills never push milestone cards off the stack — they
+        // only replace the previous pill, so a burst of goals keeps the
+        // badges/levels/quests visible.
+        const pills = prev.filter((t) => t.kind === "xp");
+        const rest = prev.filter((t) => t.kind !== "xp");
+        return [...rest, ...pills.slice(-1), { id, kind, title, body, iconKey }];
+      }
+      // Milestone cards keep the pre-existing three-card cap.
+      return [...prev.slice(-2), { id, kind, title, body, iconKey }];
+    });
     window.setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, TOAST_LIFETIME);
+    }, kind === "xp" ? XP_TOAST_LIFETIME : TOAST_LIFETIME);
   };
 
   useEffect(() => {
@@ -98,6 +113,19 @@ export function Toaster() {
     }
     levelRef.current = level;
 
+    // Goal completions: a visible +XP pill for every small win. Real play
+    // adds one completion at a time (two if clicks batch); larger jumps
+    // can only come from importing a backup, which stays quiet. Silent by
+    // design — the completing row already plays its own chime.
+    const goals = totalCompletions(state.completions);
+    if (goalsRef.current !== null) {
+      const gained = goals - goalsRef.current;
+      if (gained > 0 && gained <= 2) {
+        push("xp", `+${gained * XP_PER_GOAL} XP`);
+      }
+    }
+    goalsRef.current = goals;
+
     // Quest: one new completed date means a quest was finished (a jump of
     // more than one can only come from importing a backup).
     if (seenQuests.current) {
@@ -113,7 +141,24 @@ export function Toaster() {
   return (
     <div className="pointer-events-none fixed inset-x-4 bottom-24 z-[60] flex flex-col items-center gap-2.5 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:items-end">
       <AnimatePresence>
-        {toasts.map((toast) => (
+        {toasts.map((toast) =>
+          toast.kind === "xp" ? (
+            /* Small win — a compact pill, lighter than a milestone card. */
+            <motion.div
+              key={toast.id}
+              role="status"
+              initial={{ opacity: 0, y: 14, scale: 0.94 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.96 }}
+              transition={{ duration: 0.3, ease: EASE }}
+              className="pointer-events-auto flex items-center gap-1.5 rounded-full border border-mint/25 bg-card/95 py-2 pl-3.5 pr-4 shadow-lift backdrop-blur-xl dark:border-mint/20 dark:bg-surface/90"
+            >
+              <BoltIcon size={15} className="text-good" />
+              <span className="font-mono text-sm font-bold tabular-nums text-good">
+                {toast.title}
+              </span>
+            </motion.div>
+          ) : (
           <motion.div
             key={toast.id}
             role="status"
@@ -165,7 +210,8 @@ export function Toaster() {
               <XIcon size={15} />
             </button>
           </motion.div>
-        ))}
+          )
+        )}
       </AnimatePresence>
     </div>
   );

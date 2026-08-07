@@ -77,7 +77,10 @@ export function HabitCard({ habit }: { habit: Habit }) {
       <div className="flex shrink-0 items-center gap-1.5">
         <button
           type="button"
-          onClick={() => api.toggleCompletion(habit.id, today)}
+          onClick={() => {
+            if (!done && scheduledToday) sounds.complete();
+            api.toggleCompletion(habit.id, today);
+          }}
           disabled={!scheduledToday}
           aria-label={
             !scheduledToday
