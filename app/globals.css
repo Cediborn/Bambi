@@ -420,6 +420,351 @@ body {
   pointer-events: none;
 }
 
+/* ---------- Airplane loader ---------- */
+
+@keyframes airplane-speeder {
+  0% {
+    transform: translate(2px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -3px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-2px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 3px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-1px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-2px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(2px, 1px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+
+@keyframes airplane-fazer1 {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -80px;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-fazer2 {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -100px;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-fazer3 {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -50px;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-fazer4 {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -150px;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-lf {
+  0% {
+    left: 200%;
+  }
+  100% {
+    left: -200%;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-lf2 {
+  0% {
+    left: 200%;
+  }
+  100% {
+    left: -200%;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-lf3 {
+  0% {
+    left: 200%;
+  }
+  100% {
+    left: -100%;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-lf4 {
+  0% {
+    left: 200%;
+  }
+  100% {
+    left: -100%;
+    opacity: 0;
+  }
+}
+
+@keyframes airplane-move-clouds {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-2000px);
+  }
+}
+
+.airplane-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px;
+  animation: airplane-speeder 0.4s linear infinite;
+}
+
+.airplane-fuselage {
+  height: 5px;
+  width: 35px;
+  background: var(--color-brand);
+  position: absolute;
+  top: -19px;
+  left: 60px;
+  border-radius: 2px 10px 1px 0;
+}
+
+.airplane-body {
+  position: absolute;
+}
+
+.airplane-body-triangle {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-right: 100px solid var(--t-line);
+  border-bottom: 6px solid transparent;
+}
+
+.airplane-body-head {
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  background: var(--t-line);
+  right: -110px;
+  top: -16px;
+}
+
+.airplane-body-tail {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 0 solid transparent;
+  border-right: 55px solid var(--t-line);
+  border-bottom: 16px solid transparent;
+  top: -16px;
+  right: -98px;
+}
+
+.airplane-face {
+  position: absolute;
+  height: 12px;
+  width: 20px;
+  background: var(--t-line);
+  border-radius: 20px 20px 0 0;
+  transform: rotate(-40deg);
+  right: -125px;
+  top: -15px;
+}
+
+.airplane-face-accent {
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  background: var(--color-brand);
+  right: 4px;
+  top: 7px;
+  transform: rotate(40deg);
+  transform-origin: 50% 50%;
+  border-radius: 0 0 2px 2px;
+}
+
+.airplane-fazer {
+  position: absolute;
+  width: 30px;
+  height: 1px;
+  background: var(--t-ink-soft);
+}
+
+.airplane-fazer-1 {
+  animation: airplane-fazer1 0.2s linear infinite;
+}
+
+.airplane-fazer-2 {
+  top: 3px;
+  animation: airplane-fazer2 0.4s linear infinite;
+}
+
+.airplane-fazer-3 {
+  top: 1px;
+  animation: airplane-fazer3 0.4s linear infinite;
+  animation-delay: -1s;
+}
+
+.airplane-fazer-4 {
+  top: 4px;
+  animation: airplane-fazer4 1s linear infinite;
+  animation-delay: -1s;
+}
+
+.airplane-longfazers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.airplane-lf {
+  position: absolute;
+  height: 2px;
+  width: 20%;
+  background: var(--t-ink-soft);
+  opacity: 0.3;
+}
+
+.airplane-lf-1 {
+  top: 20%;
+  animation: airplane-lf 0.6s linear infinite;
+  animation-delay: -5s;
+}
+
+.airplane-lf-2 {
+  top: 40%;
+  animation: airplane-lf2 0.8s linear infinite;
+  animation-delay: -1s;
+}
+
+.airplane-lf-3 {
+  top: 60%;
+  animation: airplane-lf3 0.6s linear infinite;
+}
+
+.airplane-lf-4 {
+  top: 80%;
+  animation: airplane-lf4 0.5s linear infinite;
+  animation-delay: -3s;
+}
+
+.airplane-clouds {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.airplane-cloud {
+  position: absolute;
+  background: var(--t-ink);
+  border-radius: 50%;
+  opacity: 0.06;
+  animation: airplane-move-clouds linear infinite;
+}
+
+.airplane-cloud::before,
+.airplane-cloud::after {
+  content: "";
+  position: absolute;
+  background: var(--t-ink);
+  border-radius: 50%;
+}
+
+.airplane-cloud::before {
+  width: 60%;
+  height: 60%;
+  top: -30%;
+  left: 10%;
+}
+
+.airplane-cloud::after {
+  width: 40%;
+  height: 40%;
+  top: -20%;
+  left: 50%;
+}
+
+.airplane-cloud-1 {
+  width: 100px;
+  height: 60px;
+  top: 15%;
+  left: 1400px;
+  animation-duration: 2s;
+}
+
+.airplane-cloud-2 {
+  width: 150px;
+  height: 80px;
+  top: 35%;
+  left: 1600px;
+  animation-duration: 3s;
+}
+
+.airplane-cloud-3 {
+  width: 80px;
+  height: 50px;
+  top: 20%;
+  left: 2000px;
+  animation-duration: 4s;
+}
+
+.airplane-cloud-4 {
+  width: 100px;
+  height: 80px;
+  top: 70%;
+  left: 1100px;
+  animation-duration: 3s;
+}
+
+.airplane-cloud-5 {
+  width: 170px;
+  height: 50px;
+  top: 80%;
+  left: 1500px;
+  animation-duration: 2s;
+}
+
 /* Respect users who prefer less motion */
 @media (prefers-reduced-motion: reduce) {
   *,
