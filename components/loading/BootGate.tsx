@@ -48,7 +48,7 @@ export function BootGate({ children }: { children: ReactNode }) {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
-    const min = reduce ? 0 : firstVisit ? 950 : 380;
+    const min = reduce ? 0 : 5000;
     const t = window.setTimeout(() => setShow(false), min);
     return () => window.clearTimeout(t);
   }, [reduce, firstVisit]);
