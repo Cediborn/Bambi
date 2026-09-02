@@ -12,13 +12,20 @@ import { useApp } from "@/hooks/useApp";
 import { todayKey } from "@/utils/dates";
 import { journalStreak } from "@/utils/streaks";
 
+/**
+ * JournalPage — single unified "Journals" section containing ALL entries.
+ *
+ * Layout:
+ *  1. PageHeader with streak
+ *  2. Mood tracker panel
+ *  3. Today's entry editor (if today has an entry, shows the editor)
+ *  4. "Journals" section — all entries (today + older) in reverse chronological order
+ */
 export default function JournalPage() {
   const { state } = useApp();
   const today = todayKey();
   const todayEntry = state.journal.find((e) => e.date === today);
-  const past = state.journal
-    .filter((e) => e.date !== today)
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+  const allEntries = [...state.journal].sort((a, b) => (a.date < b.date ? 1 : -1));
   const streak = journalStreak(state.journal);
 
   return (
@@ -41,7 +48,7 @@ export default function JournalPage() {
         <MoodPanel />
       </Reveal>
 
-      {/* Today's entry */}
+      {/* Today's entry editor */}
       <Reveal delay={0.05}>
         <Card className="p-5 sm:p-6">
           <h2 className="font-display mb-4 text-base font-bold text-ink">
@@ -51,12 +58,14 @@ export default function JournalPage() {
         </Card>
       </Reveal>
 
-      {/* History */}
-      {past.length > 0 ? (
-        <section aria-label="Past entries">
-          <h2 className="font-display mb-3 text-base font-bold text-ink">Previous entries</h2>
+      {/* All Journals — unified list including today */}
+      {allEntries.length > 0 ? (
+        <section aria-label="Journals">
+          <Reveal delay={0.1}>
+            <h2 className="font-display mb-3 text-base font-bold text-ink">Journals</h2>
+          </Reveal>
           <Stagger className="space-y-3" stagger={0.05}>
-            {past.map((entry) => (
+            {allEntries.map((entry) => (
               <StaggerItem key={entry.id}>
                 <EntryCard entry={entry} />
               </StaggerItem>

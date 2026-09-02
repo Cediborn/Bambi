@@ -22,11 +22,12 @@ import {
   StarIcon,
   SunIcon,
   UploadIcon,
+  UserIcon,
   VolumeIcon,
 } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { useTour } from "@/features/tour/TourContext";
-import { AuthPanel } from "@/features/auth/AuthPanel";
+
 import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
 import { exportState, importState } from "@/db/persistence";
@@ -389,9 +390,23 @@ export default function SettingsPage() {
         </Card>
       </Reveal>
 
-      {/* Account */}
+      {/* Account — coming soon */}
       <Reveal delay={0.19}>
-        <AuthPanel />
+        <Card size="featured" className="space-y-5">
+          <div className="flex items-center gap-4">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-surface text-ink-soft">
+              <UserIcon size={20} />
+            </span>
+            <div>
+              <p className="font-bold text-ink">Account</p>
+              <p className="text-sm text-ink-soft">Account features are coming soon.</p>
+            </div>
+          </div>
+          <p className="text-sm leading-relaxed text-ink-soft">
+            Soon you&apos;ll be able to create an account and sync your garden between
+            devices. For now, everything stays safely on this device.
+          </p>
+        </Card>
       </Reveal>
 
       {/* About + danger zone */}
