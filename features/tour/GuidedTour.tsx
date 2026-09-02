@@ -87,9 +87,12 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
   const glow = dark ? "rgba(139, 92, 246, 0.28)" : "rgba(124, 58, 237, 0.20)";
 
   const goNext = useCallback(() => {
-    if (indexRef.current >= tour.steps.length - 1) onFinish();
-    else setIndex((i) => i + 1);
-  }, [tour.steps.length, onFinish]);
+    if (indexRef.current >= tour.steps.length - 1) {
+      // Navigate back to the home page before finishing the tour
+      router.push("/today");
+      onFinish();
+    } else setIndex((i) => i + 1);
+  }, [tour.steps.length, onFinish, router]);
 
   const goBack = useCallback(() => {
     setIndex((i) => Math.max(0, i - 1));

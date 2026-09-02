@@ -28,6 +28,7 @@ import {
 import { useApp } from "@/hooks/useApp";
 import { useTour } from "@/features/tour/TourContext";
 import { clearTourPrefs } from "@/features/tour/tourPersistence";
+import { DarkModeHint } from "@/features/tour/DarkModeHint";
 
 import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
@@ -73,6 +74,7 @@ export default function SettingsPage() {
   const [confirmReset, setConfirmReset] = useState(false);
   const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const themeRef = useRef<HTMLDivElement>(null);
   const tour = useTour();
 
   const saveName = () => {
@@ -117,9 +119,13 @@ export default function SettingsPage() {
         />
       </Reveal>
 
+      {/* Dark mode hint — appears once near the theme toggle */}
+      <DarkModeHint themeRef={themeRef} />
+
       {/* Appearance */}
       <Reveal delay={0.03}>
         <Card size="featured" className="space-y-6">
+          <div ref={themeRef}>
           <Row
             icon={dark ? <MoonIcon size={20} /> : <SunIcon size={20} />}
             title="Theme"
@@ -144,6 +150,7 @@ export default function SettingsPage() {
               </div>
             }
           />
+          </div>
 
           <div className="border-t border-line pt-5 dark:border-white/[0.06]">
             <p className="mb-3 text-sm font-bold text-ink">Accent color</p>
@@ -437,6 +444,7 @@ export default function SettingsPage() {
                     onClick={() => {
                       api.reset();
                       clearTourPrefs();
+                      try { localStorage.removeItem("bambi:dark-hint-dismissed"); } catch {}
                       setConfirmReset(false);
                       // Reload so the TourProvider picks up the cleared state
                       window.location.reload();
