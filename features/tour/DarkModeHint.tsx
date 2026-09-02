@@ -1,31 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { MoonIcon, XIcon } from "@/components/icons";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const HINT_KEY = "bambi:dark-hint-dismissed";
+export const DARK_HINT_KEY = "bambi:dark-hint-dismissed";
+
+interface DarkModeHintProps {
+  /** When true, the hint becomes eligible to show (tour just completed). */
+  show: boolean;
+}
 
 /**
- * DarkModeHint — a friendly nudge that appears once near the theme toggle
- * on the first Settings visit. Shows "Looks better in dark mode" with a
+ * DarkModeHint — a friendly nudge that appears once after the guided tour
+ * finishes. Shows "Looks better in dark mode" as a floating bubble with a
  * dismiss (X) button. Never shows again after being dismissed.
  *
- * The hint is positioned relative to the theme toggle Row. It uses a
- * ref-based approach to measure the toggle's position and anchor the bubble.
+ * This component is rendered globally in AppShell so it works on any page.
  */
-export function DarkModeHint({ themeRef }: { themeRef?: React.RefObject<HTMLDivElement | null> }) {
+export function DarkModeHint({ show }: DarkModeHintProps) {
   const reduce = useReducedMotion();
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const bubbleRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
 
   // Check if hint has been dismissed
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(HINT_KEY);
+      const stored = localStorage.getItem(DARK_HINT_KEY);
       if (stored === "1") {
         setDismissed(true);
         return;
@@ -33,30 +35,22 @@ export function DarkModeHint({ themeRef }: { themeRef?: React.RefObject<HTMLDivE
     } catch {
       // Storage unavailable
     }
-
-    // Show the hint after a short delay so the Settings page has rendered
-    const t = window.setTimeout(() => {
-      setVisible(true);
-    }, 800);
-    return () => window.clearTimeout(t);
   }, []);
 
-  // Position the bubble relative to the theme toggle
+  // Show the hint when the tour completes (if not already dismissed)
   useEffect(() => {
-    if (!visible || !themeRef?.current) return;
-    const el = themeRef.current;
-    const r = el.getBoundingClientRect();
-    setPos({
-      top: r.top + r.height / 2,
-      left: Math.min(r.right + 12, window.innerWidth - 280),
-    });
-  }, [visible, themeRef]);
+    if (!show || dismissed) return;
+    const t = window.setTimeout(() => {
+      setVisible(true);
+    }, 1200);
+    return () => window.clearTimeout(t);
+  }, [show, dismissed]);
 
   const dismiss = useCallback(() => {
     setVisible(false);
     setDismissed(true);
     try {
-      localStorage.setItem(HINT_KEY, "1");
+      localStorage.setItem(DARK_HINT_KEY, "1");
     } catch {
       // Non-fatal
     }
@@ -73,15 +67,13 @@ export function DarkModeHint({ themeRef }: { themeRef?: React.RefObject<HTMLDivE
 
   return (
     <AnimatePresence>
-      {visible && pos ? (
+      {visible ? (
         <motion.div
-          ref={bubbleRef}
-          className="fixed z-[95] flex items-center gap-2.5 rounded-2xl border border-brand/20 bg-white px-4 py-3 shadow-lg dark:border-brand/30 dark:bg-card"
-          style={{ top: pos.top - 20, left: pos.left }}
-          initial={reduce ? false : { opacity: 0, x: -8, scale: 0.95 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={reduce ? { opacity: 0 } : { opacity: 0, x: -8, scale: 0.95 }}
-          transition={{ duration: 0.25, ease: EASE }}
+          className="fixed bottom-24 left-1/2 z-[95] flex -translate-x-1/2 items-center gap-2.5 rounded-2xl border border-brand/20 bg-white px-4 py-3 shadow-lg dark:border-brand/30 dark:bg-card sm:bottom-28"
+          initial={reduce ? false : { opacity: 0, y: 12, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={reduce ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.95 }}
+          transition={{ duration: 0.3, ease: EASE }}
           role="status"
           aria-live="polite"
         >

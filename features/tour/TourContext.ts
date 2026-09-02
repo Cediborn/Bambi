@@ -5,6 +5,8 @@ import { createContext, useContext } from "react";
 export interface TourContextValue {
   /** Open the tour chooser (Quick / Full) — used by the TopBar help button and Settings. */
   openChooser: () => void;
+  /** True right after a tour finishes (completed or skipped). Resets on next mount. */
+  tourCompleted: boolean;
 }
 
 export const TourContext = createContext<TourContextValue | null>(null);

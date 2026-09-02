@@ -26,6 +26,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const [prefs, setPrefs] = useState<TourPrefs>(loadTourPrefs);
   const [chooserOpen, setChooserOpen] = useState(false);
   const [active, setActive] = useState<Tour | null>(null);
+  const [tourCompleted, setTourCompleted] = useState(false);
   const autoStartRef = useRef(false);
 
   useEffect(() => {
@@ -63,6 +64,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
       status: finished ? "completed" : "skipped",
       completedAt: finished ? new Date().toISOString() : p.completedAt,
     }));
+    if (finished) setTourCompleted(true);
   }, []);
 
   const openChooser = useCallback(() => {
@@ -73,7 +75,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     setChooserOpen(false);
   }, []);
 
-  const value = useMemo(() => ({ openChooser }), [openChooser]);
+  const value = useMemo(() => ({ openChooser, tourCompleted }), [openChooser, tourCompleted]);
 
   // The chooser only shows when manually opened from Settings.
   // New users get the tour auto-started instead.

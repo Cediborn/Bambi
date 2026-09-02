@@ -4,12 +4,15 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { SparkleField } from "@/components/decor/SparkleField";
 import { Toaster } from "@/components/ui/Toasts";
+import { DarkModeHint } from "@/features/tour/DarkModeHint";
+import { useTour } from "@/features/tour/TourContext";
 import { MobileNav } from "./MobileNav";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { tourCompleted } = useTour();
 
   return (
     <div className="min-h-screen bg-bg text-ink">
@@ -27,6 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <MobileNav />
       <Toaster />
+      <DarkModeHint show={tourCompleted} />
     </div>
   );
 }
