@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useApp } from "@/hooks/useApp";
-import { ArrowRightIcon, BambiLogo, CheckIcon, XIcon } from "@/components/icons";
+import { ArrowRightIcon, CheckIcon, XIcon } from "@/components/icons";
+import { TourGuide } from "./TourGuide";
 import type { Tour, TourStep } from "./tourTypes";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -17,7 +18,7 @@ const FALLBACK = "h1";
 /** How long to keep polling for a target before skipping the step gracefully. */
 const MAX_ATTEMPTS = 30;
 /** Conservative card height used for placement (content rarely exceeds it). */
-const CARD_H = 250;
+const CARD_H = 320;
 
 interface Rect {
   x: number;
@@ -41,11 +42,10 @@ interface GuidedTourProps {
  * GuidedTour — the spotlight engine behind BAMBI's tours.
  *
  * The overlay dims the interface with a warm scrim, cuts a softly glowing
- * hole around the current element, and shows an explanation card that
- * positions itself beside the hole (bottom-docked on small screens).
- * Steps can live on other routes: the tour navigates there and polls for
- * the target to appear before spotlighting it. If a target never shows up,
- * the step is skipped gracefully.
+ * hole around the current element, and shows an explanation card with the
+ * user's avatar as a living tour guide. The avatar appears in a speech
+ * bubble beside the spotlighted feature, adapting its position based on
+ * where the element is on screen.
  *
  * Keyboard: Esc = skip · → = next · ← = back.
  */
@@ -55,11 +55,13 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
   const reduce = useReducedMotion();
   const router = useRouter();
   const pathname = usePathname();
+  const avatar = state.profile?.avatar ?? "fawn";
 
   const [index, setIndex] = useState(0);
   const step = tour.steps[index];
   const regular = step.kind !== "welcome" && step.kind !== "complete";
   const isLast = index === tour.steps.length - 1;
+  const isFirst = index === 0;
 
   const [rect, setRect] = useState<Rect | null>(null);
 
@@ -115,8 +117,6 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
         el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
       }
       measure(el);
-      // Smooth scrolls fire scroll events continuously, so the scroll
-      // listener below keeps the spotlight glued while the page settles.
       return true;
     },
     [reduce, measure]
@@ -184,9 +184,7 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onSkip, goNext, goBack]);
 
-  /* Focus the active card so keyboard users land inside the dialog.
-     `positioned` makes this re-run once a spotlight arrives (steps that
-     navigate mount their card later than the step change). */
+  /* Focus the active card so keyboard users land inside the dialog. */
   const positioned = Boolean(rect && regular);
   useEffect(() => {
     const t = window.setTimeout(() => {
@@ -195,15 +193,18 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
     return () => window.clearTimeout(t);
   }, [index, reduce, positioned]);
 
-  /* Card placement — computed during render (the overlay only renders after
-     hydration, so `window` is safe). The width matches the card's own
-     `min(92vw, 26rem)` so the estimate is exact; height is conservative. */
+  /**
+   * Card placement — positioned beside the spotlighted element.
+   * The card is taller now (avatar + speech bubble), so we account for that.
+   * On mobile, the card docks at the bottom. On desktop, it positions itself
+   * to the right of the target, or to the left if there's no room.
+   */
   let placed: CardPos | null = null;
   if (rect && regular) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const w = Math.min(vw * 0.92, 416);
-    const gap = 16;
+    const w = Math.min(vw * 0.92, 380);
+    const gap = 20;
     let x: number;
     let y: number;
     if (vw < 640) {
@@ -211,17 +212,38 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
       x = Math.max(12, (vw - w) / 2);
       y = Math.max(12, Math.min(vh - CARD_H - 12, rect.y + rect.height + gap));
     } else {
-      // Desktop: below the target, flipped above when there's no room.
-      let py = rect.y + rect.height + gap;
-      if (py + CARD_H > vh - 20 && rect.y - gap - CARD_H >= 20) py = rect.y - gap - CARD_H;
-      else if (py + CARD_H > vh - 20) py = vh - CARD_H - 20;
-      x = Math.max(12, Math.min(rect.x + rect.width / 2 - w / 2, vw - w - 12));
-      y = Math.max(12, py);
+      // Desktop: try right side, then left, then below, then above.
+      const rightX = rect.x + rect.width + gap;
+      const leftX = rect.x - gap - w;
+      
+      if (rightX + w <= vw - 20) {
+        // Right side has room
+        x = rightX;
+        y = Math.max(20, Math.min(vh - CARD_H - 20, rect.y + rect.height / 2 - CARD_H / 2));
+      } else if (leftX >= 20) {
+        // Left side has room
+        x = leftX;
+        y = Math.max(20, Math.min(vh - CARD_H - 20, rect.y + rect.height / 2 - CARD_H / 2));
+      } else {
+        // Fall back to below/above
+        let py = rect.y + rect.height + gap;
+        if (py + CARD_H > vh - 20 && rect.y - gap - CARD_H >= 20) py = rect.y - gap - CARD_H;
+        else if (py + CARD_H > vh - 20) py = vh - CARD_H - 20;
+        x = Math.max(12, Math.min(rect.x + rect.width / 2 - w / 2, vw - w - 12));
+        y = Math.max(12, py);
+      }
     }
     placed = { x, y };
   }
 
   const total = tour.steps.length;
+
+  // Determine the guide's mood based on the step
+  const guideMood = useMemo(() => {
+    if (isFirst) return "wave" as const;
+    if (isLast) return "celebrate" as const;
+    return "idle" as const;
+  }, [isFirst, isLast]);
 
   return (
     <motion.div
@@ -237,8 +259,7 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
     >
       {/* Spotlight — a full-screen SVG scrim that dims everything except the
           target, draws the soft ring, and blocks interaction with the page
-          behind the tour (the mask is visual only, so the whole SVG still
-          swallows clicks). Geometry attributes glide via CSS transitions. */}
+          behind the tour. */}
       {regular ? (
         <svg
           aria-hidden="true"
@@ -267,7 +288,7 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
           <rect width="100%" height="100%" fill={dim} mask="url(#bambi-tour-mask)" />
           {rect ? (
             <>
-              {/* Soft halo — a wide, dim stroke that reads as gentle glow. */}
+              {/* Soft halo */}
               <rect
                 x={rect.x - 8}
                 y={rect.y - 8}
@@ -279,7 +300,7 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
                 strokeWidth={10}
                 opacity={0.55}
               />
-              {/* Fine ring around the spotlighted element. */}
+              {/* Fine ring */}
               <rect
                 x={rect.x}
                 y={rect.y}
@@ -297,118 +318,146 @@ export function GuidedTour({ tour, onFinish, onSkip }: GuidedTourProps) {
         <div className="absolute inset-0 bg-ink/40 backdrop-blur-[2px] dark:bg-[#020617]/55" />
       )}
 
-      {/* Explanation card (regular steps). */}
+      {/* Explanation card with avatar guide (regular steps). */}
       {regular && placed ? (
         <motion.div
           ref={cardRef}
           tabIndex={-1}
-          className="fixed max-h-[calc(100vh-24px)] w-[min(92vw,26rem)] overflow-y-auto rounded-2xl border border-line bg-card p-5 shadow-lift outline-none dark:border-white/[0.1]"
+          className="fixed max-h-[calc(100vh-24px)] w-[min(92vw,24rem)] overflow-y-auto rounded-2xl border border-line bg-white p-0 shadow-lift outline-none dark:border-white/[0.1] dark:bg-card"
           style={{ left: placed.x, top: placed.y }}
           initial={reduce ? false : { opacity: 0, y: 10, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.28, ease: EASE }}
         >
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
-              BAMBI tour · {index + 1}/{total}
-            </p>
-            <button
-              type="button"
-              onClick={onSkip}
-              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-ink-soft transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-            >
-              <XIcon size={13} />
-              Skip
-            </button>
+          {/* Avatar guide header */}
+          <div className="flex items-start gap-3 border-b border-line/60 p-4 pb-3 dark:border-white/[0.06]">
+            <TourGuide avatar={avatar} mood={guideMood} size={48} />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
+                  BAMBI tour · {index + 1}/{total}
+                </p>
+                <button
+                  type="button"
+                  onClick={onSkip}
+                  className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-ink-soft transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  <XIcon size={13} />
+                  Skip
+                </button>
+              </div>
+              {/* Progress dots */}
+              <div className="mt-2 flex items-center gap-1" aria-hidden="true">
+                {tour.steps.map((s, i) => (
+                  <span
+                    key={s.id}
+                    className={`h-1 rounded-full transition-all duration-300 ${
+                      i === index ? "w-4 bg-brand" : i < index ? "w-1 bg-brand/40" : "w-1 bg-line"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Progress dots. */}
-          <div className="mt-3 flex items-center gap-1.5" aria-hidden="true">
-            {tour.steps.map((s, i) => (
-              <span
-                key={s.id}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === index ? "w-5 bg-brand" : i < index ? "w-1.5 bg-brand/40" : "w-1.5 bg-line"
-                }`}
+          {/* Speech bubble content */}
+          <div className="p-4">
+            {/* Speech bubble tail pointing up toward the avatar */}
+            <div className="relative ml-6 mb-3">
+              <div
+                aria-hidden="true"
+                className="absolute -top-2 left-4"
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeft: "6px solid transparent",
+                  borderRight: "6px solid transparent",
+                  borderBottom: "6px solid white",
+                  filter: "drop-shadow(0 -1px 1px rgba(0,0,0,0.05))",
+                }}
               />
-            ))}
-          </div>
+              <div className="rounded-xl bg-surface/60 px-4 py-3 dark:bg-white/[0.04]">
+                <h2 id="tour-title" className="font-display text-base font-bold tracking-tight text-ink">
+                  {step.title}
+                </h2>
+                <p id="tour-desc" className="mt-1 text-sm leading-relaxed text-ink-soft">
+                  {step.description}
+                </p>
+              </div>
+            </div>
 
-          <h2 id="tour-title" className="font-display mt-4 text-lg font-bold tracking-tight text-ink">
-            {step.title}
-          </h2>
-          <p id="tour-desc" className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-            {step.description}
-          </p>
-
-          <div className="mt-5 flex items-center gap-2.5">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={goBack}
-              disabled={index === 0}
-              aria-label="Previous step"
-            >
-              Back
-            </Button>
-            <div className="flex-1" />
-            <Button size="sm" onClick={goNext}>
-              {isLast ? "Start exploring" : "Next"}
-              <ArrowRightIcon size={15} />
-            </Button>
+            {/* Navigation */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goBack}
+                disabled={index === 0}
+                aria-label="Previous step"
+              >
+                Back
+              </Button>
+              <div className="flex-1" />
+              <Button size="sm" onClick={goNext}>
+                {isLast ? "Start exploring" : "Next"}
+                <ArrowRightIcon size={15} />
+              </Button>
+            </div>
           </div>
         </motion.div>
       ) : null}
 
-      {/* Welcome / completion moments — a centered card instead of a spotlight. */}
+      {/* Welcome / completion moments — centered card with avatar. */}
       {!regular ? (
         <div className="absolute inset-0 flex items-center justify-center p-4">
           <motion.div
             ref={centerRef}
             tabIndex={-1}
-            className="relative w-full max-w-md rounded-3xl border border-line bg-card p-6 text-center shadow-lift outline-none dark:border-white/[0.1] sm:p-8"
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-line bg-white text-center shadow-lift outline-none dark:border-white/[0.1] dark:bg-card sm:p-8"
             initial={reduce ? false : { opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3, ease: EASE }}
           >
             {step.kind === "welcome" ? (
-              <div className="flex justify-center">
-                <BambiLogo size={56} />
+              <div className="flex flex-col items-center p-6 pb-0 sm:p-8">
+                <TourGuide avatar={avatar} mood="wave" size={80} />
               </div>
             ) : (
-              <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-mint/10 text-good">
-                <CheckIcon size={26} />
-              </span>
+              <div className="flex flex-col items-center p-6 pb-0 sm:p-8">
+                <TourGuide avatar={avatar} mood="celebrate" size={80} />
+              </div>
             )}
 
-            <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
-              {step.kind === "welcome" ? "Learn BAMBI" : "BAMBI tour · complete"}
-            </p>
-            <h2 id="tour-title" className="font-display mt-2 text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
-              {step.title}
-            </h2>
-            <p id="tour-desc" className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
-              {step.description}
-            </p>
+            <div className="p-6 pt-4 sm:p-8 sm:pt-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
+                {step.kind === "welcome" ? "Learn BAMBI" : "BAMBI tour · complete"}
+              </p>
+              <h2 id="tour-title" className="font-display mt-2 text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
+                {step.title}
+              </h2>
+              <p id="tour-desc" className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
+                {step.description}
+              </p>
 
-            <div className="mt-7">
-              <Button size="lg" fullWidth onClick={goNext}>
-                {step.kind === "welcome" ? "Start the tour" : "Start exploring"}
-                <ArrowRightIcon size={16} />
-              </Button>
-              {step.kind === "complete" ? (
-                <Button variant="ghost" fullWidth className="mt-2.5" onClick={() => setIndex(0)}>
-                  Replay tour
+              <div className="mt-7">
+                <Button size="lg" fullWidth onClick={goNext}>
+                  {step.kind === "welcome" ? "Start the tour" : "Start exploring"}
+                  <ArrowRightIcon size={16} />
                 </Button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onSkip}
-                  className="mt-3 w-full text-sm font-semibold text-ink-soft transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-                >
-                  Maybe later
-                </button>
-              )}
+                {step.kind === "complete" ? (
+                  <Button variant="ghost" fullWidth className="mt-2.5" onClick={() => setIndex(0)}>
+                    Replay tour
+                  </Button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onSkip}
+                    className="mt-3 w-full text-sm font-semibold text-ink-soft transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  >
+                    Maybe later
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         </div>

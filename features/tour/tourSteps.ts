@@ -3,9 +3,10 @@ import type { Tour, TourStep } from "./tourTypes";
 /**
  * The two built-in tours.
  *
- * Steps map 1:1 to BAMBI's real modules. Most module steps rely on the
- * page-title fallback (every page has an h1); the Today steps target the
- * data-tour markers added in app/(app)/today/page.tsx.
+ * Steps map 1:1 to BAMBI's real modules. The descriptions are written
+ * in the voice of the user's selected avatar — friendly, warm, and personal.
+ * Most module steps rely on the page-title fallback (every page has an h1);
+ * the Today steps target the data-tour markers added in app/(app)/today/page.tsx.
  */
 
 const WELCOME: TourStep = {
@@ -13,59 +14,59 @@ const WELCOME: TourStep = {
   kind: "welcome",
   title: "Welcome to BAMBI",
   description:
-    "BAMBI is your personal space for planning, learning, building better habits and keeping track of the things that matter to you.",
+    "Hey there! I'm your buddy, and I'm here to show you around. BAMBI is your personal space for building habits, tracking your mood, and growing a little every day. Ready?",
 };
 
 const TODAY: TourStep = {
   id: "today",
   route: "/today",
   target: "[data-tour=\"today-hero\"]",
-  title: "Your day, at a glance",
+  title: "Your Dashboard",
   description:
-    "This is home. One glance tells you how today looks — your level, your streak and the one thing that matters right now.",
+    "This is home — your daily overview. At a glance you can see your streak, your level, and what matters right now. Think of it as your morning check-in.",
 };
 
 const QUEST: TourStep = {
   id: "quest",
   route: "/today",
   target: "[data-tour=\"today-quest\"]",
-  title: "Your daily quest",
+  title: "Your Daily Quest",
   description:
-    "Each morning BAMBI picks one small, meaningful action. Finish it and the XP is yours — a tiny story for the day.",
+    "Each morning I pick one small, meaningful action for you. Complete it and earn XP — it's a tiny story for the day, and it adds up.",
 };
 
 const TREE: TourStep = {
   id: "tree",
   route: "/today",
   target: "[data-tour=\"today-tree\"]",
-  title: "Your growing tree",
+  title: "Your Growing Tree",
   description:
-    "This is your garden, growing with you. Water it by tending to your day — small, consistent steps are what make it grow.",
+    "This is your garden, growing with you. Water it by tending to your day — every small, consistent step helps it grow a little taller.",
 };
 
 const FOCUS_LIST: TourStep = {
   id: "focus-list",
   route: "/today",
   target: "[data-tour=\"today-focus\"]",
-  title: "Today's focus",
+  title: "Today's Focus",
   description:
-    "The day's habits, gathered in one list. Tick off the small ones as you go — BAMBI celebrates the streak, not the size.",
+    "Your habits for today, gathered in one list. Tick them off as you go — I celebrate the streak, not the size of each step.",
 };
 
 const XP: TourStep = {
   id: "xp",
   route: "/today",
   target: "[data-tour=\"today-xp\"]",
-  title: "XP & levels",
+  title: "XP & Levels",
   description:
-    "Every completion earns XP. Watch the bar fill — each level is a small milestone on the way to the next one.",
+    "Every completion earns XP. Watch the bar fill up — each level is a small milestone on your way to the next one.",
 };
 
 const WEEK: TourStep = {
   id: "week",
   route: "/today",
   target: "[data-tour=\"today-week\"]",
-  title: "Your week",
+  title: "Your Week at a Glance",
   description:
     "The last seven days in one strip. Completed days glow softly — consistency is the whole game here.",
 };
@@ -73,7 +74,7 @@ const WEEK: TourStep = {
 const HABITS: TourStep = {
   id: "habits",
   route: "/habits",
-  title: "Build better habits",
+  title: "Build Better Habits",
   description:
     "Use Habits to build routines and stay consistent. Add something you want to practice, choose how often, and check in as you go.",
 };
@@ -81,7 +82,7 @@ const HABITS: TourStep = {
 const FOCUS: TourStep = {
   id: "focus",
   route: "/focus",
-  title: "Own your time",
+  title: "Own Your Time",
   description:
     "Focus is a gentle Pomodoro timer. Plant yourself for a session, and watch your deep-work minutes quietly add up.",
 };
@@ -89,7 +90,7 @@ const FOCUS: TourStep = {
 const GROWTH: TourStep = {
   id: "growth",
   route: "/growth",
-  title: "Watch yourself grow",
+  title: "Watch Yourself Grow",
   description:
     "Growth turns your consistency into charts and XP — visible proof that small things, done daily, add up.",
 };
@@ -97,7 +98,7 @@ const GROWTH: TourStep = {
 const ACHIEVEMENTS: TourStep = {
   id: "achievements",
   route: "/achievements",
-  title: "Little badges, big moments",
+  title: "Little Badges, Big Moments",
   description:
     "Achievements are collected along the way: streaks, milestones, firsts. There's always something small to earn.",
 };
@@ -105,9 +106,9 @@ const ACHIEVEMENTS: TourStep = {
 const JOURNAL: TourStep = {
   id: "journal",
   route: "/journal",
-  title: "A space to reflect",
+  title: "Your Personal Journal",
   description:
-    "Journal is where you untangle your thoughts and log how you're feeling. No one reads it but you.",
+    "Journal is where you untangle your thoughts and log how you're feeling. It's private — no one reads it but you. Over time, it becomes a map of how far you've come.",
 };
 
 const CHALLENGES: TourStep = {
@@ -121,7 +122,7 @@ const CHALLENGES: TourStep = {
 const VISION: TourStep = {
   id: "vision",
   route: "/vision",
-  title: "Your vision board",
+  title: "Your Vision Board",
   description:
     "A board for the big dreams — the reasons behind the daily steps. Pin what you're building toward.",
 };
@@ -129,7 +130,7 @@ const VISION: TourStep = {
 const REFLECTION: TourStep = {
   id: "reflection",
   route: "/reflection",
-  title: "Weekly reflection",
+  title: "Weekly Reflection",
   description:
     "Once a week, look back: what went well, what didn't, and what's next. Growth becomes visible when you name it.",
 };
@@ -145,9 +146,9 @@ const SETTINGS: TourStep = {
 const COMPLETE: TourStep = {
   id: "complete",
   kind: "complete",
-  title: "You're ready.",
+  title: "You're Ready!",
   description:
-    "That's BAMBI — a calm place to grow. Start with one small thing today, and let it add up.",
+    "That's BAMBI — a calm place to grow. Start with one small thing today, and let it add up. I'll be right here.",
 };
 
 /** ~30–45 seconds — the spaces you'll use every day. */

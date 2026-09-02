@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { AnimatePresence } from "framer-motion";
 import { TourContext } from "./TourContext";
 import { TourWelcome } from "./TourWelcome";
 import { GuidedTour } from "./GuidedTour";
 import { loadTourPrefs, saveTourPrefs, type TourPrefs } from "./tourPersistence";
-import { TOURS } from "./tourSteps";
+import { QUICK_TOUR, TOURS } from "./tourSteps";
 import type { Tour } from "./tourTypes";
 
 /**
@@ -15,21 +15,39 @@ import type { Tour } from "./tourTypes";
  *
  * - the user's preference (never / skipped / completed / active), persisted
  *   under its own storage key so garden data and auth never touch it;
- * - the welcome chooser, shown on the first visit (and reusable anytime via
- *   `openChooser` from the TopBar help button or Settings);
+ * - auto-starts the Quick Tour for brand-new users after onboarding;
+ * - the welcome chooser, shown only when manually opened from Settings;
  * - the active GuidedTour overlay.
  *
- * First visits are never forced: "Maybe later" dismisses it for good, and
- * the tour stays one tap away.
+ * New users get the tour automatically. Returning users can restart it
+ * from Settings → Help & Guidance → Take a Tour.
  */
 export function TourProvider({ children }: { children: ReactNode }) {
   const [prefs, setPrefs] = useState<TourPrefs>(loadTourPrefs);
   const [chooserOpen, setChooserOpen] = useState(false);
   const [active, setActive] = useState<Tour | null>(null);
+  const autoStartRef = useRef(false);
 
   useEffect(() => {
     saveTourPrefs(prefs);
   }, [prefs]);
+
+  /**
+   * Auto-start for new users.
+   * When prefs.status is "never" (no tour data in localStorage), the user
+   * has just completed onboarding. After a short delay to let the /today
+   * page render, automatically begin the Quick Tour.
+   */
+  useEffect(() => {
+    if (prefs.status === "never" && !active && !autoStartRef.current) {
+      autoStartRef.current = true;
+      const t = window.setTimeout(() => {
+        setActive(QUICK_TOUR);
+        setPrefs((p) => ({ ...p, status: "active", lastTour: QUICK_TOUR.id }));
+      }, 1800);
+      return () => window.clearTimeout(t);
+    }
+  }, [prefs.status, active]);
 
   const startTour = useCallback((tourId: string) => {
     const tour = TOURS.find((t) => t.id === tourId) ?? TOURS[0];
@@ -53,16 +71,13 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   const dismissWelcome = useCallback(() => {
     setChooserOpen(false);
-    // Only record "skipped" when the user hasn't already gone further.
-    setPrefs((p) => (p.status === "never" ? { ...p, status: "skipped" } : p));
   }, []);
 
   const value = useMemo(() => ({ openChooser }), [openChooser]);
 
-  // Derived, not stored: first visits see the welcome card exactly once;
-  // "skipped"/"completed" persist, so it never nags again.
-  const firstVisit = prefs.status === "never" && !active;
-  const showWelcome = firstVisit || chooserOpen;
+  // The chooser only shows when manually opened from Settings.
+  // New users get the tour auto-started instead.
+  const showWelcome = chooserOpen;
 
   return (
     <TourContext.Provider value={value}>
@@ -83,7 +98,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
         {showWelcome ? (
           <TourWelcome
             key="tour-welcome"
-            mode={firstVisit ? "welcome" : "guide"}
+            mode="guide"
             onStart={startTour}
             onClose={dismissWelcome}
           />

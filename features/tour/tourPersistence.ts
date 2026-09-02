@@ -45,3 +45,13 @@ export function saveTourPrefs(prefs: TourPrefs): void {
     // won't remember preferences for this session.
   }
 }
+
+/** Clear tour preferences — called when the user resets all app data. */
+export function clearTourPrefs(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(KEY);
+  } catch {
+    // Non-fatal.
+  }
+}

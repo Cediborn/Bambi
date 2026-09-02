@@ -27,6 +27,7 @@ import {
 } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { useTour } from "@/features/tour/TourContext";
+import { clearTourPrefs } from "@/features/tour/tourPersistence";
 
 import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
@@ -435,7 +436,10 @@ export default function SettingsPage() {
                     size="sm"
                     onClick={() => {
                       api.reset();
+                      clearTourPrefs();
                       setConfirmReset(false);
+                      // Reload so the TourProvider picks up the cleared state
+                      window.location.reload();
                     }}
                     icon={<RefreshIcon size={15} />}
                   >
