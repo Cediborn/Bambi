@@ -19,7 +19,6 @@ import {
   MusicIcon,
   RefreshIcon,
   SparklesIcon,
-  StarIcon,
   SunIcon,
   UploadIcon,
   UserIcon,
@@ -34,7 +33,6 @@ import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
 import { exportState, importState } from "@/db/persistence";
 import { ACCENTS, ACCENT_KEYS } from "@/utils/theme";
-import type { StarDensity } from "@/types";
 import { todayKey } from "@/utils/dates";
 
 function Row({
@@ -187,33 +185,6 @@ export default function SettingsPage() {
                 onChange={(v) => api.updateSettings({ animatedBackground: v })}
                 label="Animated background"
               />
-            }
-          />
-
-          <Row
-            icon={<StarIcon size={20} />}
-            title="Star density"
-            subtitle="How crowded the sky feels"
-            control={
-              <div role="group" aria-label="Star density" className="flex rounded-full border border-line bg-surface p-1">
-                {(["low", "medium", "high"] as StarDensity[]).map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    aria-pressed={s.starDensity === d}
-                    disabled={!s.animatedBackground}
-                    onClick={() => api.updateSettings({ starDensity: d })}
-                    className={[
-                      "rounded-full px-3.5 py-1.5 text-xs font-bold capitalize transition-all duration-150",
-                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-                      "disabled:opacity-40",
-                      s.starDensity === d ? "bg-brand text-white shadow-card" : "text-ink-soft hover:text-ink",
-                    ].join(" ")}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
             }
           />
 

@@ -37,7 +37,6 @@ export function initialState(): AppState {
       theme: "light",
       accent: "violet",
       animatedBackground: true,
-      starDensity: "medium",
       particles: true,
       reduceMotion: false,
       compactMode: false,

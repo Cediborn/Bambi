@@ -140,7 +140,6 @@ const settingsSchema = z.object({
     .enum(["violet", "emerald", "sky", "tangerine", "gold", "rose"])
     .catch("violet"),
   animatedBackground: z.boolean().catch(true),
-  starDensity: z.enum(["low", "medium", "high"]).catch("medium"),
   particles: z.boolean().catch(true),
   reduceMotion: z.boolean().catch(false),
   compactMode: z.boolean().catch(false),

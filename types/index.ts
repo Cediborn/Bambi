@@ -42,14 +42,11 @@ export type Theme = "light" | "dark";
 /** Accent colors — see utils/theme.ts for the palette. */
 export type AccentKey = "violet" | "emerald" | "sky" | "tangerine" | "gold" | "rose";
 
-export type StarDensity = "low" | "medium" | "high";
-
 export interface Settings {
   theme: Theme;
   accent: AccentKey;
   /** Master switch for the animated night sky. */
   animatedBackground: boolean;
-  starDensity: StarDensity;
   /** Sparkle/star particles (distinct from the aurora + glows). */
   particles: boolean;
   /** Manual "reduce motion" — mirrors the OS-level preference. */

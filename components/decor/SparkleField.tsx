@@ -3,7 +3,6 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import type { CSSProperties } from "react";
 import { useApp } from "@/hooks/useApp";
-import type { StarDensity } from "@/types";
 
 /** Subscription that never fires — used only to detect client hydration. */
 function emptySubscribe() {
@@ -108,8 +107,8 @@ const STARS: StarSpec[] = [
   { left: 98, top: 44, size: 8, dx: -1.8, dy: -9, dur: 19, phase: 0.3, rot: -18, opacity: 0.48, sway: 1, glow: 4, blur: 0, glyph: "star4", color: "var(--color-brand-2)", twinkleCycles: 2, pulseCycles: 0 },
 ];
 
-/** How many stars to render per density setting. */
-const DENSITY_COUNT: Record<StarDensity, number> = { low: 15, medium: 26, high: 40 };
+/** Always render the full star field. */
+const STAR_COUNT = 40;
 
 /** Distance (px) within which stars respond to the cursor. */
 const BRIGHT_RADIUS = 240;
@@ -143,7 +142,7 @@ function wantsMotion(): boolean {
 
 export function SparkleField() {
   const { state } = useApp();
-  const { animatedBackground, particles, starDensity, reduceMotion } = state.settings;
+  const { animatedBackground, particles, reduceMotion } = state.settings;
   const refs = useRef<Array<HTMLSpanElement | null>>([]);
   const brightFrame = useRef<number | null>(null);
   // The star count depends on persisted settings (localStorage), which is
@@ -155,7 +154,7 @@ export function SparkleField() {
   useEffect(() => {
     if (!mounted || !animatedBackground || !particles) return;
     const els = refs.current;
-    const active = STARS.slice(0, DENSITY_COUNT[starDensity]);
+    const active = STARS.slice(0, STAR_COUNT);
 
     // Reduced motion → place the stars once, gently, and stop.
     // `reduceMotion` (the settings toggle) is checked from state rather
@@ -195,7 +194,7 @@ export function SparkleField() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [mounted, animatedBackground, particles, starDensity, reduceMotion]);
+  }, [mounted, animatedBackground, particles, reduceMotion]);
 
   /* Hover brighten — throttled with rAF, writes a CSS variable only. */
   useEffect(() => {
@@ -223,7 +222,7 @@ export function SparkleField() {
 
   if (!mounted || !animatedBackground) return null;
 
-  const stars = particles ? STARS.slice(0, DENSITY_COUNT[starDensity]) : [];
+  const stars = particles ? STARS.slice(0, STAR_COUNT) : [];
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
