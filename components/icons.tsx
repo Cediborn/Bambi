@@ -821,64 +821,57 @@ export function SproutIcon(props: IconProps) {
   );
 }
 
-/** The BAMBI logo: geometric deer head with a green leaf. */
+/** The BAMBI logo: geometric polygonal deer head with a bright green leaf. */
 export function BambiLogo({ size = 36 }: { size?: number }) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 64 64"
+      viewBox="0 0 200 200"
       fill="none"
       aria-label="Bambi logo"
       role="img"
       className="shrink-0"
     >
-      {/* Deer head — geometric line art */}
-      <g stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        {/* Left antler */}
-        <path d="M18 18L12 6" />
-        <path d="M18 18L22 8" />
-        <path d="M15 12L10 10" />
-        {/* Right antler */}
-        <path d="M46 18L52 6" />
-        <path d="M46 18L42 8" />
-        <path d="M49 12L54 10" />
+      {/* Deer head — geometric polygonal line art */}
+      <g stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        {/* Left antler: main branch + fork */}
+        <path d="M72 58L58 18" />
+        <path d="M72 58L82 28" />
+        <path d="M64 38L50 32" />
+        {/* Right antler: main branch + fork */}
+        <path d="M128 58L142 18" />
+        <path d="M128 58L118 28" />
+        <path d="M136 38L150 32" />
+        {/* Left ear: V-shape */}
+        <path d="M72 58L52 68L68 80" />
+        {/* Right ear: V-shape */}
+        <path d="M128 58L148 68L132 80" />
         {/* Head outline */}
-        <path d="M18 18L14 28L20 36L32 42L44 36L50 28L46 18" />
-        {/* Ears */}
-        <path d="M18 18L10 22L14 28" />
-        <path d="M46 18L54 22L50 28" />
+        <path d="M72 58L68 80L78 100L100 112L122 100L132 80L128 58" />
+        {/* Internal face facets */}
+        <path d="M68 80L100 90L132 80" />
+        <path d="M78 100L100 90L122 100" />
+        <path d="M100 90L100 112" />
         {/* Eyes */}
-        <circle cx="24" cy="26" r="1.5" fill="currentColor" stroke="none" />
-        <circle cx="40" cy="26" r="1.5" fill="currentColor" stroke="none" />
-        {/* Nose */}
-        <path d="M29 34L32 37L35 34" />
+        <circle cx="84" cy="78" r="2.5" fill="currentColor" stroke="none" />
+        <circle cx="116" cy="78" r="2.5" fill="currentColor" stroke="none" />
+        {/* Nose — downward chevron */}
+        <path d="M95 98L100 104L105 98" />
       </g>
-      {/* Leaf — bright green, growing from the center */}
+      {/* Leaf — bright neon green */}
       <path
-        d="M32 14C28 8 22 6 22 6C22 6 24 14 32 18C40 14 42 6 42 6C42 6 36 8 32 14Z"
+        d="M100 20C92 10 82 6 82 6C82 6 86 18 100 26C114 18 118 6 118 6C118 6 108 10 100 20Z"
         fill="#39FF14"
-        stroke="#39FF14"
+        stroke="#2bcc0f"
         strokeWidth="0.5"
       />
-      <path
-        d="M32 8L32 17"
-        stroke="#0a4a0a"
-        strokeWidth="1"
-        strokeLinecap="round"
-      />
-      <path
-        d="M32 11L28 9"
-        stroke="#0a4a0a"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M32 13L36 11"
-        stroke="#0a4a0a"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-      />
+      {/* Leaf veins */}
+      <path d="M100 8L100 24" stroke="#1a8a0a" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M100 13L92 9" stroke="#1a8a0a" strokeWidth="0.9" strokeLinecap="round" />
+      <path d="M100 17L108 13" stroke="#1a8a0a" strokeWidth="0.9" strokeLinecap="round" />
+      <path d="M100 20L94 17" stroke="#1a8a0a" strokeWidth="0.7" strokeLinecap="round" />
+      <path d="M100 20L106 17" stroke="#1a8a0a" strokeWidth="0.7" strokeLinecap="round" />
     </svg>
   );
 }
