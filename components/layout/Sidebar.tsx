@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Avatar, DEFAULT_AVATAR } from "@/components/ui/Avatar";
-import { BambiLogo, SlidersIcon } from "@/components/icons";
+import { SlidersIcon } from "@/components/icons";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useApp } from "@/hooks/useApp";
 import { NAV_ITEMS } from "./nav";
 
@@ -22,7 +23,7 @@ export function Sidebar() {
         href="/today"
         className="flex items-center gap-3 px-6 pb-6 pt-7 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
       >
-        <BambiLogo />
+        <BrandLogo size={36} />
         <span className="font-display text-xl font-extrabold tracking-tight text-ink">
           BAMBI
         </span>

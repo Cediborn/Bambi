@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRightIcon, BambiLogo, BoltIcon, CompassIcon, XIcon } from "@/components/icons";
+import { ArrowRightIcon, BoltIcon, CompassIcon, XIcon } from "@/components/icons";
+import { BrandLogo } from "@/components/BrandLogo";
 import { TOURS } from "./tourSteps";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -64,7 +65,7 @@ export function TourWelcome({ mode, onStart, onClose }: TourWelcomeProps) {
         </button>
 
         <div className="flex items-center gap-3">
-          <BambiLogo size={40} />
+          <BrandLogo size={40} />
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">Learn BAMBI</p>
             <p className="font-display text-lg font-extrabold tracking-tight text-ink">BAMBI</p>

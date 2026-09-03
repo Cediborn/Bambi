@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { BambiLogo } from "@/components/icons";
+import { BrandLogo } from "@/components/BrandLogo";
 import { SparkleField } from "@/components/decor/SparkleField";
 import { AuthPanel } from "@/features/auth/AuthPanel";
 import { useApp } from "@/hooks/useApp";
@@ -21,8 +21,8 @@ export default function AuthPage() {
       <SparkleField />
       <div className="relative w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
-          <BambiLogo size={56} />
-          <h1 className="font-display mt-4 text-3xl font-extrabold tracking-tight">
+          <BrandLogo size={64} className="ring-2 ring-white/10" />
+          <h1 className="font-display mt-5 text-3xl font-extrabold tracking-tight">
             Your garden, anywhere.
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">

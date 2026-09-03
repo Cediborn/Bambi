@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Avatar, DEFAULT_AVATAR } from "@/components/ui/Avatar";
 import { BoltIcon, CompassIcon, MoonIcon, SlidersIcon, SunIcon } from "@/components/icons";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useApp } from "@/hooks/useApp";
 import { useTour } from "@/features/tour/TourContext";
 import { computeXp, levelForXp, levelProgress } from "@/utils/xp";
@@ -22,10 +23,7 @@ export function TopBar() {
           href="/today"
           className="flex items-center gap-2.5 lg:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
-          <span
-            aria-hidden="true"
-            className="size-8 rounded-lg bg-gradient-to-br from-brand to-brand-2"
-          />
+          <BrandLogo size={32} className="rounded-lg" />
           <span className="font-display text-base font-extrabold tracking-tight text-ink">BAMBI</span>
         </Link>
 

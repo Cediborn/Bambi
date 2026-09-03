@@ -15,16 +15,17 @@
  * chunks. Visit once, and it works offline from then on.
  */
 
-const CACHE = "bambi-v1";
+const CACHE = "bambi-v2";
 
 const APP_SHELL = [
   "/",
   "/today",
   "/manifest.webmanifest",
+  "/bambi-logo.png",
+  "/favicon-32.png",
   "/icon-192.png",
   "/icon-512.png",
   "/apple-touch-icon.png",
-  "/icon.svg",
 ];
 
 self.addEventListener("install", (event) => {

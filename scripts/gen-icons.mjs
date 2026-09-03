@@ -1,137 +1,69 @@
 /**
- * Generates the BAMBI app icons (PNG) with zero dependencies.
+ * Generates the BAMBI app icons (PNG) from the official uploaded logo.
  *
- * Renders the same night-sky mark as app/icon.svg — deep indigo gradient,
- * a violet glow, a seed moon, a four-point sparkle and faint stars — at
- * 512 (manifest), 192 (manifest) and 180 (apple-touch-icon) pixels.
+ * Source asset: BAMBILOGO.jpg at the repo root. The deer + green leaf mark
+ * is cropped out, the dark navy background is keyed to transparency, and the
+ * transparent mark is centred on a solid dark-navy square to produce
+ *   - public/icon-512.png (manifest)
+ *   - public/icon-192.png (manifest)
+ *   - public/apple-touch-icon.png (180)
+ *
+ * Requires Python 3 with Pillow (`pip install Pillow`).
  *
  * Run: node scripts/gen-icons.mjs
  */
-import { deflateSync } from "node:zlib";
-import { writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdirSync } from "node:fs";
 
-/* --- minimal PNG encoder --- */
+const SOURCE = "BAMBILOGO.jpg";
+const NAVY = [10, 15, 51, 255];
 
-function crc32(buf) {
-  let table = crc32.table;
-  if (!table) {
-    table = crc32.table = new Int32Array(256);
-    for (let n = 0; n < 256; n++) {
-      let c = n;
-      for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-      table[n] = c;
-    }
-  }
-  let crc = -1;
-  for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ table[(crc ^ buf[i]) & 0xff];
-  return (crc ^ -1) >>> 0;
+/**
+ * Renders a navy square of `size` with the cropped, background-keyed logo
+ * centred and fitted inside, then writes it to `out`.
+ */
+function writeIcon(size, padFrac, out) {
+  const py = `
+from PIL import Image, ImageChops
+import sys
+
+img = Image.open(${JSON.stringify(SOURCE)}).convert("RGB")
+px = img.load()
+
+# content bounds of the deer + leaf emblem
+x0, x1 = 253, 771
+y0, y1 = 178, 852
+padx, pady = 34, 34
+left = max(0, x0 - padx); right = min(img.width, x1 + padx)
+top = max(0, y0 - pady); bottom = min(img.height, y1 + pady)
+crop = img.crop((left, top, right, bottom))
+cw, ch = crop.size
+emblem = Image.new("RGBA", (cw, ch), (0,0,0,0))
+ec = emblem.load(); cp = crop.load()
+lo, hi = 60, 120
+for y in range(ch):
+    for x in range(cw):
+        r, g, b = cp[x, y]
+        L = max(r, g, b)
+        a = 0 if L <= lo else (255 if L >= hi else int((L-lo)/(hi-lo)*255))
+        ec[x, y] = (r, g, b, a)
+
+size = ${size}
+pad = int(size * ${padFrac})
+avail = size - 2*pad
+scale = min(avail/cw, avail/ch)
+nw, nh = int(cw*scale), int(ch*scale)
+mark = emblem.resize((nw, nh), Image.LANCZOS)
+canvas = Image.new("RGBA", (size, size), ${JSON.stringify(NAVY)})
+canvas.paste(mark, ((size-nw)//2, (size-nh)//2), mark)
+canvas.convert("RGB").save(${JSON.stringify(out)})
+print("wrote", ${JSON.stringify(out)})
+`;
+  const res = execFileSync("python", ["-c", py], { encoding: "utf8" });
+  process.stdout.write(res);
 }
 
-function chunk(type, data) {
-  const body = Buffer.concat([Buffer.from(type, "ascii"), data]);
-  const out = Buffer.alloc(8 + data.length + 4);
-  out.writeUInt32BE(data.length, 0);
-  body.copy(out, 4);
-  out.writeUInt32BE(crc32(body), 4 + body.length);
-  return out;
-}
-
-function encodePNG(size, pixel) {
-  const stride = size * 4 + 1;
-  const raw = Buffer.alloc(size * stride);
-  for (let y = 0; y < size; y++) {
-    raw[y * stride] = 0; // filter: none
-    for (let x = 0; x < size; x++) {
-      const [r, g, b] = pixel(x, y, size);
-      const o = y * stride + 1 + x * 4;
-      raw[o] = r;
-      raw[o + 1] = g;
-      raw[o + 2] = b;
-      raw[o + 3] = 255;
-    }
-  }
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(size, 0);
-  ihdr.writeUInt32BE(size, 4);
-  ihdr[8] = 8; // bit depth
-  ihdr[9] = 6; // RGBA
-  return Buffer.concat([
-    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    chunk("IHDR", ihdr),
-    chunk("IDAT", deflateSync(raw, { level: 9 })),
-    chunk("IEND", Buffer.alloc(0)),
-  ]);
-}
-
-/* --- pixel art --- */
-
-const hex = (h) => [
-  parseInt(h.slice(1, 3), 16),
-  parseInt(h.slice(3, 5), 16),
-  parseInt(h.slice(5, 7), 16),
-];
-const lerp = (a, b, t) => a + (b - a) * t;
-const mix = (c1, c2, t) => [
-  lerp(c1[0], c2[0], t),
-  lerp(c1[1], c2[1], t),
-  lerp(c1[2], c2[2], t),
-];
-const clamp01 = (v) => Math.max(0, Math.min(1, v));
-const dist = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
-
-const BG_TOP = hex("#0F172A");
-const BG_BOTTOM = hex("#312E81");
-const GLOW = hex("#8B5CF6");
-const MOON = hex("#F8FAFC");
-const SHADE = hex("#1E1B4B");
-
-const DOTS = [
-  [0.16, 0.24, 0.011, 0.55],
-  [0.82, 0.6, 0.009, 0.5],
-  [0.76, 0.84, 0.013, 0.6],
-  [0.27, 0.46, 0.007, 0.45],
-  [0.56, 0.13, 0.008, 0.5],
-  [0.44, 0.78, 0.01, 0.5],
-];
-
-function draw(size, x, y) {
-  const u = x / size;
-  const v = y / size;
-
-  // deep indigo diagonal gradient
-  let c = mix(BG_TOP, BG_BOTTOM, (u + v) / 2);
-
-  // violet bloom in the lower-left corner
-  const glow = clamp01(1 - dist((u - 0.3) / 0.75, (v - 0.78) / 0.75)) ** 2 * 0.9;
-  c = mix(c, GLOW, glow);
-
-  // the seed moon, soft-edged
-  const moon = clamp01(1 - dist((u - 0.5) / 0.21, (v - 0.56) / 0.21));
-  c = mix(c, MOON, moon ** 1.5);
-
-  // crescent shading so the moon isn't a flat disc
-  const shade = clamp01(1 - dist((u - 0.545) / 0.21, (v - 0.485) / 0.21));
-  c = mix(c, SHADE, shade ** 2 * 0.22);
-
-  // four-point sparkle (concave diamond)
-  const star = clamp01(1 - (Math.abs((u - 0.72) / 0.135) ** 0.45 + Math.abs((v - 0.27) / 0.135) ** 0.45));
-  c = mix(c, MOON, star ** 1.2 * 0.95);
-
-  // faint companion stars
-  for (const [du, dv, dr, da] of DOTS) {
-    const dot = clamp01(1 - dist((u - du) / dr, (v - dv) / dr));
-    c = mix(c, MOON, dot * da);
-  }
-
-  return [Math.round(c[0]), Math.round(c[1]), Math.round(c[2])];
-}
-
-/* --- output --- */
-
-for (const size of [512, 192, 180]) {
-  const png = encodePNG(size, (x, y) => draw(size, x + 0.5, y + 0.5));
-  const name =
-    size === 180 ? "public/apple-touch-icon.png" : `public/icon-${size}.png`;
-  writeFileSync(name, png);
-  console.log(`wrote ${name} (${png.length} bytes)`);
-}
+mkdirSync("public", { recursive: true });
+writeIcon(512, 0.12, "public/icon-512.png");
+writeIcon(192, 0.10, "public/icon-192.png");
+writeIcon(180, 0.12, "public/apple-touch-icon.png");

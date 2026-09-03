@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Input, FieldError } from "@/components/ui/Input";
 import { Avatar, AvatarPicker, DEFAULT_AVATAR } from "@/components/ui/Avatar";
 import { SparkleField } from "@/components/decor/SparkleField";
-import { ArrowRightIcon, BambiLogo, CheckIcon, HabitGlyph } from "@/components/icons";
+import { ArrowRightIcon, CheckIcon, HabitGlyph } from "@/components/icons";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useApp } from "@/hooks/useApp";
 import { INTERESTS, suggestionsFor } from "@/features/onboarding/starterHabits";
 
@@ -77,8 +78,8 @@ export default function OnboardingPage() {
         <div key={step} className="animate-fade-up">
           {step === 0 && (
             <div className="flex flex-col items-center text-center">
-              <BambiLogo size={72} />
-              <h1 className="font-display mt-6 text-4xl font-extrabold tracking-tight">
+              <BrandLogo size={88} className="ring-2 ring-white/10" />
+              <h1 className="font-display mt-7 text-4xl font-extrabold tracking-tight">
                 Grow a little, every day.
               </h1>
               <p className="mt-4 max-w-sm text-base leading-relaxed text-ink-soft">

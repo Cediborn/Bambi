@@ -1,6 +1,6 @@
 "use client";
 
-import { BambiLogo } from "@/components/icons";
+import { BrandLogo } from "@/components/BrandLogo";
 import { AirplaneLoader } from "./AirplaneLoader";
 import { DynamicLoadingMessage } from "./DynamicLoadingMessage";
 
@@ -17,7 +17,7 @@ export function GlobalLoader() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center">
-        <BambiLogo size={54} />
+        <BrandLogo size={72} />
         <h1 className="font-display mt-4 text-2xl font-extrabold tracking-[0.28em] text-ink">
           BAMBI
         </h1>
