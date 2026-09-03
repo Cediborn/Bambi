@@ -104,6 +104,9 @@ export function reducer(state: AppState, action: AppAction): AppState {
     }
 
     case "completion/toggle": {
+      // Guard against orphaned records: never record completions for a
+      // habit that doesn't exist (data integrity at the write boundary).
+      if (!state.habits.some((h) => h.id === action.habitId)) return state;
       const dates = state.completions[action.habitId] ?? [];
       const done = dates.includes(action.date);
       const next = done ? dates.filter((d) => d !== action.date) : [...dates, action.date].sort();
@@ -142,6 +145,8 @@ export function reducer(state: AppState, action: AppAction): AppState {
     }
 
     case "freeze/use": {
+      // Only spend a freeze on a habit that exists.
+      if (!state.habits.some((h) => h.id === action.habitId)) return state;
       const dates = state.freezeUsed[action.habitId] ?? [];
       if (dates.includes(action.date)) return state;
       return {

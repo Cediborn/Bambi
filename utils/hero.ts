@@ -27,12 +27,32 @@ export type HeroMood =
   | "afternoon"
   | "evening";
 
+/**
+ * Icon keys rendered by `MoodGlyph` (components/icons.tsx). Defined here so
+ * the pure logic modules never import React — a typo fails at compile time
+ * instead of silently rendering the fallback leaf.
+ */
+export type MoodGlyphName =
+  | "sprout"
+  | "leaf"
+  | "target"
+  | "star"
+  | "flame"
+  | "bolt"
+  | "check"
+  | "brain"
+  | "pen"
+  | "droplet"
+  | "sun"
+  | "moon"
+  | "sparkles";
+
 export interface HeroContext {
   mood: HeroMood;
   /** Companion line under the greeting. */
   line: string;
-  /** Small glyph that personalizes the greeting. */
-  glyph: string;
+  /** MoodGlyph icon key (see components/icons.tsx) — never an emoji. */
+  glyph: MoodGlyphName;
   /** Short chip label, e.g. "3-day streak". */
   chip: string;
 }
@@ -74,7 +94,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "first",
       line: "Your garden begins today. One seed, one step.",
-      glyph: "🌱",
+      glyph: "sprout",
       chip: "Day one",
     };
   }
@@ -95,7 +115,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
       return {
         mood: "anniversary",
         line: `Happy BAMBI-versary — ${daysSince} days of showing up.`,
-        glyph: "🎉",
+        glyph: "sparkles",
         chip: "Celebrating you",
       };
     }
@@ -106,7 +126,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "all-done",
       line: pick(ALL_DONE_LINES, dateKey),
-      glyph: "⭐",
+      glyph: "star",
       chip: "All caught up",
     };
   }
@@ -116,7 +136,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "streak",
       line: STREAK_LINES[pickIdx](streak),
-      glyph: "🔥",
+      glyph: "flame",
       chip: `${streak}-day streak`,
     };
   }
@@ -126,7 +146,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "streak-line",
       line: "One more today keeps the streak alive.",
-      glyph: "🔥",
+      glyph: "flame",
       chip: "Streak on the line",
     };
   }
@@ -137,7 +157,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "almost-level",
       line: `${toNext} XP from Level ${level + 1}. So close.`,
-      glyph: "⚡",
+      glyph: "bolt",
       chip: `${toNext} XP to go`,
     };
   }
@@ -147,7 +167,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "returning",
       line: "Welcome back. The garden missed you.",
-      glyph: "🌿",
+      glyph: "leaf",
       chip: "Welcome back",
     };
   }
@@ -157,7 +177,7 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
     return {
       mood: "rest",
       line: pick(REST_LINES, dateKey),
-      glyph: "🍃",
+      glyph: "moon",
       chip: "Rest day",
     };
   }
@@ -165,19 +185,19 @@ export function heroContext(state: AppState, dateKey: string): HeroContext {
   // Day-of-week flavor.
   const weekday = new Date(dateKey + "T00:00:00").getDay();
   if (weekday === 1) {
-    return { mood: "monday", line: "Fresh week. Fresh start.", glyph: "✨", chip: "New week" };
+    return { mood: "monday", line: "Fresh week. Fresh start.",      glyph: "sparkles", chip: "New week" };
   }
   if (weekday === 0 || weekday === 6) {
-    return { mood: "weekend", line: "Slow mornings count too.", glyph: "🌤", chip: "Weekend pace" };
+    return { mood: "weekend", line: "Slow mornings count too.",      glyph: "sun", chip: "Weekend pace" };
   }
 
   // Time-of-day fallback.
   const h = new Date().getHours();
   if (h < 12) {
-    return { mood: "morning", line: "A fresh page. Start with one small thing.", glyph: "☀️", chip: "Morning" };
+    return { mood: "morning", line: "A fresh page. Start with one small thing.",      glyph: "sun", chip: "Morning" };
   }
   if (h < 18) {
-    return { mood: "afternoon", line: "You're still here. That counts for plenty.", glyph: "🌤", chip: "Afternoon" };
+    return { mood: "afternoon", line: "You're still here. That counts for plenty.",      glyph: "sun", chip: "Afternoon" };
   }
-  return { mood: "evening", line: "The day's quiet hours. Wind down well.", glyph: "🌙", chip: "Evening" };
+  return { mood: "evening", line: "The day's quiet hours. Wind down well.",      glyph: "moon", chip: "Evening" };
 }

@@ -3,23 +3,22 @@
 import { useState } from "react";
 import { CountUp } from "@/components/ui/Motion";
 import { ProgressRing } from "@/components/ui/ProgressRing";
-import { Avatar, DEFAULT_AVATAR } from "@/components/ui/Avatar";
+import { Avatar } from "@/components/ui/Avatar";
 import {
   ArrowRightIcon,
   BoltIcon,
   CheckCircleIcon,
   FlameIcon,
   HabitGlyph,
+  MoodGlyph,
   SparklesIcon,
 } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { useSounds } from "@/hooks/useSounds";
 import { timeGreeting } from "@/utils/greetings";
-import { heroContext } from "@/utils/hero";
-import { isScheduledOn, topStreak } from "@/utils/streaks";
-import { dailyQuest, isQuestDone } from "@/utils/quests";
-import { computeXp, levelForXp, levelProgress, levelTitle, XP_PER_QUEST } from "@/utils/xp";
+import { levelProgress, levelTitle, XP_PER_QUEST } from "@/utils/xp";
 import { todayKey } from "@/utils/dates";
+import { useTodayHero } from "./useTodayHero";
 
 /**
  * The visual centerpiece of the dashboard. A warm gradient panel that
@@ -29,24 +28,16 @@ import { todayKey } from "@/utils/dates";
  * the user's real situation (streak, progress, first visit, return after
  * a gap, time of day…) via `heroContext`. Layout is editorial — quest and
  * focus on the wide side, the numbers stacked as a tight rail on the other.
+ *
+ * All derived numbers come from `useTodayHero` — this component only
+ * renders and handles interaction.
  */
 export function HeroCard() {
-  const { state, api } = useApp();
+  const { api } = useApp();
   const sounds = useSounds();
   const today = todayKey();
-  const name = state.profile?.name ?? "friend";
-  const xp = computeXp(state);
-  const level = levelForXp(xp);
-  const streak = topStreak(state.habits, state.completions, state.freezeUsed);
-  const ctx = heroContext(state, today);
-
-  const quest = dailyQuest(today, state.profile?.interests);
-  const questDone = isQuestDone(state, today);
-
-  const goals = state.habits.filter((h) => isScheduledOn(h, today));
-  const done = goals.filter((h) => (state.completions[h.id] ?? []).includes(today)).length;
-  const pending = goals.find((h) => !(state.completions[h.id] ?? []).includes(today));
-  const allDone = goals.length > 0 && done === goals.length;
+  const { name, avatar, xp, level, streak, ctx, quest, questDone, pending, focusLine } =
+    useTodayHero();
 
   const [xpFlash, setXpFlash] = useState(false);
 
@@ -57,12 +48,6 @@ export function HeroCard() {
     setXpFlash(true);
     window.setTimeout(() => setXpFlash(false), 1400);
   };
-
-  const focusLine = questDone
-    ? allDone
-      ? "Quest and goals done. The rest of the day is yours."
-      : `${goals.length - done} goal${goals.length - done === 1 ? "" : "s"} left — small steps.`
-    : "One quest, then the day is yours.";
 
   return (
     <section
@@ -84,16 +69,12 @@ export function HeroCard() {
         {/* Greeting */}
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex items-end gap-4">
-            <Avatar
-              avatar={state.profile?.avatar ?? DEFAULT_AVATAR}
-              size={60}
-              className="ring-2 ring-white/30"
-            />
+            <Avatar avatar={avatar} size={60} className="ring-2 ring-white/30" />
             <div>
               <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
                 {timeGreeting()}, {name}.{" "}
-                <span aria-hidden="true" className="text-xl sm:text-2xl">
-                  {ctx.glyph}
+                <span aria-hidden="true" className="inline-flex text-xl sm:text-2xl">
+                  <MoodGlyph name={ctx.glyph} size={24} />
                 </span>
               </h2>
               <p className="mt-1 text-sm text-white/80 sm:text-base">{ctx.line}</p>

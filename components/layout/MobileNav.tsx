@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { MoreIcon, SlidersIcon, XIcon } from "@/components/icons";
 import { MORE_ITEMS, NAV_ITEMS } from "./nav";
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /** Items pinned to the bottom bar on mobile. */
 const PINNED = NAV_ITEMS.filter((item) =>
@@ -15,6 +18,7 @@ const PINNED = NAV_ITEMS.filter((item) =>
 export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
 
   // Close the sheet when navigating away (deferred so it never runs
   // synchronously during the render that follows navigation).
@@ -23,13 +27,38 @@ export function MobileNav() {
     return () => window.clearTimeout(t);
   }, [pathname]);
 
+  // Dialog focus management: move focus into the sheet when it opens,
+  // trap Tab inside it, close on Escape, and restore focus when it closes.
   useEffect(() => {
     if (!open) return;
+    const sheet = sheetRef.current;
+    const previous = document.activeElement as HTMLElement | null;
+    sheet?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !sheet) return;
+      const focusables = sheet.querySelectorAll<HTMLElement>(FOCUSABLE);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    sheet?.addEventListener("keydown", onKey);
+
+    return () => {
+      sheet?.removeEventListener("keydown", onKey);
+      previous?.focus?.();
+    };
   }, [open]);
 
   return (
@@ -106,9 +135,11 @@ export function MobileNav() {
             />
             {/* Sheet */}
             <motion.div
+              ref={sheetRef}
               role="dialog"
               aria-modal="true"
               aria-label="More sections"
+              tabIndex={-1}
               className="fixed inset-x-0 bottom-[calc(4.2rem+env(safe-area-inset-bottom))] z-30 mx-auto max-w-lg rounded-3xl border border-line bg-card/95 p-4 shadow-lift backdrop-blur-xl dark:border-white/[0.08] lg:hidden"
               initial={{ opacity: 0, y: 24, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}

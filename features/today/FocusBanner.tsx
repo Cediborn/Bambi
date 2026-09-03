@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { MoodGlyph } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { bannerMessage } from "@/utils/banner";
 import { todayKey } from "@/utils/dates";
@@ -26,8 +27,8 @@ export function FocusBanner() {
       className="flex"
     >
       <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-surface/70 py-2 pl-3 pr-4 text-sm font-semibold text-ink shadow-card backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04]">
-        <span aria-hidden="true" className="text-base leading-none">
-          {banner.icon}
+        <span aria-hidden="true" className="leading-none">
+          <MoodGlyph name={banner.icon} size={16} />
         </span>
         {banner.text}
       </span>

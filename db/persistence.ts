@@ -1,133 +1,54 @@
-import type { AppState, Settings, Theme } from "@/types";
+import type { AppState, Theme } from "@/types";
 import { initialState } from "./appState";
+import { parseState } from "./schema";
+import { migrateBackup, BACKUP_VERSION } from "./migrations";
+import { defaultStorage, type StorageAdapter } from "./storage";
 
 /**
  * localStorage adapter for app state.
  * Swap target note: when a backend arrives, this module is replaced by
- * remote read/write calls — the reducer and UI stay the same.
+ * remote read/write calls — the reducer and UI stay the same. All reads go
+ * through `parseState` (see db/schema.ts) so corrupt or imported data can
+ * never crash the app or poison the store.
  */
 
 export const STATE_KEY = "bambi:state:v1";
 const THEME_KEY = "bambi:theme";
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/** Coerce unknown settings into a complete Settings object (defaults win). */
-function sanitizeSettings(raw: unknown): Settings {
-  const base = initialState().settings;
-  if (!isRecord(raw)) return base;
-  const s = raw;
-  const theme: Theme = s.theme === "dark" || s.theme === "light" ? s.theme : base.theme;
-  return {
-    theme,
-    accent:
-      s.accent === "violet" || s.accent === "emerald" || s.accent === "sky" ||
-      s.accent === "tangerine" || s.accent === "gold" || s.accent === "rose"
-        ? s.accent
-        : base.accent,
-    animatedBackground: typeof s.animatedBackground === "boolean" ? s.animatedBackground : base.animatedBackground,
-    starDensity:
-      s.starDensity === "low" || s.starDensity === "medium" || s.starDensity === "high"
-        ? s.starDensity
-        : base.starDensity,
-    particles: typeof s.particles === "boolean" ? s.particles : base.particles,
-    reduceMotion: typeof s.reduceMotion === "boolean" ? s.reduceMotion : base.reduceMotion,
-    compactMode: typeof s.compactMode === "boolean" ? s.compactMode : base.compactMode,
-    sounds: typeof s.sounds === "boolean" ? s.sounds : base.sounds,
-  };
-}
-
-/**
- * Build a complete, safe state from a plain object — tolerant of missing,
- * old or corrupt fields so data from a previous version never crashes.
- */
-function sanitizeState(parsed: Record<string, unknown>): AppState {
-  const base = initialState();
-  return {
-    profile: isRecord(parsed.profile)
-      ? {
-          name: typeof parsed.profile.name === "string" ? parsed.profile.name : "",
-          avatar: typeof parsed.profile.avatar === "string" ? parsed.profile.avatar : "fawn",
-          interests: Array.isArray(parsed.profile.interests)
-            ? (parsed.profile.interests as string[]).filter((i) => typeof i === "string")
-            : [],
-          onboardedAt:
-            typeof parsed.profile.onboardedAt === "string" ? parsed.profile.onboardedAt : "",
-        }
-      : base.profile,
-    habits: Array.isArray(parsed.habits) ? (parsed.habits as AppState["habits"]) : [],
-    completions: isRecord(parsed.completions)
-      ? (parsed.completions as Record<string, string[]>)
-      : {},
-    journal: Array.isArray(parsed.journal) ? (parsed.journal as AppState["journal"]) : [],
-    questsDone: Array.isArray(parsed.questsDone)
-      ? (parsed.questsDone as string[]).filter((d) => typeof d === "string")
-      : [],
-    tendedDates: Array.isArray(parsed.tendedDates)
-      ? (parsed.tendedDates as string[]).filter((d) => typeof d === "string")
-      : [],
-    freezeUsed: isRecord(parsed.freezeUsed)
-      ? Object.fromEntries(
-          Object.entries(parsed.freezeUsed).map(([habitId, dates]) => [
-            habitId,
-            Array.isArray(dates)
-              ? (dates as string[]).filter((d) => typeof d === "string")
-              : [],
-          ])
-        )
-      : {},
-    focus: Array.isArray(parsed.focus) ? (parsed.focus as AppState["focus"]) : [],
-    challenges: Array.isArray(parsed.challenges)
-      ? (parsed.challenges as AppState["challenges"])
-      : [],
-    vision: Array.isArray(parsed.vision) ? (parsed.vision as AppState["vision"]) : [],
-    reflections: Array.isArray(parsed.reflections)
-      ? (parsed.reflections as AppState["reflections"])
-      : [],
-    settings: sanitizeSettings(parsed.settings),
-  };
-}
-
-/** Load persisted state, merging over defaults so old/corrupt data never crashes. */
-export function loadState(): AppState {
-  if (typeof window === "undefined") return initialState();
+/** Load persisted state, validating and normalizing it against the schema. */
+export function loadState(storage: StorageAdapter = defaultStorage): AppState {
   try {
-    const raw = window.localStorage.getItem(STATE_KEY);
+    const raw = storage.getItem(STATE_KEY);
     if (!raw) return initialState();
-    const parsed: unknown = JSON.parse(raw);
-    if (!isRecord(parsed)) return initialState();
-    return sanitizeState(parsed);
+    return parseState(JSON.parse(raw));
   } catch {
+    // Corrupted JSON or an unavailable storage — start fresh, never crash.
     return initialState();
   }
 }
 
-export function saveState(state: AppState): void {
-  if (typeof window === "undefined") return;
+/** Persist the current state. Silently tolerates quota/availability errors. */
+export function saveState(state: AppState, storage: StorageAdapter = defaultStorage): void {
   try {
-    window.localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    storage.setItem(STATE_KEY, JSON.stringify(state));
   } catch {
     // Storage full or unavailable (private mode) — the app still works in-memory.
   }
 }
 
-export function readStoredTheme(): Theme {
-  if (typeof window === "undefined") return "light";
+export function readStoredTheme(storage: StorageAdapter = defaultStorage): Theme {
   try {
-    return window.localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light";
+    return storage.getItem(THEME_KEY) === "dark" ? "dark" : "light";
   } catch {
     return "light";
   }
 }
 
-export function writeStoredTheme(theme: Theme): void {
-  if (typeof window === "undefined") return;
+export function writeStoredTheme(theme: Theme, storage: StorageAdapter = defaultStorage): void {
   try {
-    window.localStorage.setItem(THEME_KEY, theme);
+    storage.setItem(THEME_KEY, theme);
   } catch {
-    // non-fatal
+    // Non-fatal.
   }
 }
 
@@ -138,7 +59,7 @@ export function exportState(state: AppState): string {
   return JSON.stringify(
     {
       app: "bambi",
-      version: 1,
+      version: BACKUP_VERSION,
       exportedAt: new Date().toISOString(),
       state,
     },
@@ -148,16 +69,15 @@ export function exportState(state: AppState): string {
 }
 
 /**
- * Validate and apply an imported state blob. Returns an error string on
- * failure, or the parsed state on success.
+ * Validate, migrate and apply an imported state blob. Returns an error
+ * string on failure, or the parsed state on success.
  */
 export function importState(raw: string): { ok: true; state: AppState } | { ok: false; error: string } {
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (!isRecord(parsed)) return { ok: false, error: "That file doesn't look like a BAMBI backup." };
-    if (parsed.app !== "bambi") return { ok: false, error: "That file doesn't look like a BAMBI backup." };
-    if (!isRecord(parsed.state)) return { ok: false, error: "The backup is missing its data." };
-    return { ok: true, state: sanitizeState(parsed.state) };
+    const migrated = migrateBackup(parsed);
+    if (!migrated.ok) return { ok: false, error: migrated.error };
+    return { ok: true, state: parseState(migrated.state) };
   } catch {
     return { ok: false, error: "That file couldn't be read. Is it valid JSON?" };
   }

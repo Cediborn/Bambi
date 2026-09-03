@@ -2,6 +2,7 @@ import type { AppState } from "@/types";
 import { daySeed } from "./greetings";
 import { activeInLastDays, isScheduledOn, topStreak, totalCompletions } from "./streaks";
 import { computeXp, levelForXp, xpToNextLevel, XP_PER_QUEST } from "./xp";
+import type { MoodGlyphName } from "./hero";
 
 /**
  * The focus banner — one quiet, contextual insight near the top of the
@@ -11,7 +12,8 @@ import { computeXp, levelForXp, xpToNextLevel, XP_PER_QUEST } from "./xp";
  */
 
 export interface BannerMessage {
-  icon: string;
+  /** MoodGlyph icon key (see components/icons.tsx) — never an emoji. */
+  icon: MoodGlyphName;
   text: string;
 }
 
@@ -38,16 +40,16 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
   // day, return after a gap) come before the tactical ones so a returning
   // user is welcomed before being reminded of today's list.
   if (total === 0) {
-    return { icon: "🌱", text: "Welcome. Every tree starts as a seed." };
+    return { icon: "sprout", text: "Welcome. Every tree starts as a seed." };
   }
 
   if (total > 0 && !activeInLastDays(state, 3)) {
-    return { icon: "🌿", text: "Welcome back. The garden missed you." };
+    return { icon: "leaf", text: "Welcome back. The garden missed you." };
   }
 
   if (remaining > 0) {
     return {
-      icon: "🎯",
+      icon: "target",
       text: pick(
         [
           `${remaining} ${remaining === 1 ? "goal" : "goals"} left today. Small steps.`,
@@ -61,7 +63,7 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
 
   if (allDone) {
     return {
-      icon: "⭐",
+      icon: "star",
       text: pick(
         [
           "Everything's done. The rest of the day is yours.",
@@ -75,7 +77,7 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
 
   if (streak >= 3) {
     return {
-      icon: "🔥",
+      icon: "flame",
       text: pick(
         [
           `${streak}-day streak. Future You approves.`,
@@ -89,14 +91,14 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
 
   if (toNext <= 40) {
     return {
-      icon: "⚡",
+      icon: "bolt",
       text: pick([`${toNext} XP from Level ${levelForXp(xp) + 1}. So close.`, `One more push to Level ${levelForXp(xp) + 1}.`], dateKey),
     };
   }
 
   if (questDone) {
     return {
-      icon: "✅",
+      icon: "check",
       text: pick(
         [
           `Quest complete — +${XP_PER_QUEST} XP banked.`,
@@ -110,7 +112,7 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
 
   if (focusMinutes > 0) {
     return {
-      icon: "🧘",
+      icon: "brain",
       text: pick(
         [
           `${focusMinutes} focused ${focusMinutes === 1 ? "minute" : "minutes"} today. Quiet power.`,
@@ -122,16 +124,16 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
   }
 
   if (journaled) {
-    return { icon: "✍️", text: "Checked in today. Good." };
+    return { icon: "pen", text: "Checked in today. Good." };
   }
 
   if (tended) {
-    return { icon: "💧", text: "Tree watered. It can feel it." };
+    return { icon: "droplet", text: "Tree watered. It can feel it." };
   }
 
   if (goalsToday.length === 0) {
     return {
-      icon: "🍃",
+      icon: "moon",
       text: pick(
         [
           "Rest day. Recharge before tomorrow.",
@@ -146,10 +148,10 @@ export function bannerMessage(state: AppState, dateKey: string): BannerMessage {
   // Fallback — time-of-day flavor.
   const h = new Date().getHours();
   if (h < 12) {
-    return { icon: "☀️", text: pick(["Morning quiet is its own kind of focus.", "Ease into the day. No rush."], dateKey) };
+    return { icon: "sun", text: pick(["Morning quiet is its own kind of focus.", "Ease into the day. No rush."], dateKey) };
   }
   if (h < 18) {
-    return { icon: "🌤", text: pick(["Afternoon lull — perfect for one small task.", "You're still here. That counts."], dateKey) };
+    return { icon: "sun", text: pick(["Afternoon lull — perfect for one small task.", "You're still here. That counts."], dateKey) };
   }
-  return { icon: "🌙", text: pick(["Evening winds down. Tomorrow is a new page.", "End the day gently."], dateKey) };
+  return { icon: "moon", text: pick(["Evening winds down. Tomorrow is a new page.", "End the day gently."], dateKey) };
 }
