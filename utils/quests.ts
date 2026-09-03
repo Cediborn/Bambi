@@ -32,10 +32,16 @@ const QUEST_POOL: Array<Omit<Quest, "rewardXp">> = [
   { id: "move", title: "Move your body for 15 minutes", hint: "Stretch, dance, anything.", icon: "target", tags: ["fitness"] },
   { id: "learn", title: "Learn one new thing", hint: "A page, a video, a question.", icon: "book", tags: ["study", "creativity"] },
   { id: "tidy", title: "Tidy one small corner", hint: "One desk. One drawer. Enough.", icon: "moon", tags: ["focus", "wellbeing"] },
-  { id: "connect", title: "Message someone you miss", hint: "A line is plenty.", icon: "music", tags: ["wellbeing", "creativity"] },
+  { id: "connect", title: "Message someone you miss", hint: "A line is plenty.", icon: "music", tags: ["wellbeing", "creativity", "social"] },
   { id: "sleep", title: "Wind down 30 minutes earlier", hint: "Screens away, lights low.", icon: "moon", tags: ["sleep", "wellbeing"] },
   { id: "sun", title: "Get 10 minutes of daylight", hint: "Step out, look up.", icon: "coffee", tags: ["wellbeing", "fitness"] },
   { id: "gratitude", title: "Name three good things", hint: "Write them down somewhere.", icon: "leaf", tags: ["mind", "wellbeing"] },
+  { id: "social-checkin", title: "Check in with a friend", hint: "A quick hello counts.", icon: "users", tags: ["social", "wellbeing"] },
+  { id: "plan-tomorrow", title: "Plan tomorrow's top 3 tasks", hint: "Write them before bed.", icon: "clipboard-list", tags: ["organization", "focus"] },
+  { id: "track-spending", title: "Log today's spending", hint: "Every cent counts.", icon: "wallet", tags: ["finance"] },
+  { id: "inbox-zero", title: "Clear one inbox or notification", hint: "Email, messages, anything.", icon: "clipboard-list", tags: ["organization"] },
+  { id: "call-someone", title: "Call or voice-message someone", hint: "Hear a real voice.", icon: "users", tags: ["social"] },
+  { id: "save-something", title: "Move $5 to savings", hint: "Small amounts add up.", icon: "wallet", tags: ["finance", "organization"] },
 ];
 
 /** Deterministic hash so each date picks a stable quest. */

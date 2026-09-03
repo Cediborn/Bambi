@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Deer head — geometric line art in light lavender -->
+  <g stroke="#c4b5fd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left antler -->
+    <path d="M18 18L12 6"/>
+    <path d="M18 18L22 8"/>
+    <path d="M15 12L10 10"/>
+    <!-- Right antler -->
+    <path d="M46 18L52 6"/>
+    <path d="M46 18L42 8"/>
+    <path d="M49 12L54 10"/>
+    <!-- Head outline -->
+    <path d="M18 18L14 28L20 36L32 42L44 36L50 28L46 18"/>
+    <!-- Ears -->
+    <path d="M18 18L10 22L14 28"/>
+    <path d="M46 18L54 22L50 28"/>
+    <!-- Eyes -->
+    <circle cx="24" cy="26" r="1.5" fill="#c4b5fd" stroke="none"/>
+    <circle cx="40" cy="26" r="1.5" fill="#c4b5fd" stroke="none"/>
+    <!-- Nose -->
+    <path d="M29 34L32 37L35 34"/>
+  </g>
+  <!-- Leaf — bright green -->
+  <path d="M32 14C28 8 22 6 22 6C22 6 24 14 32 18C40 14 42 6 42 6C42 6 36 8 32 14Z" fill="#39FF14" stroke="#39FF14" stroke-width="0.5"/>
+  <path d="M32 8L32 17" stroke="#0a4a0a" stroke-width="1" stroke-linecap="round"/>
+  <path d="M32 11L28 9" stroke="#0a4a0a" stroke-width="0.8" stroke-linecap="round"/>
+  <path d="M32 13L36 11" stroke="#0a4a0a" stroke-width="0.8" stroke-linecap="round"/>
+</svg>

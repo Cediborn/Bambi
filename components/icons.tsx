@@ -1,4 +1,5 @@
 import type { ReactNode, SVGProps } from "react";
+import type { MoodGlyphName } from "@/utils/hero";
 
 /**
  * BAMBI icon set — small, stroke-based SVGs (24x24 grid).
@@ -386,6 +387,40 @@ export function UserIcon(props: IconProps) {
   );
 }
 
+export function UsersIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </Base>
+  );
+}
+
+export function ClipboardListIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="M12 11h4" />
+      <path d="M12 16h4" />
+      <path d="M8 11h.01" />
+      <path d="M8 16h.01" />
+    </Base>
+  );
+}
+
+export function WalletIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+      <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+      <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+    </Base>
+  );
+}
+
 export function LogOutIcon(props: IconProps) {
   return (
     <Base {...props}>
@@ -548,6 +583,52 @@ export function HabitGlyph({ name, ...props }: IconProps & { name: string }) {
       return <TargetIcon {...props} />;
     case "coffee":
       return <CoffeeIcon {...props} />;
+    case "users":
+      return <UsersIcon {...props} />;
+    case "clipboard-list":
+      return <ClipboardListIcon {...props} />;
+    case "wallet":
+      return <WalletIcon {...props} />;
+    default:
+      return <LeafIcon {...props} />;
+  }
+}
+
+/**
+ * Renders one of the semantic mood/glyph icons used by the hero greeting
+ * and the focus banner by key. Kept as a static switch (never creates
+ * components during render) and mirrored by the `MoodGlyphName` keys used
+ * in utils/hero.ts and utils/banner.ts. Falls back to a leaf — never
+ * renders an emoji.
+ */
+export function MoodGlyph({ name, ...props }: IconProps & { name: MoodGlyphName }) {
+  switch (name) {
+    case "sprout":
+      return <SproutIcon {...props} />;
+    case "leaf":
+      return <LeafIcon {...props} />;
+    case "target":
+      return <TargetIcon {...props} />;
+    case "star":
+      return <StarIcon {...props} />;
+    case "flame":
+      return <FlameIcon {...props} />;
+    case "bolt":
+      return <BoltIcon {...props} />;
+    case "check":
+      return <CheckCircleIcon {...props} />;
+    case "brain":
+      return <BrainIcon {...props} />;
+    case "pen":
+      return <PenLineIcon {...props} />;
+    case "droplet":
+      return <DropletIcon {...props} />;
+    case "sun":
+      return <SunIcon {...props} />;
+    case "moon":
+      return <MoonIcon {...props} />;
+    case "sparkles":
+      return <SparklesIcon {...props} />;
     default:
       return <LeafIcon {...props} />;
   }
@@ -740,15 +821,64 @@ export function SproutIcon(props: IconProps) {
   );
 }
 
-/** The BAMBI logo: a sprout mark on a brand gradient tile. */
+/** The BAMBI logo: geometric deer head with a green leaf. */
 export function BambiLogo({ size = 36 }: { size?: number }) {
   return (
-    <span
-      aria-hidden="true"
-      className="inline-flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-2 text-white shadow-card"
-      style={{ width: size, height: size }}
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-label="Bambi logo"
+      role="img"
+      className="shrink-0"
     >
-      <SproutIcon size={size * 0.6} />
-    </span>
+      {/* Deer head — geometric line art */}
+      <g stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Left antler */}
+        <path d="M18 18L12 6" />
+        <path d="M18 18L22 8" />
+        <path d="M15 12L10 10" />
+        {/* Right antler */}
+        <path d="M46 18L52 6" />
+        <path d="M46 18L42 8" />
+        <path d="M49 12L54 10" />
+        {/* Head outline */}
+        <path d="M18 18L14 28L20 36L32 42L44 36L50 28L46 18" />
+        {/* Ears */}
+        <path d="M18 18L10 22L14 28" />
+        <path d="M46 18L54 22L50 28" />
+        {/* Eyes */}
+        <circle cx="24" cy="26" r="1.5" fill="currentColor" stroke="none" />
+        <circle cx="40" cy="26" r="1.5" fill="currentColor" stroke="none" />
+        {/* Nose */}
+        <path d="M29 34L32 37L35 34" />
+      </g>
+      {/* Leaf — bright green, growing from the center */}
+      <path
+        d="M32 14C28 8 22 6 22 6C22 6 24 14 32 18C40 14 42 6 42 6C42 6 36 8 32 14Z"
+        fill="#39FF14"
+        stroke="#39FF14"
+        strokeWidth="0.5"
+      />
+      <path
+        d="M32 8L32 17"
+        stroke="#0a4a0a"
+        strokeWidth="1"
+        strokeLinecap="round"
+      />
+      <path
+        d="M32 11L28 9"
+        stroke="#0a4a0a"
+        strokeWidth="0.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M32 13L36 11"
+        stroke="#0a4a0a"
+        strokeWidth="0.8"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }

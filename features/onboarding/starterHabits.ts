@@ -13,6 +13,9 @@ export const INTERESTS: InterestOption[] = [
   { key: "sleep", label: "Sleep", glyph: "moon" },
   { key: "focus", label: "Focus", glyph: "coffee" },
   { key: "wellbeing", label: "Wellbeing", glyph: "heart" },
+  { key: "social", label: "Social", glyph: "users" },
+  { key: "organization", label: "Organization", glyph: "clipboard-list" },
+  { key: "finance", label: "Finance", glyph: "wallet" },
 ];
 
 export interface StarterHabit {
@@ -32,6 +35,9 @@ export const STARTER_HABITS: Record<string, StarterHabit> = {
   sleep: { name: "Wind down before 11pm", icon: "moon", color: "#0EA5E9", from: "sleep" },
   focus: { name: "Deep work hour", icon: "coffee", color: "#14B8A6", from: "focus" },
   wellbeing: { name: "Drink 2L of water", icon: "droplet", color: "#22C55E", from: "wellbeing" },
+  social: { name: "Reach out to a friend", icon: "users", color: "#F59E0B", from: "social" },
+  organization: { name: "Plan tomorrow", icon: "clipboard-list", color: "#6366F1", from: "organization" },
+  finance: { name: "Track expenses", icon: "wallet", color: "#10B981", from: "finance" },
 };
 
 /** Suggestions derived from a set of interest keys (deduped). */
