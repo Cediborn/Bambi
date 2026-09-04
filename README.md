@@ -89,10 +89,10 @@ localStorage / imported JSON / future API data
   never crashes on bad data, and one bad field never destroys the rest.
 - Corrupted JSON, storage quota errors, and private-mode storage are all
   handled silently (the app keeps working in memory).
-- **Import/export** lives in Settings. Backups are JSON envelopes
-  (`{ app, version, exportedAt, state }`). Restoring validates the file,
-  runs any needed migrations, and normalizes the state. Backups from newer
-  BAMBI versions are rejected with a friendly message.
+- Data stays on the device — everything is saved under `bambi:state:v1` in
+  the browser and validated on every read. The backup envelope + migration
+  chain (`{ app, version, exportedAt, state }`) is still maintained and
+  tested at the data layer for when syncing or external data arrives.
 
 ## Business rules
 
@@ -106,7 +106,7 @@ matches them, and `tests/` pin the behavior.
 banner, achievements), the **reducer** (every domain and edge case), the
 **persistence boundary** (corruption, quota errors, round trips), **backup
 migrations**, and **integration flows** (create habit → complete → streak/XP
-→ Today UI; journal → save → reload; export → reset → import). Run with
+→ Today UI; journal → save → reload; backup → reset → restore round trips). Run with
 `npm test`.
 
 ## Design language

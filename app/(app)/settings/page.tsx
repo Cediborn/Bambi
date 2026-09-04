@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui/Motion";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,13 +14,11 @@ import {
   CircleIcon,
   CompactIcon,
   CompassIcon,
-  DownloadIcon,
   MoonIcon,
   MusicIcon,
   RefreshIcon,
   SparklesIcon,
   SunIcon,
-  UploadIcon,
   UserIcon,
   VolumeIcon,
 } from "@/components/icons";
@@ -31,9 +29,7 @@ import { DARK_HINT_KEY } from "@/features/tour/DarkModeHint";
 
 import { ShareCard } from "@/features/share/ShareCard";
 import { PwaInstallCard } from "@/features/share/PwaInstallCard";
-import { exportState, importState } from "@/db/persistence";
 import { ACCENTS, ACCENT_KEYS } from "@/utils/theme";
-import { todayKey } from "@/utils/dates";
 
 function Row({
   icon,
@@ -70,8 +66,6 @@ export default function SettingsPage() {
   const [name, setName] = useState(profile?.name ?? "");
   const [savedName, setSavedName] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
-  const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const fileRef = useRef<HTMLInputElement | null>(null);
   const tour = useTour();
 
   const saveName = () => {
@@ -80,31 +74,6 @@ export default function SettingsPage() {
     api.updateProfile({ name: trimmed });
     setSavedName(true);
     window.setTimeout(() => setSavedName(false), 2000);
-  };
-
-  const handleExport = () => {
-    const blob = new Blob([exportState(state)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `bambi-backup-${todayKey()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleImport = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = importState(String(reader.result ?? ""));
-      if (result.ok) {
-        api.importData(result.state);
-        setImportMsg({ ok: true, text: "Backup restored. Welcome back." });
-      } else {
-        setImportMsg({ ok: false, text: result.error });
-      }
-      window.setTimeout(() => setImportMsg(null), 4000);
-    };
-    reader.readAsText(file);
   };
 
   return (
@@ -269,56 +238,6 @@ export default function SettingsPage() {
               </Button>
             }
           />
-        </Card>
-      </Reveal>
-
-      {/* Data */}
-      <Reveal delay={0.15}>
-        <Card size="featured" className="space-y-6">
-          <Row
-            icon={<DownloadIcon size={20} />}
-            title="Export data"
-            subtitle="Download a JSON backup of everything"
-            control={
-              <Button variant="secondary" onClick={handleExport} icon={<DownloadIcon size={16} />}>
-                Export
-              </Button>
-            }
-          />
-
-          <Row
-            icon={<UploadIcon size={20} />}
-            title="Import data"
-            subtitle="Restore from a BAMBI backup file"
-            control={
-              <>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="application/json,.json"
-                  className="hidden"
-                  aria-hidden="true"
-                  tabIndex={-1}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImport(file);
-                    e.target.value = "";
-                  }}
-                />
-                <Button variant="secondary" onClick={() => fileRef.current?.click()} icon={<UploadIcon size={16} />}>
-                  Import
-                </Button>
-              </>
-            }
-          />
-          {importMsg ? (
-            <p
-              className={`text-sm font-semibold ${importMsg.ok ? "text-good" : "text-bad"}`}
-              role="status"
-            >
-              {importMsg.text}
-            </p>
-          ) : null}
         </Card>
       </Reveal>
 
