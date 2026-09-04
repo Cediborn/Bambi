@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import type { JournalEntry } from "@/types";
 import { Button } from "@/components/ui/Button";
@@ -33,22 +33,39 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
   const [mood, setMood] = useState<number | null>(entry?.mood ?? null);
   const [content, setContent] = useState(entry?.content ?? "");
 
-  // Tracks what was last persisted so we can detect unsaved changes
-  const savedRef = useRef({ mood: entry?.mood ?? null, content: entry?.content ?? "" });
+  // What was last persisted, so unsaved changes can be detected. This is read
+  // during render to derive hasChanges, so it lives in state rather than a ref.
+  const [saved, setSaved] = useState({
+    mood: entry?.mood ?? null,
+    content: entry?.content ?? "",
+  });
 
   // UI state machine: "editing" | "saving" | "saved"
   const [phase, setPhase] = useState<"editing" | "saving" | "saved">("editing");
 
-  // Reset form state when the entry prop changes (e.g. after a fresh load)
-  useEffect(() => {
-    setMood(entry?.mood ?? null);
-    setContent(entry?.content ?? "");
-    savedRef.current = { mood: entry?.mood ?? null, content: entry?.content ?? "" };
+  // The entry this form is currently synced to. When the entry prop changes
+  // (e.g. after a fresh load), the draft resets to match it — done as a
+  // render-time state adjustment (the documented pattern for syncing state to
+  // a prop) rather than an effect.
+  const [syncedEntry, setSyncedEntry] = useState({
+    id: entry?.id,
+    mood: entry?.mood ?? null,
+    content: entry?.content ?? "",
+  });
+  if (
+    syncedEntry.id !== entry?.id ||
+    syncedEntry.mood !== (entry?.mood ?? null) ||
+    syncedEntry.content !== (entry?.content ?? "")
+  ) {
+    const next = { id: entry?.id, mood: entry?.mood ?? null, content: entry?.content ?? "" };
+    setSyncedEntry(next);
+    setMood(next.mood);
+    setContent(next.content);
+    setSaved(next);
     setPhase("editing");
-  }, [entry?.id, entry?.mood, entry?.content]);
+  }
 
-  const hasChanges =
-    mood !== savedRef.current.mood || content.trim() !== savedRef.current.content.trim();
+  const hasChanges = mood !== saved.mood || content.trim() !== saved.content.trim();
 
   const valid = content.trim().length > 0 && mood !== null;
 
@@ -58,7 +75,7 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
       if (!valid || phase === "saving") return;
       setPhase("saving");
       api.upsertJournal(entry?.date ?? todayKey(), mood!, content.trim());
-      savedRef.current = { mood, content: content.trim() };
+      setSaved({ mood, content: content.trim() });
       setPhase("saved");
       onSaved?.();
     },

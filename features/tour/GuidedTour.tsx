@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useApp } from "@/hooks/useApp";
-import { ArrowRightIcon, CheckIcon, XIcon } from "@/components/icons";
+import { ArrowRightIcon, XIcon } from "@/components/icons";
 import { TourGuide } from "./TourGuide";
 import type { Tour, TourStep } from "./tourTypes";
 

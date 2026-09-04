@@ -22,20 +22,17 @@ interface DarkModeHintProps {
 export function DarkModeHint({ show }: DarkModeHintProps) {
   const reduce = useReducedMotion();
   const [visible, setVisible] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
-
-  // Check if hint has been dismissed
-  useEffect(() => {
+  // Read the persisted dismissal straight into state. DarkModeHint only ever
+  // mounts client-side (AppShell renders after hydration), so window is safe
+  // here and there is no hydration mismatch to worry about.
+  const [dismissed, setDismissed] = useState<boolean>(() => {
     try {
-      const stored = localStorage.getItem(DARK_HINT_KEY);
-      if (stored === "1") {
-        setDismissed(true);
-        return;
-      }
+      return window.localStorage.getItem(DARK_HINT_KEY) === "1";
     } catch {
       // Storage unavailable
+      return false;
     }
-  }, []);
+  });
 
   // Show the hint when the tour completes (if not already dismissed)
   useEffect(() => {
