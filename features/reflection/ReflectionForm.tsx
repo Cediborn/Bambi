@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Textarea } from "@/components/ui/Input";
 import { ClipboardIcon, CheckCircleIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
-import { todayKey, weekKeyOf } from "@/utils/dates";
+import { todayKey, weekKeyOf, fullDate } from "@/utils/dates";
 import type { Reflection } from "@/types";
 
 const PROMPTS = [
@@ -19,9 +19,19 @@ const PROMPTS = [
 
 type PromptKey = (typeof PROMPTS)[number]["key"];
 
-export function ReflectionForm({ existing }: { existing?: Reflection }) {
+export function ReflectionForm({
+  existing,
+  onSaved,
+  onCancel,
+}: {
+  existing?: Reflection;
+  onSaved?: () => void;
+  onCancel?: () => void;
+}) {
   const { api } = useApp();
-  const weekKey = weekKeyOf(todayKey());
+  // New reflections belong to the current week; edits upsert over the
+  // reflection's own week so they never touch a different week's entry.
+  const weekKey = existing?.weekKey ?? weekKeyOf(todayKey());
 
   const [values, setValues] = useState<Record<PromptKey, string>>({
     wentWell: existing?.wentWell ?? "",
@@ -40,6 +50,7 @@ export function ReflectionForm({ existing }: { existing?: Reflection }) {
   const save = () => {
     api.upsertReflection(weekKey, values);
     setSaved(true);
+    onSaved?.();
     window.setTimeout(() => setSaved(false), 2000);
   };
 
@@ -53,7 +64,7 @@ export function ReflectionForm({ existing }: { existing?: Reflection }) {
         </span>
         <div>
           <h2 className="font-display text-base font-bold text-ink">
-            {existing ? "This week's reflection" : "Weekly reflection"}
+            {existing ? `Week of ${fullDate(existing.weekKey)}` : "This week's reflection"}
           </h2>
           <p className="text-xs text-ink-soft">
             {filled}/5 answered · once a week is enough
@@ -76,13 +87,18 @@ export function ReflectionForm({ existing }: { existing?: Reflection }) {
         ))}
       </div>
 
-      <div className="mt-5 flex justify-end">
+      <div className="mt-5 flex items-center justify-end gap-3">
+        {onCancel ? (
+          <Button variant="ghost" type="button" onClick={onCancel}>
+            Cancel
+          </Button>
+        ) : null}
         <Button
           onClick={save}
           disabled={filled === 0}
           icon={saved ? <CheckCircleIcon size={16} /> : undefined}
         >
-          {saved ? "Saved" : "Save reflection"}
+          {saved ? "Saved" : existing ? "Save edits" : "Save reflection"}
         </Button>
       </div>
     </Card>

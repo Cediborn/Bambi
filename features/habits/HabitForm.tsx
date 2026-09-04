@@ -8,21 +8,24 @@ import { Field, FieldError, Input } from "@/components/ui/Input";
 import { CheckIcon, HabitGlyph, TrashIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { HABIT_COLORS, HABIT_ICONS } from "@/utils/habitMeta";
+import type { HabitSuggestion } from "./suggestions";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface HabitFormProps {
   /** When present, the form edits this habit instead of creating a new one. */
   habit?: Habit;
+  /** A suggested habit to seed the form when creating (editable before saving). */
+  preset?: HabitSuggestion | null;
   onSaved?: () => void;
   onCancel?: () => void;
 }
 
-export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
+export function HabitForm({ habit, preset, onSaved, onCancel }: HabitFormProps) {
   const { api } = useApp();
-  const [name, setName] = useState(habit?.name ?? "");
-  const [icon, setIcon] = useState(habit?.icon ?? "leaf");
-  const [color, setColor] = useState(habit?.color ?? HABIT_COLORS[0]);
+  const [name, setName] = useState(habit?.name ?? preset?.name ?? "");
+  const [icon, setIcon] = useState(habit?.icon ?? preset?.icon ?? "leaf");
+  const [color, setColor] = useState(habit?.color ?? preset?.color ?? HABIT_COLORS[0]);
   const [schedule, setSchedule] = useState<number[]>(habit?.schedule ?? [0, 1, 2, 3, 4, 5, 6]);
   const [error, setError] = useState<string | null>(null);
 

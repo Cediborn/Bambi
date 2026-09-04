@@ -76,3 +76,7 @@ challenge check-in.
   day.
 - **Reflections**: one per week (`weekKey` = Monday of the week) — upserting
   replaces the reflection for that week. There is no deletion action.
+- After saving, the current week's reflection **locks**: the form is replaced
+  by a saved view and the next reflection opens the following Monday
+  (`weekKey + 7` days, calendar-based). Past reflections can still be edited
+  — editing upserts over the same `weekKey`, never creating a duplicate.

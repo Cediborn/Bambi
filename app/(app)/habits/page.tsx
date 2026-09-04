@@ -8,6 +8,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { HabitCard } from "@/features/habits/HabitCard";
 import { HabitForm } from "@/features/habits/HabitForm";
+import { SuggestedHabits } from "@/features/habits/SuggestedHabits";
+import type { HabitSuggestion } from "@/features/habits/suggestions";
 import { PlusIcon, SnowflakeIcon, XIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { freezesAvailable } from "@/utils/streaks";
@@ -15,7 +17,13 @@ import { freezesAvailable } from "@/utils/streaks";
 export default function HabitsPage() {
   const { state } = useApp();
   const [creating, setCreating] = useState(false);
+  const [preset, setPreset] = useState<HabitSuggestion | null>(null);
   const freezes = freezesAvailable(state);
+
+  const toggleCreating = () => {
+    setCreating((v) => !v);
+    setPreset(null);
+  };
 
   return (
     <div>
@@ -30,7 +38,7 @@ export default function HabitsPage() {
                 {freezes} {freezes === 1 ? "freeze" : "freezes"}
               </span>
             ) : null}
-            <Button onClick={() => setCreating((v) => !v)} icon={creating ? <XIcon size={17} /> : <PlusIcon size={17} />}>
+            <Button onClick={toggleCreating} icon={creating ? <XIcon size={17} /> : <PlusIcon size={17} />}>
               {creating ? "Close" : "New habit"}
             </Button>
           </>
@@ -39,7 +47,13 @@ export default function HabitsPage() {
 
       {creating ? (
         <Card className="animate-fade-up mb-6 p-5 sm:p-6">
-          <HabitForm onSaved={() => setCreating(false)} />
+          <SuggestedHabits activeId={preset?.id ?? null} onPick={setPreset} />
+          <div className="my-5 h-px bg-line" aria-hidden="true" />
+          <HabitForm
+            key={preset?.id ?? "custom"}
+            preset={preset}
+            onSaved={toggleCreating}
+          />
         </Card>
       ) : null}
 
