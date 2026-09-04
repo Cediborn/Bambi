@@ -12,19 +12,21 @@ import Image from "next/image";
 export interface AvatarMeta {
   key: string;
   label: string;
+  /** Text color for the buddy's name (matches the character's neon outline). */
+  color: string;
   /** Soft tile color behind the face (fallback while the image loads). */
   bg: string;
 }
 
 export const AVATARS: AvatarMeta[] = [
-  { key: "fawn", label: "Fawn", bg: "#F5CDA8" },
-  { key: "fox", label: "Fox", bg: "#F8B878" },
-  { key: "bunny", label: "Bunny", bg: "#EADCF2" },
-  { key: "bear", label: "Bear", bg: "#E0CBB1" },
-  { key: "owl", label: "Owl", bg: "#CFE3F5" },
-  { key: "cat", label: "Cat", bg: "#E2E3EA" },
-  { key: "panda", label: "Panda", bg: "#E9E9F1" },
-  { key: "sprout", label: "Sprout", bg: "#CFE8CF" },
+  { key: "fawn", label: "bambi", color: "#4D7C0F", bg: "#F5CDA8" },
+  { key: "fox", label: "pip", color: "#A16207", bg: "#F8B878" },
+  { key: "bunny", label: "milo", color: "#C2410C", bg: "#EADCF2" },
+  { key: "bear", label: "nova", color: "#7E22CE", bg: "#E0CBB1" },
+  { key: "owl", label: "koda", color: "#DC2626", bg: "#CFE3F5" },
+  { key: "cat", label: "lumi", color: "#0E7490", bg: "#E2E3EA" },
+  { key: "panda", label: "ziggy", color: "#BE185D", bg: "#E9E9F1" },
+  { key: "sprout", label: "sora", color: "#64748B", bg: "#CFE8CF" },
 ];
 
 /** Maps an avatar key to its local image path. Unknown keys fall back to fawn. */
@@ -87,7 +89,7 @@ export function AvatarPicker({
             aria-label={a.label}
             onClick={() => onChange(a.key)}
             className={[
-              "flex items-center justify-center rounded-2xl border p-1.5 transition-all duration-150",
+              "flex flex-col items-center justify-center rounded-2xl border p-1.5 transition-all duration-150",
               "active:scale-95",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
               selected
@@ -96,7 +98,12 @@ export function AvatarPicker({
             ].join(" ")}
           >
             <Avatar avatar={a.key} size={tileSize} className={selected ? "ring-2 ring-brand/40" : ""} />
-            <span className="sr-only">{a.label}</span>
+            <span
+              className="mt-1 max-w-full truncate text-[10px] font-bold leading-none"
+              style={{ color: a.color }}
+            >
+              {a.label}
+            </span>
           </button>
         );
       })}
