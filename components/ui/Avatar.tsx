@@ -4,7 +4,7 @@ import Image from "next/image";
 
 /**
  * BAMBI buddies — a small set of avatar images.
- * Each buddy is a local photo in /public/avatars/<key>.jpg, cropped into a
+ * Each buddy is a local photo in /public/avatars/<key>.png, cropped into a
  * round tile. `Avatar` renders one by key, `AvatarPicker` is the selectable
  * grid used in onboarding and settings.
  */
@@ -30,7 +30,7 @@ export const AVATARS: AvatarMeta[] = [
 /** Maps an avatar key to its local image path. Unknown keys fall back to fawn. */
 export function avatarSrc(avatar: string): string {
   const known = AVATARS.some((a) => a.key === avatar);
-  return `/avatars/${known ? avatar : "fawn"}.jpg`;
+  return `/avatars/${known ? avatar : "fawn"}.png`;
 }
 
 /** A round avatar tile. */
