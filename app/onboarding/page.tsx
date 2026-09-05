@@ -19,8 +19,9 @@ import {
 
 const STEPS = ["Welcome", "Name", "Avatar", "Interests", "First habits"];
 
-/** How many habits per category the picker shows before "Show all". */
-const PER_CATEGORY_VISIBLE = 8;
+/** How many habits per category the picker shows before "Show all".
+    Categories hold 5 habits, so everything is shown. */
+const PER_CATEGORY_VISIBLE = 5;
 
 /** Max categories a user can pick during onboarding. */
 const MAX_INTERESTS = 4;

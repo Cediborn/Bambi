@@ -48,12 +48,11 @@ describe("category structure", () => {
 });
 
 describe("the curated library", () => {
-  it("holds approximately 30 distinct habits per category", () => {
+  it("holds exactly 5 important habits per category", () => {
     for (const cat of HABIT_CATEGORIES) {
-      const habits = HABIT_LIBRARY[cat.key];
-      expect(habits.length).toBeGreaterThanOrEqual(28);
-      expect(habits.length).toBeLessThanOrEqual(32);
+      expect(HABIT_LIBRARY[cat.key].length).toBe(5);
     }
+    expect(ALL_LIBRARY_HABITS.length).toBe(HABIT_CATEGORIES.length * 5);
   });
 
   it("has unique ids and no duplicate titles within a category", () => {
@@ -107,7 +106,6 @@ describe("the curated library", () => {
     expect(titles("skills")).toContain("Practice the weakest part of the skill");
     expect(titles("work")).toContain("Complete one important task");
     expect(titles("work")).toContain("Work on your CV");
-    expect(titles("work")).toContain("Update your portfolio");
   });
 
   it("keeps category libraries genuinely distinct, not generic filler", () => {

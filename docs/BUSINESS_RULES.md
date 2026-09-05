@@ -79,8 +79,8 @@ challenge check-in.
   free-text “Something Else” option — habits come from the curated
   library only. Users can select **at most 4 categories** (a hint
   explains the cap when they try to pick a fifth).
-- **Habit library** (`features/habits/habitLibrary.ts`): ~30 curated
-  habits per category (~390 total), structured as `category → habits[]`
+- **Habit library** (`features/habits/habitLibrary.ts`): **5 important
+  habits per category** (65 total), structured as `category → habits[]`
   with metadata (id, difficulty, estimated minutes, frequency
   suitability, icon, color). Editing the library is a data change, never
   a UI change.
