@@ -3,31 +3,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { Input, FieldError } from "@/components/ui/Input";
+import { FieldError } from "@/components/ui/Input";
+import { Input } from "@/components/ui/Input";
 import { Avatar, AvatarPicker, DEFAULT_AVATAR } from "@/components/ui/Avatar";
 import { SparkleField } from "@/components/decor/SparkleField";
-import { ArrowRightIcon, CheckIcon, HabitGlyph, SparklesIcon, XIcon } from "@/components/icons";
+import { ArrowRightIcon, CheckIcon, HabitGlyph } from "@/components/icons";
 import { BrandLogo } from "@/components/BrandLogo";
 import { useApp } from "@/hooks/useApp";
 import {
-  INTERESTS,
-  SOMETHING_ELSE,
-  STARTER_HABITS,
-  interpretCustom,
-  isCustomInterest,
-  sourceLabel,
-  suggestionsFor,
-} from "@/features/onboarding/starterHabits";
+  DIFFICULTY_LABEL,
+  HABIT_CATEGORIES,
+  categoryFor,
+  onboardingSelections,
+} from "@/features/habits/habitLibrary";
 
 const STEPS = ["Welcome", "Name", "Avatar", "Interests", "First habits"];
 
-const CUSTOM_PLACEHOLDERS = [
-  "Learn to play guitar",
-  "Get better at football",
-  "Start a clothing brand",
-  "Learn to code",
-  "Improve my photography",
-];
+/** How many habits per category the picker shows before "Show all". */
+const PER_CATEGORY_VISIBLE = 8;
+
+const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
 export default function OnboardingPage() {
   const { api } = useApp();
@@ -37,10 +32,10 @@ export default function OnboardingPage() {
   const [nameError, setNameError] = useState<string | null>(null);
   const [avatar, setAvatar] = useState(DEFAULT_AVATAR);
   const [interests, setInterests] = useState<string[]>([]);
-  const [starters, setStarters] = useState<Record<string, boolean>>({});
-  const [showCustom, setShowCustom] = useState(false);
-  const [customDraft, setCustomDraft] = useState("");
-  const [customHint, setCustomHint] = useState<string | null>(null);
+  /** habitId -> picked. Absent means picked (everything is offered, drop what you don't want). */
+  const [picked, setPicked] = useState<Record<string, boolean>>({});
+  /** category key -> show the full library for that category. */
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const toggleInterest = (key: string) => {
     setInterests((prev) =>
@@ -48,38 +43,26 @@ export default function OnboardingPage() {
     );
   };
 
-  const customs = interests.filter(isCustomInterest);
+  const selections = onboardingSelections(interests);
+  const totalOffered = selections.reduce((n, s) => n + s.habits.length, 0);
+  const pickedCount = selections.reduce(
+    (n, s) => n + s.habits.filter((h) => picked[h.id] !== false).length,
+    0
+  );
 
-  const addCustom = () => {
-    const value = customDraft.trim();
-    if (!value) return;
-    const interp = interpretCustom(value);
-    // Too vague to confidently understand → ask for a short clarification
-    // instead of generating random habits.
-    if (interp.vague) {
-      setCustomHint(interp.hint);
-      return;
-    }
-    setCustomHint(null);
-    setInterests((prev) => (prev.includes(value) ? prev : [...prev, value]));
-    setCustomDraft("");
+  const togglePicked = (id: string) => {
+    setPicked((prev) => ({ ...prev, [id]: prev[id] === false ? true : false }));
   };
 
-  const removeCustom = (value: string) => {
-    setInterests((prev) => prev.filter((v) => v !== value));
-  };
-
-  const suggestions = suggestionsFor(interests);
-
-  const toggleStarter = (habitName: string) => {
-    setStarters((prev) => ({ ...prev, [habitName]: !prev[habitName] }));
+  const toggleExpanded = (key: string) => {
+    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const finish = () => {
-    const chosen = suggestions.filter((s) => starters[s.name] !== false);
+    const chosen = selections.flatMap((s) => s.habits).filter((h) => picked[h.id] !== false);
     api.setProfile({ name: name.trim() || "friend", avatar, interests, onboardedAt: new Date().toISOString() });
     chosen.forEach((h) =>
-      api.addHabit({ name: h.name, icon: h.icon, color: h.color, schedule: [0, 1, 2, 3, 4, 5, 6] })
+      api.addHabit({ name: h.title, icon: h.icon, color: h.color, schedule: ALL_DAYS })
     );
     router.replace("/today");
   };
@@ -208,10 +191,10 @@ export default function OnboardingPage() {
                 What are you working on?
               </h1>
               <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                Pick what matters now. We&apos;ll match habits to fit.
+                Pick what matters to you right now and build habits around it.
               </p>
               <div className="mt-6 grid grid-cols-2 gap-3" role="group" aria-label="Interests">
-                {INTERESTS.map((interest) => {
+                {HABIT_CATEGORIES.map((interest) => {
                   const selected = interests.includes(interest.key);
                   return (
                     <button
@@ -220,7 +203,7 @@ export default function OnboardingPage() {
                       aria-pressed={selected}
                       onClick={() => toggleInterest(interest.key)}
                       className={[
-                        "flex items-start gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
+                        "flex items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
                         "active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                         selected
                           ? "border-brand/40 bg-brand/10"
@@ -228,123 +211,23 @@ export default function OnboardingPage() {
                       ].join(" ")}
                     >
                       <span
-                        className={`mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl ${
+                        className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${
                           selected ? "bg-brand text-white" : "bg-surface text-ink-soft"
                         }`}
                       >
                         <HabitGlyph name={interest.glyph} size={18} />
                       </span>
-                      <span className="min-w-0">
-                        <span
-                          className={`block text-sm font-semibold leading-tight ${
-                            selected ? "text-brand" : "text-ink"
-                          }`}
-                        >
-                          {interest.label}
-                        </span>
-                        <span className="mt-0.5 block text-[11px] leading-snug text-ink-soft">
-                          {interest.subtitle}
-                        </span>
+                      <span
+                        className={`block text-sm font-semibold leading-tight ${
+                          selected ? "text-brand" : "text-ink"
+                        }`}
+                      >
+                        {interest.label}
                       </span>
                     </button>
                   );
                 })}
-
-                {/* Ninth option — a fully custom goal */}
-                <button
-                  type="button"
-                  aria-pressed={showCustom}
-                  onClick={() => setShowCustom((v) => !v)}
-                  className={[
-                    "col-span-2 flex items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
-                    "active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-                    showCustom
-                      ? "border-brand/40 bg-brand/10"
-                      : "border-dashed border-line bg-card hover:border-brand/30",
-                  ].join(" ")}
-                >
-                  <span
-                    className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${
-                      showCustom ? "bg-brand text-white" : "bg-surface text-ink-soft"
-                    }`}
-                  >
-                    <SparklesIcon size={18} />
-                  </span>
-                  <span className="min-w-0">
-                    <span className={`block text-sm font-semibold leading-tight ${showCustom ? "text-brand" : "text-ink"}`}>
-                      {SOMETHING_ELSE.label}
-                    </span>
-                    <span className="mt-0.5 block text-[11px] leading-snug text-ink-soft">
-                      {SOMETHING_ELSE.subtitle}
-                    </span>
-                  </span>
-                </button>
               </div>
-
-              {showCustom ? (
-                <div className="animate-fade-up mt-3 space-y-2.5 rounded-2xl border border-brand/25 bg-brand/[0.06] p-4">
-                  <p className="text-sm font-semibold text-ink">
-                    What are you working on?
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="onboarding-custom"
-                      value={customDraft}
-                      onChange={(e) => {
-                        setCustomDraft(e.target.value);
-                        setCustomHint(null);
-                      }}
-                      onKeyDown={(e) => e.key === "Enter" && addCustom()}
-                      placeholder="e.g. Learn to play guitar"
-                      maxLength={60}
-                      className="flex-1"
-                      autoFocus
-                    />
-                    <Button onClick={addCustom} className="shrink-0">
-                      Add
-                    </Button>
-                  </div>
-                  <p className="text-xs leading-relaxed text-ink-soft">
-                    Ideas:{" "}
-                    {CUSTOM_PLACEHOLDERS.map((p, i) => (
-                      <span key={p}>
-                        {i > 0 ? " · " : ""}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCustomDraft(p);
-                            setCustomHint(null);
-                          }}
-                          className="font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-                        >
-                          {p}
-                        </button>
-                      </span>
-                    ))}
-                  </p>
-                  {customHint ? <FieldError>{customHint}</FieldError> : null}
-                  {customs.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {customs.map((c) => (
-                        <span
-                          key={c}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-bold text-brand"
-                        >
-                          {c}
-                          <button
-                            type="button"
-                            onClick={() => removeCustom(c)}
-                            aria-label={`Remove ${c}`}
-                            className="text-brand/70 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-                          >
-                            <XIcon size={12} />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
 
               <div className="mt-6 flex items-center justify-between gap-3">
                 <Button variant="ghost" onClick={() => setStep((s) => s - 1)}>
@@ -364,60 +247,103 @@ export default function OnboardingPage() {
                 Your starting habits
               </h1>
               <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                Based on what matters to you, we&apos;ve picked a few small
-                habits to get you started. Drop any you don&apos;t want — everything
-                can change later.
+                Here are habits from the areas you picked. Take the ones that
+                fit — drop any you don&apos;t want. Everything can change later.
               </p>
-              <div className="mt-6 space-y-3">
-                {suggestions.map((s) => {
-                  const selected = starters[s.name] !== false;
+
+              <div className="mt-6 space-y-6">
+                {selections.map(({ category, habits }) => {
+                  const cat = categoryFor(category);
+                  if (!cat) return null;
+                  const isExpanded = expanded[category] === true;
+                  const visible = isExpanded ? habits : habits.slice(0, PER_CATEGORY_VISIBLE);
                   return (
-                    <button
-                      key={s.name}
-                      type="button"
-                      aria-pressed={selected}
-                      onClick={() => toggleStarter(s.name)}
-                      className={[
-                        "flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left transition-all duration-150",
-                        "active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-                        selected
-                          ? "border-brand/40 bg-brand/5"
-                          : "border-line bg-card opacity-60",
-                      ].join(" ")}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="flex size-10 shrink-0 items-center justify-center rounded-xl"
-                        style={{ backgroundColor: `${s.color}1A`, color: s.color }}
-                      >
-                        <HabitGlyph name={s.icon} size={20} />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-bold text-ink">{s.name}</span>
-                        <span className="block text-xs text-ink-soft">
-                          {STARTER_HABITS[s.from] ? "Every day" : `For ${sourceLabel(s.from)}`}
-                        </span>
-                      </span>
-                      <span
-                        className={[
-                          "flex size-6 items-center justify-center rounded-full border-2 transition-all duration-150",
-                          selected
-                            ? "border-transparent bg-brand text-white"
-                            : "border-line text-transparent",
-                        ].join(" ")}
-                      >
-                        <CheckIcon size={14} />
-                      </span>
-                    </button>
+                    <section key={category}>
+                      <div className="mb-2.5 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span
+                            aria-hidden="true"
+                            className="flex size-7 items-center justify-center rounded-lg bg-surface text-ink-soft"
+                          >
+                            <HabitGlyph name={cat.glyph} size={15} />
+                          </span>
+                          <h2 className="font-display text-sm font-bold text-ink">{cat.label}</h2>
+                          <span className="text-xs text-ink-soft">
+                            {habits.length} habits
+                          </span>
+                        </div>
+                        {habits.length > PER_CATEGORY_VISIBLE ? (
+                          <button
+                            type="button"
+                            onClick={() => toggleExpanded(category)}
+                            className="shrink-0 text-xs font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                          >
+                            {isExpanded
+                              ? "Show less"
+                              : `Show all ${habits.length}`}
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="space-y-2">
+                        {visible.map((h) => {
+                          const chosen = picked[h.id] !== false;
+                          return (
+                            <button
+                              key={h.id}
+                              type="button"
+                              aria-pressed={chosen}
+                              onClick={() => togglePicked(h.id)}
+                              className={[
+                                "flex w-full items-center gap-3 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
+                                "active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+                                chosen
+                                  ? "border-brand/40 bg-brand/5"
+                                  : "border-line bg-card opacity-60",
+                              ].join(" ")}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className="flex size-9 shrink-0 items-center justify-center rounded-xl"
+                                style={{ backgroundColor: `${h.color}1A`, color: h.color }}
+                              >
+                                <HabitGlyph name={h.icon} size={18} />
+                              </span>
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-sm font-bold text-ink">{h.title}</span>
+                                <span className="block text-xs text-ink-soft">
+                                  {h.minutes} min · {DIFFICULTY_LABEL[h.difficulty]}
+                                </span>
+                              </span>
+                              <span
+                                className={[
+                                  "flex size-6 items-center justify-center rounded-full border-2 transition-all duration-150",
+                                  chosen
+                                    ? "border-transparent bg-brand text-white"
+                                    : "border-line text-transparent",
+                                ].join(" ")}
+                              >
+                                <CheckIcon size={14} />
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
                   );
                 })}
               </div>
+
               <div className="mt-6 flex items-center justify-between gap-3">
                 <Button variant="ghost" onClick={() => setStep((s) => s - 1)}>
                   Back
                 </Button>
                 <Button onClick={finish}>
                   Start today
+                  {totalOffered > 0 ? (
+                    <span className="ml-1 rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold tabular-nums">
+                      {pickedCount}
+                    </span>
+                  ) : null}
                   <ArrowRightIcon size={16} />
                 </Button>
               </div>

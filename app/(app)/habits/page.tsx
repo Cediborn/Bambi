@@ -8,10 +8,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { HabitCard } from "@/features/habits/HabitCard";
 import { HabitForm } from "@/features/habits/HabitForm";
-import { ProfileSuggestions } from "@/features/habits/ProfileSuggestions";
 import { HabitHistory } from "@/features/habits/HabitHistory";
-import { SuggestedHabits } from "@/features/habits/SuggestedHabits";
-import { profileSuggestions, type HabitSuggestion } from "@/features/habits/suggestions";
+import { HabitLibraryPicker } from "@/features/habits/HabitLibraryPicker";
 import { PlusIcon, SnowflakeIcon, XIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { freezesAvailable } from "@/utils/streaks";
@@ -26,16 +24,13 @@ export default function HabitsPage() {
       typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("new") === "1"
   );
-  const [preset, setPreset] = useState<HabitSuggestion | null>(null);
   const freezes = freezesAvailable(state);
 
   const toggleCreating = () => {
     setCreating((v) => !v);
-    setPreset(null);
   };
 
   const existingNames = new Set(state.habits.map((h) => h.name.toLowerCase()));
-  const madeForYou = profileSuggestions(state.profile?.interests ?? [], existingNames);
 
   const history = state.habits
     .map((habit) => ({ habit, dates: state.completions[habit.id] ?? [] }))
@@ -64,19 +59,12 @@ export default function HabitsPage() {
 
       {creating ? (
         <Card className="animate-fade-up mb-6 p-5 sm:p-6">
-          {madeForYou.length > 0 ? (
-            <>
-              <ProfileSuggestions items={madeForYou} activeId={preset?.id ?? null} onPick={setPreset} />
-              <div className="my-5 h-px bg-line" aria-hidden="true" />
-            </>
-          ) : null}
-          <SuggestedHabits activeId={preset?.id ?? null} onPick={setPreset} />
-          <div className="my-5 h-px bg-line" aria-hidden="true" />
-          <HabitForm
-            key={preset?.id ?? "custom"}
-            preset={preset}
-            onSaved={toggleCreating}
+          <HabitLibraryPicker
+            priorityKeys={state.profile?.interests ?? []}
+            ownedNames={existingNames}
           />
+          <div className="my-5 h-px bg-line" aria-hidden="true" />
+          <HabitForm onSaved={toggleCreating} />
         </Card>
       ) : null}
 

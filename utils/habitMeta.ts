@@ -16,6 +16,10 @@ export const HABIT_ICONS: HabitIconMeta[] = [
   { key: "target", label: "Skill" },
   { key: "leaf", label: "Growth" },
   { key: "coffee", label: "Focus" },
+  { key: "compass", label: "Career" },
+  { key: "activity", label: "Activity" },
+  { key: "medal", label: "Achievement" },
+  { key: "pencil", label: "Create" },
 ];
 
 export function habitIconLabel(key: string): string {

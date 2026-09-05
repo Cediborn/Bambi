@@ -72,23 +72,28 @@ challenge check-in.
 
 ## Onboarding & habit generation
 
-- **Interests**: 8 curated categories (Study, Fitness, Mindfulness,
-  Productivity, Sleep, Focus, Well-being, Social) plus free-text custom
-  goals (“Something Else”). Category picks are stored on the profile as
-  keys; custom goals are stored as the raw text the user typed.
-- **Starting habits** (`suggestionsFor` in
-  `features/onboarding/starterHabits.ts`): one starter habit per selected
-  category plus the habits matched to each custom goal — deduped by name
-  and capped at 12 so the picker stays scannable.
-- **Custom goals are interpreted, not keyword-looked-up**: input is
-  matched against known intents (sports, art, coding, business, …); each
-  intent yields habits that serve that goal. A goal that matches nothing
-  **and** reads as too vague is never handed random habits — the UI asks
-  for a short clarification instead. Specific-but-unmatched goals are
-  stored but generate no habits.
+- **Interests**: exactly 13 curated categories (Study, Fitness,
+  Mindfulness, Productivity, Sleep, Focus, Work, Social, Football,
+  Coding, Photography, Skills, Art). The picker shows clean “icon +
+  name” cards with no descriptive subtitles, and there is **no**
+  free-text “Something Else” option — habits come from the curated
+  library only.
+- **Habit library** (`features/habits/habitLibrary.ts`): ~30 curated
+  habits per category (~390 total), structured as `category → habits[]`
+  with metadata (id, difficulty, estimated minutes, frequency
+  suitability, icon, color). Editing the library is a data change, never
+  a UI change.
+- **Onboarding habits are a choice, not an assignment**: after picking
+  categories, BAMBI shows the relevant habits grouped by category and the
+  user selects the ones they want (all offered are pre-selected; every
+  selection is toggleable). Interests are stored on the profile as
+  category keys; legacy keys (“mind”, “wellbeing”, free text) are
+  normalized onto current categories when read.
 - **Adding habits never requires redoing onboarding**: the dashboard's
-  “+ New Habits” opens the same habit builder (`/habits?new=1`), which
-  also offers habits generated from the profile's interests.
+  “+ New Habits” opens the habit builder (`/habits?new=1`), which browses
+  the full library by category (the user's own interests first), lets the
+  user pick multiple habits, and adds them without touching existing
+  habits. Already-owned habits are marked “Added” and never duplicated.
 - **Habit history**: completed days live in `state.completions`; the
   Habits page lists every habit with completions (total count, current
   streak, last completion date). Deleting a habit removes its history by

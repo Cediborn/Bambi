@@ -589,6 +589,14 @@ export function HabitGlyph({ name, ...props }: IconProps & { name: string }) {
       return <ClipboardListIcon {...props} />;
     case "wallet":
       return <WalletIcon {...props} />;
+    case "compass":
+      return <CompassIcon {...props} />;
+    case "activity":
+      return <ActivityIcon {...props} />;
+    case "medal":
+      return <MedalIcon {...props} />;
+    case "pencil":
+      return <PencilIcon {...props} />;
     default:
       return <LeafIcon {...props} />;
   }

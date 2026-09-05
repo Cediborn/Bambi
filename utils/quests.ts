@@ -18,30 +18,30 @@ export interface Quest {
   hint: string;
   /** Icon key rendered via HabitGlyph. */
   icon: string;
-  /** Interest keys (see features/onboarding/starterHabits.ts) this quest serves. */
+  /** Interest keys (see features/habits/habitLibrary.ts) this quest serves. */
   tags: string[];
   rewardXp: number;
 }
 
 const QUEST_POOL: Array<Omit<Quest, "rewardXp">> = [
-  { id: "read", title: "Read 15 pages", hint: "Any book. Paper counts double.", icon: "book", tags: ["study", "mind"] },
-  { id: "water", title: "Drink two liters of water", hint: "Small sips, all day long.", icon: "droplet", tags: ["wellbeing", "fitness"] },
-  { id: "walk", title: "Walk outside for 20 minutes", hint: "No headphones needed.", icon: "dumbbell", tags: ["fitness", "wellbeing"] },
-  { id: "meditate", title: "Meditate for 5 minutes", hint: "Just sit and breathe.", icon: "brain", tags: ["mind", "focus"] },
-  { id: "journal", title: "Write one journal entry", hint: "Three honest sentences.", icon: "heart", tags: ["mind", "creativity"] },
+  { id: "read", title: "Read 15 pages", hint: "Any book. Paper counts double.", icon: "book", tags: ["study", "mindfulness"] },
+  { id: "water", title: "Drink two liters of water", hint: "Small sips, all day long.", icon: "droplet", tags: ["fitness", "mindfulness"] },
+  { id: "walk", title: "Walk outside for 20 minutes", hint: "No headphones needed.", icon: "dumbbell", tags: ["fitness", "mindfulness"] },
+  { id: "meditate", title: "Meditate for 5 minutes", hint: "Just sit and breathe.", icon: "brain", tags: ["mindfulness", "focus"] },
+  { id: "journal", title: "Write one journal entry", hint: "Three honest sentences.", icon: "heart", tags: ["mindfulness"] },
   { id: "move", title: "Move your body for 15 minutes", hint: "Stretch, dance, anything.", icon: "target", tags: ["fitness"] },
-  { id: "learn", title: "Learn one new thing", hint: "A page, a video, a question.", icon: "book", tags: ["study", "creativity"] },
-  { id: "tidy", title: "Tidy one small corner", hint: "One desk. One drawer. Enough.", icon: "moon", tags: ["focus", "wellbeing"] },
-  { id: "connect", title: "Message someone you miss", hint: "A line is plenty.", icon: "music", tags: ["wellbeing", "creativity", "social"] },
-  { id: "sleep", title: "Wind down 30 minutes earlier", hint: "Screens away, lights low.", icon: "moon", tags: ["sleep", "wellbeing"] },
-  { id: "sun", title: "Get 10 minutes of daylight", hint: "Step out, look up.", icon: "coffee", tags: ["wellbeing", "fitness"] },
-  { id: "gratitude", title: "Name three good things", hint: "Write them down somewhere.", icon: "leaf", tags: ["mind", "wellbeing"] },
-  { id: "social-checkin", title: "Check in with a friend", hint: "A quick hello counts.", icon: "users", tags: ["social", "wellbeing"] },
-  { id: "plan-tomorrow", title: "Plan tomorrow's top 3 tasks", hint: "Write them before bed.", icon: "clipboard-list", tags: ["organization", "focus"] },
-  { id: "track-spending", title: "Log today's spending", hint: "Every cent counts.", icon: "wallet", tags: ["finance"] },
-  { id: "inbox-zero", title: "Clear one inbox or notification", hint: "Email, messages, anything.", icon: "clipboard-list", tags: ["organization"] },
+  { id: "learn", title: "Learn one new thing", hint: "A page, a video, a question.", icon: "book", tags: ["study", "skills"] },
+  { id: "tidy", title: "Tidy one small corner", hint: "One desk. One drawer. Enough.", icon: "moon", tags: ["focus", "mindfulness"] },
+  { id: "connect", title: "Message someone you miss", hint: "A line is plenty.", icon: "music", tags: ["social", "mindfulness"] },
+  { id: "sleep", title: "Wind down 30 minutes earlier", hint: "Screens away, lights low.", icon: "moon", tags: ["sleep", "mindfulness"] },
+  { id: "sun", title: "Get 10 minutes of daylight", hint: "Step out, look up.", icon: "coffee", tags: ["mindfulness", "fitness"] },
+  { id: "gratitude", title: "Name three good things", hint: "Write them down somewhere.", icon: "leaf", tags: ["mindfulness"] },
+  { id: "social-checkin", title: "Check in with a friend", hint: "A quick hello counts.", icon: "users", tags: ["social", "mindfulness"] },
+  { id: "plan-tomorrow", title: "Plan tomorrow's top 3 tasks", hint: "Write them before bed.", icon: "clipboard-list", tags: ["productivity", "focus"] },
+  { id: "track-spending", title: "Log today's spending", hint: "Every cent counts.", icon: "wallet", tags: ["work"] },
+  { id: "inbox-zero", title: "Clear one inbox or notification", hint: "Email, messages, anything.", icon: "clipboard-list", tags: ["productivity"] },
   { id: "call-someone", title: "Call or voice-message someone", hint: "Hear a real voice.", icon: "users", tags: ["social"] },
-  { id: "save-something", title: "Move $5 to savings", hint: "Small amounts add up.", icon: "wallet", tags: ["finance", "organization"] },
+  { id: "save-something", title: "Move $5 to savings", hint: "Small amounts add up.", icon: "wallet", tags: ["work", "productivity"] },
 ];
 
 /** Deterministic hash so each date picks a stable quest. */
