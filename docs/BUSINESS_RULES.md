@@ -70,6 +70,30 @@ challenge check-in.
 - **XP is awarded once** (only challenges with `completedAt` count), so
   extra check-ins after completion never pay out again.
 
+## Onboarding & habit generation
+
+- **Interests**: 8 curated categories (Study, Fitness, Mindfulness,
+  Productivity, Sleep, Focus, Well-being, Social) plus free-text custom
+  goals (“Something Else”). Category picks are stored on the profile as
+  keys; custom goals are stored as the raw text the user typed.
+- **Starting habits** (`suggestionsFor` in
+  `features/onboarding/starterHabits.ts`): one starter habit per selected
+  category plus the habits matched to each custom goal — deduped by name
+  and capped at 12 so the picker stays scannable.
+- **Custom goals are interpreted, not keyword-looked-up**: input is
+  matched against known intents (sports, art, coding, business, …); each
+  intent yields habits that serve that goal. A goal that matches nothing
+  **and** reads as too vague is never handed random habits — the UI asks
+  for a short clarification instead. Specific-but-unmatched goals are
+  stored but generate no habits.
+- **Adding habits never requires redoing onboarding**: the dashboard's
+  “+ New Habits” opens the same habit builder (`/habits?new=1`), which
+  also offers habits generated from the profile's interests.
+- **Habit history**: completed days live in `state.completions`; the
+  Habits page lists every habit with completions (total count, current
+  streak, last completion date). Deleting a habit removes its history by
+  design.
+
 ## Journal & reflections
 
 - **Journal**: one entry per date — upserting replaces the entry for that

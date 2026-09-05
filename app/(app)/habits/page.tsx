@@ -8,15 +8,24 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Stagger, StaggerItem } from "@/components/ui/Motion";
 import { HabitCard } from "@/features/habits/HabitCard";
 import { HabitForm } from "@/features/habits/HabitForm";
+import { ProfileSuggestions } from "@/features/habits/ProfileSuggestions";
+import { HabitHistory } from "@/features/habits/HabitHistory";
 import { SuggestedHabits } from "@/features/habits/SuggestedHabits";
-import type { HabitSuggestion } from "@/features/habits/suggestions";
+import { profileSuggestions, type HabitSuggestion } from "@/features/habits/suggestions";
 import { PlusIcon, SnowflakeIcon, XIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { freezesAvailable } from "@/utils/streaks";
 
 export default function HabitsPage() {
   const { state } = useApp();
-  const [creating, setCreating] = useState(false);
+  // "+ New Habits" from the dashboard lands here with ?new=1 — open the
+  // habit builder directly, no onboarding required. The (app) layout only
+  // renders this page client-side, so `window` is always available.
+  const [creating, setCreating] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("new") === "1"
+  );
   const [preset, setPreset] = useState<HabitSuggestion | null>(null);
   const freezes = freezesAvailable(state);
 
@@ -24,6 +33,14 @@ export default function HabitsPage() {
     setCreating((v) => !v);
     setPreset(null);
   };
+
+  const existingNames = new Set(state.habits.map((h) => h.name.toLowerCase()));
+  const madeForYou = profileSuggestions(state.profile?.interests ?? [], existingNames);
+
+  const history = state.habits
+    .map((habit) => ({ habit, dates: state.completions[habit.id] ?? [] }))
+    .filter((h) => h.dates.length > 0)
+    .sort((a, b) => b.dates[b.dates.length - 1].localeCompare(a.dates[a.dates.length - 1]));
 
   return (
     <div>
@@ -47,6 +64,12 @@ export default function HabitsPage() {
 
       {creating ? (
         <Card className="animate-fade-up mb-6 p-5 sm:p-6">
+          {madeForYou.length > 0 ? (
+            <>
+              <ProfileSuggestions items={madeForYou} activeId={preset?.id ?? null} onPick={setPreset} />
+              <div className="my-5 h-px bg-line" aria-hidden="true" />
+            </>
+          ) : null}
           <SuggestedHabits activeId={preset?.id ?? null} onPick={setPreset} />
           <div className="my-5 h-px bg-line" aria-hidden="true" />
           <HabitForm
@@ -77,6 +100,16 @@ export default function HabitsPage() {
           ))}
         </Stagger>
       )}
+
+      {history.length > 0 ? (
+        <div className="mt-10">
+          <HabitHistory
+            items={history}
+            completions={state.completions}
+            freezeUsed={state.freezeUsed}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

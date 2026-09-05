@@ -3,6 +3,8 @@
  * Colors are drawn from HABIT_COLORS and icons from HABIT_ICONS so a
  * picked suggestion renders with the same styling as a hand-built habit.
  */
+import { suggestionsFor } from "@/features/onboarding/starterHabits";
+
 export interface HabitSuggestion {
   id: string;
   name: string;
@@ -80,4 +82,23 @@ export const SUGGESTION_CATEGORIES: SuggestionCategory[] = [
 /** Flatten every suggestion across categories, in display order. */
 export function allSuggestions(): HabitSuggestion[] {
   return SUGGESTION_CATEGORIES.flatMap((c) => c.items);
+}
+
+/**
+ * Habits generated from the profile's interests and custom goals, shaped as
+ * HabitSuggestions so they flow through the same pick → tweak → save flow.
+ * Habits the user already has are filtered out (name-insensitive).
+ */
+export function profileSuggestions(
+  interests: string[],
+  existingNames: Set<string>
+): HabitSuggestion[] {
+  return suggestionsFor(interests)
+    .filter((h) => !existingNames.has(h.name.toLowerCase()))
+    .map((h) => ({
+      id: `profile-${h.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+      name: h.name,
+      icon: h.icon,
+      color: h.color,
+    }));
 }

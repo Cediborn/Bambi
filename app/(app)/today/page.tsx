@@ -1,8 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Reveal, RevealBlur, ScaleReveal, SlideIn } from "@/components/ui/Motion";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { PlusIcon } from "@/components/icons";
 import { CheckInCard } from "@/features/today/CheckInCard";
 import { FocusBanner } from "@/features/today/FocusBanner";
 import { GoalRow } from "@/features/today/GoalRow";
@@ -27,6 +30,7 @@ import { isScheduledOn } from "@/utils/streaks";
  */
 export default function TodayPage() {
   const { state, api } = useApp();
+  const router = useRouter();
   const today = todayKey();
 
   const goals = state.habits.filter((h) => isScheduledOn(h, today));
@@ -81,11 +85,20 @@ export default function TodayPage() {
                       : "A softer day — rest counts as growth."}
                   </p>
                 </div>
+                <div className="flex shrink-0 items-center gap-2">
                 {goals.length > 0 ? (
                   <span className="font-mono rounded-full bg-brand/10 px-2.5 py-1 text-xs font-bold tabular-nums text-brand">
                     {done}/{goals.length}
                   </span>
                 ) : null}
+                <Button
+                  size="sm"
+                  onClick={() => router.push("/habits?new=1")}
+                  icon={<PlusIcon size={15} />}
+                >
+                  New Habits
+                </Button>
+                </div>
               </div>
 
               {goals.length === 0 ? (
