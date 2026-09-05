@@ -22,6 +22,9 @@ const STEPS = ["Welcome", "Name", "Avatar", "Interests", "First habits"];
 /** How many habits per category the picker shows before "Show all". */
 const PER_CATEGORY_VISIBLE = 8;
 
+/** Max categories a user can pick during onboarding. */
+const MAX_INTERESTS = 4;
+
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
 export default function OnboardingPage() {
@@ -36,11 +39,21 @@ export default function OnboardingPage() {
   const [picked, setPicked] = useState<Record<string, boolean>>({});
   /** category key -> show the full library for that category. */
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  /** Shown when the user tries to pick more than MAX_INTERESTS. */
+  const [maxHint, setMaxHint] = useState(false);
 
   const toggleInterest = (key: string) => {
-    setInterests((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
-    );
+    if (interests.includes(key)) {
+      setMaxHint(false);
+      setInterests((prev) => prev.filter((k) => k !== key));
+      return;
+    }
+    if (interests.length >= MAX_INTERESTS) {
+      setMaxHint(true);
+      return;
+    }
+    setMaxHint(false);
+    setInterests((prev) => [...prev, key]);
   };
 
   const selections = onboardingSelections(interests);
@@ -193,21 +206,28 @@ export default function OnboardingPage() {
               <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                 Pick what matters to you right now and build habits around it.
               </p>
-              <div className="mt-6 grid grid-cols-2 gap-3" role="group" aria-label="Interests">
+              <p className="mt-2 text-xs font-semibold text-ink-soft">
+                Pick up to {MAX_INTERESTS} — {interests.length} selected
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-3" role="group" aria-label="Interests">
                 {HABIT_CATEGORIES.map((interest) => {
                   const selected = interests.includes(interest.key);
+                  const atMax = interests.length >= MAX_INTERESTS;
                   return (
                     <button
                       key={interest.key}
                       type="button"
                       aria-pressed={selected}
+                      aria-disabled={atMax && !selected}
                       onClick={() => toggleInterest(interest.key)}
                       className={[
                         "flex items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
                         "active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                         selected
                           ? "border-brand/40 bg-brand/10"
-                          : "border-line bg-card hover:border-brand/30",
+                          : atMax
+                            ? "border-line/60 bg-card/60 opacity-70"
+                            : "border-line bg-card hover:border-brand/30",
                       ].join(" ")}
                     >
                       <span
@@ -228,6 +248,12 @@ export default function OnboardingPage() {
                   );
                 })}
               </div>
+
+              {maxHint ? (
+                <p className="mt-3 rounded-xl bg-surface px-3.5 py-2.5 text-xs font-semibold text-ink-soft">
+                  You can pick up to {MAX_INTERESTS}. Deselect one to choose another.
+                </p>
+              ) : null}
 
               <div className="mt-6 flex items-center justify-between gap-3">
                 <Button variant="ghost" onClick={() => setStep((s) => s - 1)}>

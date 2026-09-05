@@ -74,10 +74,11 @@ challenge check-in.
 
 - **Interests**: exactly 13 curated categories (Study, Fitness,
   Mindfulness, Productivity, Sleep, Focus, Work, Social, Football,
-  Coding, Photography, Skills, Art). The picker shows clean “icon +
+  Coding,  Photography, Skills, Art). The picker shows clean “icon +
   name” cards with no descriptive subtitles, and there is **no**
   free-text “Something Else” option — habits come from the curated
-  library only.
+  library only. Users can select **at most 4 categories** (a hint
+  explains the cap when they try to pick a fifth).
 - **Habit library** (`features/habits/habitLibrary.ts`): ~30 curated
   habits per category (~390 total), structured as `category → habits[]`
   with metadata (id, difficulty, estimated minutes, frequency
