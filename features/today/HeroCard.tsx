@@ -114,7 +114,7 @@ export function HeroCard() {
                 </div>
               </div>
 
-              <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+              <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-extrabold text-white backdrop-blur-sm">
                   <SparklesIcon size={15} />
                   +{quest.rewardXp} XP
@@ -169,15 +169,15 @@ export function HeroCard() {
           </div>
 
           {/* Numbers rail */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:grid-cols-1 lg:gap-5">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <span className="flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-1 lg:gap-5">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <span className="flex size-8 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
                 <FlameIcon size={16} />
               </span>
-              <div>
+              <div className="min-w-0">
                 <CountUp
                   value={streak}
-                  className="font-mono text-xl sm:text-2xl lg:text-3xl font-bold tabular-nums tracking-tight"
+                  className="font-mono text-lg sm:text-2xl lg:text-3xl font-bold tabular-nums tracking-tight"
                 />
                 <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
                   Day streak
@@ -185,14 +185,14 @@ export function HeroCard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
-              <span className="flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <span className="flex size-8 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
                 <BoltIcon size={16} />
               </span>
-              <div>
+              <div className="min-w-0">
                 <CountUp
                   value={xp}
-                  className="font-mono text-xl sm:text-2xl lg:text-3xl font-bold tabular-nums tracking-tight"
+                  className="font-mono text-lg sm:text-2xl lg:text-3xl font-bold tabular-nums tracking-tight"
                 />
                 <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
                   Total XP
@@ -202,7 +202,7 @@ export function HeroCard() {
 
             <div className="flex items-center gap-2 sm:gap-3">
               {/* keyed by level so the pop replays on level-up */}
-              <div key={level} className="animate-pop flex items-center gap-2 sm:gap-3">
+              <div key={level} className="animate-pop flex min-w-0 items-center gap-2 sm:gap-3">
                 <ProgressRing
                   progress={levelProgress(xp)}
                   size={48}
