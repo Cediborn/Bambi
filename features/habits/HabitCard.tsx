@@ -47,10 +47,10 @@ export function HabitCard({ habit }: { habit: Habit }) {
     <Card size="compact" className="group flex items-center gap-4">
       <span
         aria-hidden="true"
-        className="flex size-12 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105"
+        className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105"
         style={{ backgroundColor: `${color}1A`, color }}
       >
-        <HabitGlyph name={habit.icon} size={24} />
+        <HabitGlyph name={habit.icon} size={20} />
       </span>
 
       <div className="min-w-0 flex-1">

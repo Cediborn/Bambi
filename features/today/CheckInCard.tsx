@@ -26,14 +26,13 @@ export function CheckInCard() {
   return (
     <Prompt onCheckIn={(mood) => { sounds.checkin(); api.upsertJournal(today, mood, ""); }} />
   );
-}
-
-function Prompt({ onCheckIn }: { onCheckIn: (mood: number) => void }) {
+}function Prompt({ onCheckIn }: { onCheckIn: (mood: number) => void }) {
   const [mood, setMood] = useState<number | null>(null);
 
   return (
-    <Card tone="sky" size="featured">
-      <div className="mb-3 sm:mb-4 flex items-center gap-3">          <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-sky/10 text-sky">
+    <Card tone="sky" size="featured" className="overflow-visible">
+      <div className="mb-3 sm:mb-4 flex items-center gap-3">
+        <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-sky/10 text-sky">
           <QuoteIcon size={18} />
         </span>
         <div>
@@ -44,7 +43,7 @@ function Prompt({ onCheckIn }: { onCheckIn: (mood: number) => void }) {
 
       <MoodPicker value={mood} onChange={setMood} />
 
-      <div className="mt-5 flex justify-end">
+      <div className="mt-4 flex justify-end">
         <Button onClick={() => mood !== null && onCheckIn(mood)} disabled={mood === null}>
           Reflect
           <ArrowRightIcon size={16} />
@@ -61,12 +60,11 @@ const MOOD_LINES: Record<number, string> = {
   3: "Okay is a solid day. Log it and move on.",
   4: "Good. That's a day worth keeping.",
   5: "Amazing. Don't forget this feeling.",
-};
-
-function Summary({ entry }: { entry: JournalEntry }) {
+};function Summary({ entry }: { entry: JournalEntry }) {
   return (
-    <Card tone="sky" className="animate-pop p-4 sm:p-5">
-      <div className="flex items-start gap-3">          <span className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-2xl bg-mint/15 text-good">
+    <Card tone="sky" className="animate-pop p-4 sm:p-5 overflow-visible">
+      <div className="flex items-start gap-3">
+        <span className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-2xl bg-mint/15 text-good">
           <SparklesIcon size={20} />
         </span>
         <div className="min-w-0 flex-1">

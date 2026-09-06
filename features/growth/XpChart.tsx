@@ -79,8 +79,7 @@ export function XpChart() {
             const height = day.xp > 0 ? Math.max(8, (day.xp / max) * 100) : 3;
             return (
               <div key={day.key} className="group flex flex-1 flex-col items-center gap-1.5">
-                <div className="flex h-32 w-full items-end">
-                  <motion.div
+                <div className="flex h-32 w-full items-end">                  <motion.div
                     className={[
                       "w-full origin-bottom rounded-t-md transition-shadow duration-200",
                       day.isToday
@@ -97,7 +96,8 @@ export function XpChart() {
                     title={`${day.key}: ${day.xp} XP`}
                   >
                     {day.xp > 0 && day.xp === max ? (
-                      <StarIcon size={13} className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-achievement" />
+                      <StarIcon size={11} className="absolute -top-3 left-1/2 -translate-x-1/2 text-achievement"
+                      />
                     ) : null}
                   </motion.div>
                 </div>

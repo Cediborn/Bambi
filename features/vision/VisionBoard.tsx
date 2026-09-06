@@ -120,36 +120,39 @@ export function VisionBoard() {
               <Reveal key={item.id} delay={Math.min(i * 0.04, 0.3)}>
                 <HoverLift>
                   <div
-                    className="group relative flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-2xl border p-4"
+                    className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-3 sm:p-4"
                     style={{
                       backgroundColor: `${cat.color}12`,
                       borderColor: `${cat.color}30`,
+                      aspectRatio: '4/5',
+                      minHeight: '140px',
+                      maxHeight: '220px',
                     }}
                   >
                     <div
                       aria-hidden="true"
-                      className="absolute -right-8 -top-8 size-24 rounded-full opacity-25 blur-2xl"
+                      className="absolute -right-6 -top-6 sm:-right-8 sm:-top-8 size-20 sm:size-24 rounded-full opacity-25 blur-2xl"
                       style={{ backgroundColor: cat.color }}
                     />
                     <span
-                      className="flex size-9 items-center justify-center rounded-xl text-white shadow-card"
+                      className="flex size-8 sm:size-9 items-center justify-center rounded-xl text-white shadow-card shrink-0"
                       style={{ backgroundColor: cat.color }}
                     >
-                      <Icon size={18} />
+                      <Icon size={16} />
                     </span>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">
+                    <div className="mt-auto flex flex-col justify-end">
+                      <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">
                         {cat.label}
                       </p>
-                      <p className="mt-1 text-sm font-semibold leading-snug text-ink">{item.text}</p>
+                      <p className="mt-0.5 text-xs sm:text-sm font-semibold leading-snug text-ink line-clamp-4">{item.text}</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => api.removeVisionItem(item.id)}
                       aria-label={`Remove ${item.text}`}
-                      className="absolute right-2 top-2 rounded-lg p-1.5 text-ink-soft opacity-0 transition-opacity hover:bg-bad/10 hover:text-bad focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bad group-hover:opacity-100"
+                      className="absolute right-1.5 top-1.5 rounded-lg p-1 text-ink-soft opacity-0 transition-opacity hover:bg-bad/10 hover:text-bad focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bad group-hover:opacity-100"
                     >
-                      <XIcon size={14} />
+                      <XIcon size={12} />
                     </button>
                   </div>
                 </HoverLift>

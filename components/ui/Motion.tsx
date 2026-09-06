@@ -57,7 +57,7 @@ export function RevealBlur({
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
+      initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(8px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.65, delay, ease: EASE }}
     >
@@ -72,7 +72,7 @@ export function SlideIn({
   delay = 0,
   className,
   from = "left",
-  distance = 22,
+  distance = 16,
 }: {
   children: ReactNode;
   delay?: number;
@@ -162,7 +162,7 @@ export function CountUp({
 }
 
 const staggerItem: Variants = {
-  hidden: { opacity: 0, scale: 0.7, y: 6 },
+  hidden: { opacity: 0, scale: 0.92, y: 4 },
   show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
 };
 

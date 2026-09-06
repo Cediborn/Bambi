@@ -66,8 +66,8 @@ export function WeekChart() {
                     >
                       {full ? (
                         <StarIcon
-                          size={14}
-                          className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-achievement"
+                          size={12}
+                          className="absolute -top-3 left-1/2 -translate-x-1/2 text-achievement"
                         />
                       ) : null}
                     </motion.div>

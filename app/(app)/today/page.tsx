@@ -62,7 +62,7 @@ export default function TodayPage() {
         {/* Left — the garden & today's work */}
         <section className="space-y-4 sm:space-y-6 lg:col-span-3" aria-label="Today's quest and focus">
           <div data-tour="today-quest">
-            <SlideIn from="left" delay={0.05}>
+            <SlideIn from="left" delay={0.05} className="overflow-visible">
               <QuestCard />
             </SlideIn>
           </div>
@@ -74,7 +74,7 @@ export default function TodayPage() {
           </div>
 
           <div data-tour="today-focus">
-            <Reveal delay={0.15}>
+            <Reveal delay={0.15} className="overflow-visible">
               <Card tone="indigo" size="featured">
                 <div className="mb-4 flex items-center justify-between gap-3">
                 <div>

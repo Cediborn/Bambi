@@ -72,7 +72,7 @@ export function QuestCard() {
             {xpFlash ? (
               <span
                 aria-hidden="true"
-                className="animate-xp-float pointer-events-none absolute -top-2.5 right-0 rounded-full bg-achievement px-2 py-0.5 text-[10px] font-extrabold text-ink shadow-card"
+                className="animate-xp-float pointer-events-none absolute -top-2 right-0 sm:-top-2.5 rounded-full bg-achievement px-2 py-0.5 text-[10px] font-extrabold text-ink shadow-card"
               >
                 +{XP_PER_QUEST} XP
               </span>

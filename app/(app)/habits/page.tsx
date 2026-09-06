@@ -80,7 +80,7 @@ export default function HabitsPage() {
           }
         />
       ) : (
-        <Stagger className="space-y-3" stagger={0.05}>
+        <Stagger className="space-y-3 overflow-visible" stagger={0.05}>
           {state.habits.map((habit) => (
             <StaggerItem key={habit.id}>
               <HabitCard habit={habit} />

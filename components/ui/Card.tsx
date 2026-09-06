@@ -44,12 +44,12 @@ export function Card({
   return (
     <div
       className={[
-        "border border-line bg-card shadow-card",
+        "border border-line bg-card shadow-card box-border",
         "dark:border-white/[0.06] dark:bg-white/[0.03] dark:shadow-[0_12px_40px_-14px_rgb(0_0_0/0.55)] dark:backdrop-blur-[16px]",
         size === "compact"
-          ? "rounded-xl p-4"
+          ? "rounded-xl p-3 sm:p-4"
           : size === "featured"
-            ? "rounded-3xl p-6 sm:p-7"
+            ? "rounded-3xl p-5 sm:p-6 lg:p-7"
             : "rounded-2xl",
         TONES[tone],
         hover ? "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift" : "",

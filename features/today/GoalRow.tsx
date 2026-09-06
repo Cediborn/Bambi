@@ -58,7 +58,7 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
       {xpFlash ? (
         <span
           aria-hidden="true"
-          className="animate-xp-float pointer-events-none absolute left-6 top-0 rounded-full bg-good px-2 py-0.5 text-[10px] sm:text-[11px] font-extrabold text-white shadow-card"
+          className="animate-xp-float pointer-events-none absolute left-4 top-0 sm:left-6 sm:top-0 rounded-full bg-good px-2 py-0.5 text-[10px] sm:text-[11px] font-extrabold text-white shadow-card"
         >
           +{XP_PER_GOAL} XP
         </span>
