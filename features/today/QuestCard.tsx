@@ -45,7 +45,7 @@ export function QuestCard() {
             </p>
             <h2
               className={[
-                "font-display mt-0.5 truncate text-base sm:text-lg font-extrabold tracking-tight transition-colors",
+                "font-display mt-0.5 min-w-0 break-words text-base sm:text-lg font-extrabold tracking-tight transition-colors",
                 done ? "text-ink-soft line-through decoration-line" : "text-ink",
               ].join(" ")}
             >

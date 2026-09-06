@@ -222,7 +222,7 @@ export default function OnboardingPage() {
                       aria-disabled={atMax && !selected}
                       onClick={() => toggleInterest(interest.key)}
                       className={[
-                        "flex items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
+                        "flex min-w-0 items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
                         "active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                         selected
                           ? "border-brand/40 bg-brand/10"
@@ -239,7 +239,7 @@ export default function OnboardingPage() {
                         <HabitGlyph name={interest.glyph} size={18} />
                       </span>
                       <span
-                        className={`block text-sm font-semibold leading-tight ${
+                        className={`block min-w-0 break-words text-sm font-semibold leading-tight ${
                           selected ? "text-brand" : "text-ink"
                         }`}
                       >
@@ -336,7 +336,7 @@ export default function OnboardingPage() {
                                 <HabitGlyph name={h.icon} size={18} />
                               </span>
                               <span className="min-w-0 flex-1">
-                                <span className="block truncate text-sm font-bold text-ink">{h.title}</span>
+                                <span className="block break-words text-sm font-bold text-ink">{h.title}</span>
                                 <span className="block text-xs text-ink-soft">
                                   {h.minutes} min · {DIFFICULTY_LABEL[h.difficulty]}
                                 </span>

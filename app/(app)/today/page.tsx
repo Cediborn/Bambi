@@ -76,8 +76,8 @@ export default function TodayPage() {
           <div data-tour="today-focus">
             <Reveal delay={0.15} className="overflow-visible">
               <Card tone="indigo" size="featured">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
                   <h2 className="font-display text-base font-bold text-ink">Today&apos;s Focus</h2>
                   <p className="mt-0.5 text-xs text-ink-soft">
                     {goals.length > 0

@@ -60,7 +60,7 @@ export function MoodPicker({ value, onChange }: MoodPickerProps) {
     <div
       role="radiogroup"
       aria-label="How are you feeling?"
-      className="grid grid-cols-5 gap-2"
+      className="grid grid-cols-5 gap-1.5 sm:gap-2"
     >
       {MOODS.map((m) => {
         const selected = value === m.value;
@@ -85,7 +85,7 @@ export function MoodPicker({ value, onChange }: MoodPickerProps) {
               onChange(MOODS[next].value);
             }}
             className={[
-              "flex flex-col items-center gap-1.5 rounded-xl border px-1 py-3",
+              "flex min-w-0 flex-col items-center gap-1.5 rounded-xl border px-1 py-3",
               "transition-all duration-200 ease-out",
               "active:scale-95",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
@@ -110,7 +110,7 @@ export function MoodPicker({ value, onChange }: MoodPickerProps) {
             </span>
             <span
               className={[
-                "text-xs font-semibold transition-colors",
+                "break-words text-[10px] font-semibold leading-tight transition-colors sm:text-xs",
                 selected ? "text-ink" : "text-ink-soft",
               ].join(" ")}
             >

@@ -105,7 +105,7 @@ export function HeroCard() {
                   </p>
                   <p
                     className={[
-                      "truncate font-bold transition-colors",
+                      "min-w-0 break-words font-bold transition-colors",
                       questDone ? "text-white/80 line-through decoration-white/50" : "text-white",
                     ].join(" ")}
                   >
@@ -114,7 +114,7 @@ export function HeroCard() {
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-3">
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-extrabold text-white backdrop-blur-sm">
                   <SparklesIcon size={15} />
                   +{quest.rewardXp} XP

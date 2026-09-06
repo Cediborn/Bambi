@@ -40,7 +40,7 @@ export function ChallengeCard({ challenge }: { challenge: Challenge }) {
             {complete ? <CheckCircleIcon size={22} /> : <FlagIcon size={22} />}
           </span>
           <div className="min-w-0">
-            <h3 className="truncate font-display text-sm font-bold text-ink">{challenge.title}</h3>
+            <h3 className="min-w-0 break-words font-display text-sm font-bold text-ink">{challenge.title}</h3>
             <p className="text-xs text-ink-soft">
               Day <span className="font-mono font-semibold tabular-nums">{dayNumber}</span> of{" "}
               <span className="font-mono font-semibold tabular-nums">{challenge.days}</span>

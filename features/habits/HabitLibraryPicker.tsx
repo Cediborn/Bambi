@@ -142,7 +142,7 @@ export function HabitLibraryPicker({
                       <HabitGlyph name={h.icon} size={14} />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-bold leading-tight text-ink">
+                      <span className="block break-words text-sm font-bold leading-tight text-ink">
                         {h.title}
                       </span>
                       <span className="block text-[10px] text-ink-soft">

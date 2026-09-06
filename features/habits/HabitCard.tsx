@@ -55,7 +55,7 @@ export function HabitCard({ habit }: { habit: Habit }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <h3 className="font-display truncate text-sm sm:text-base font-bold text-ink">{habit.name}</h3>
+          <h3 className="font-display min-w-0 break-words text-sm sm:text-base font-bold text-ink">{habit.name}</h3>
           <span className="hidden rounded-full bg-line/50 px-1.5 py-0.5 text-[10px] font-semibold text-ink-soft sm:inline-block">
             {habitIconLabel(habit.icon)}
           </span>

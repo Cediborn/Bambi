@@ -50,7 +50,7 @@ export function HabitHistory({
                 <HabitGlyph name={habit.icon} size={14} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold text-ink">{habit.name}</p>
+                <p className="break-words text-sm font-bold text-ink">{habit.name}</p>
                 <p className="text-[10px] text-ink-soft">
                   Completed {dates.length}× · Last: {fullDate(last)}
                 </p>

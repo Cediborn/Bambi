@@ -75,7 +75,7 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
       <div className="min-w-0 flex-1">
         <p
           className={[
-            "truncate font-semibold transition-colors duration-200",
+            "break-words leading-snug font-semibold transition-colors duration-200",
             done ? "text-ink-soft line-through decoration-line" : "text-ink",
           ].join(" ")}
         >

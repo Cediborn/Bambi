@@ -126,7 +126,7 @@ export default function GrowthPage() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className="truncate text-xs sm:text-sm font-bold text-ink">{habit.name}</p>
+                        <p className="min-w-0 break-words text-xs sm:text-sm font-bold text-ink">{habit.name}</p>
                         <p className="shrink-0 text-[10px] sm:text-xs font-semibold text-ink-soft">
                           {done} done
                           {streak > 0 ? ` · ${streak}-day streak` : ""}
