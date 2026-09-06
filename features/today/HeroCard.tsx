@@ -57,11 +57,11 @@ export function HeroCard() {
       {/* Soft drifting highlights + grain so the panel never looks flat */}
       <div
         aria-hidden="true"
-        className="animate-hero-shimmer absolute -right-20 -top-24 size-80 rounded-full bg-white/15 blur-3xl"
+        className="animate-hero-shimmer absolute -right-12 -top-16 size-60 rounded-full bg-white/15 blur-3xl sm:-right-20 sm:-top-24 sm:size-80"
       />
       <div
         aria-hidden="true"
-        className="absolute -bottom-28 left-1/4 size-72 rounded-full bg-white/10 blur-3xl"
+        className="absolute -bottom-16 left-1/4 size-56 rounded-full bg-white/10 blur-3xl sm:-bottom-28 sm:size-72"
       />
       <div aria-hidden="true" className="grain-overlay absolute inset-0 opacity-[0.08]" />
 
@@ -169,54 +169,54 @@ export function HeroCard() {
           </div>
 
           {/* Numbers rail */}
-          <div className="grid grid-cols-3 gap-4 lg:grid-cols-1 lg:gap-5">
-            <div className="flex items-center gap-3">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
-                <FlameIcon size={20} />
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:grid-cols-1 lg:gap-5">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
+                <FlameIcon size={16} />
               </span>
               <div>
                 <CountUp
                   value={streak}
-                  className="font-mono text-2xl font-bold tabular-nums tracking-tight sm:text-3xl"
+                  className="font-mono text-xl sm:text-2xl lg:text-3xl font-bold tabular-nums tracking-tight"
                 />
-                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
+                <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
                   Day streak
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
-                <BoltIcon size={20} />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="flex size-9 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
+                <BoltIcon size={16} />
               </span>
               <div>
                 <CountUp
                   value={xp}
-                  className="font-mono text-2xl font-bold tabular-nums tracking-tight sm:text-3xl"
+                  className="font-mono text-xl sm:text-2xl lg:text-3xl font-bold tabular-nums tracking-tight"
                 />
-                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
+                <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
                   Total XP
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* keyed by level so the pop replays on level-up */}
-              <div key={level} className="animate-pop flex items-center gap-3">
+              <div key={level} className="animate-pop flex items-center gap-2 sm:gap-3">
                 <ProgressRing
                   progress={levelProgress(xp)}
-                  size={64}
-                  stroke={7}
+                  size={48}
+                  stroke={6}
                   tone="text-mint"
                   trackClassName="text-white/20"
                 >
-                  <span className="font-mono text-sm font-bold">Lv {level}</span>
+                  <span className="font-mono text-[10px] sm:text-sm font-bold">Lv {level}</span>
                 </ProgressRing>
                 <div className="hidden sm:block">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
+                  <p className="text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
                     Level
                   </p>
-                  <p className="text-xs font-bold text-white/90">{levelTitle(level)}</p>
+                  <p className="text-[10px] sm:text-xs font-bold text-white/90">{levelTitle(level)}</p>
                 </div>
               </div>
             </div>

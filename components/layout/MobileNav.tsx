@@ -71,27 +71,26 @@ export function MobileNav() {
           {PINNED.map((item) => {
             const active = pathname === item.href;
             const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={[
-                  "flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold",
-                  "transition-colors duration-200",
-                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-                  active ? "" : "text-ink-soft hover:text-ink",
-                ].join(" ")}
-                style={active ? { color: item.accent } : undefined}
-              >
-                <span
-                  className="flex h-7 w-10 items-center justify-center rounded-full transition-all duration-200"
-                  style={active ? { backgroundColor: `${item.accent}14` } : undefined}
+            return (          <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={[
+                    "flex flex-col items-center gap-0.5 py-2 text-[9px] font-semibold",
+                    "transition-colors duration-200",
+                    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+                    active ? "" : "text-ink-soft hover:text-ink",
+                  ].join(" ")}
+                  style={active ? { color: item.accent } : undefined}
                 >
-                  <Icon size={18} strokeWidth={active ? 2.5 : 2} />
-                </span>
-                {item.label}
-              </Link>
+                  <span
+                    className="flex h-6 w-9 items-center justify-center rounded-full transition-all duration-200"
+                    style={active ? { backgroundColor: `${item.accent}14` } : undefined}
+                  >
+                    <Icon size={16} strokeWidth={active ? 2.5 : 2} />
+                  </span>
+                  {item.label}
+                </Link>
             );
           })}
 
@@ -140,13 +139,13 @@ export function MobileNav() {
               aria-modal="true"
               aria-label="More sections"
               tabIndex={-1}
-              className="fixed inset-x-0 bottom-[calc(4.2rem+env(safe-area-inset-bottom))] z-30 mx-auto max-w-lg rounded-3xl border border-line bg-card/95 p-4 shadow-lift backdrop-blur-xl dark:border-white/[0.08] lg:hidden"
-              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              className="fixed inset-x-4 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 mx-auto max-w-xs sm:max-w-sm rounded-3xl border border-line bg-card/95 p-3 sm:p-4 shadow-lift backdrop-blur-xl dark:border-white/[0.08] lg:hidden"
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.98 }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                 {MORE_ITEMS.map((item) => {
                   const active = pathname === item.href;
                   const Icon = item.icon;

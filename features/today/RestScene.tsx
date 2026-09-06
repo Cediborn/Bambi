@@ -10,12 +10,12 @@ import { topStreak, totalCompletions } from "@/utils/streaks";
 
 /** Floating leaves — each drifts up on its own arc, delay and duration. */
 const FLOATING_LEAVES = [
-  { top: "10%", left: "7%", size: 18, delay: 0, duration: 7 },
-  { top: "30%", left: "90%", size: 14, delay: 1.6, duration: 8 },
-  { top: "58%", left: "3%", size: 12, delay: 3.1, duration: 6.5 },
-  { top: "68%", left: "93%", size: 16, delay: 4.4, duration: 7.5 },
-  { top: "6%", left: "40%", size: 12, delay: 5.2, duration: 8.4 },
-  { top: "40%", left: "82%", size: 13, delay: 2.4, duration: 9 },
+  { top: "10%", left: "7%", size: 14, delay: 0, duration: 7 },
+  { top: "30%", left: "85%", size: 10, delay: 1.6, duration: 8 },
+  { top: "58%", left: "3%", size: 10, delay: 3.1, duration: 6.5 },
+  { top: "68%", left: "88%", size: 12, delay: 4.4, duration: 7.5 },
+  { top: "6%", left: "40%", size: 10, delay: 5.2, duration: 8.4 },
+  { top: "40%", left: "78%", size: 10, delay: 2.4, duration: 9 },
 ];
 
 /**
@@ -48,7 +48,7 @@ export function RestScene() {
       ))}
 
       {/* The user's tree, resting */}
-      <div className="animate-breathe mx-auto w-36 sm:w-40">
+      <div className="animate-breathe mx-auto w-32 sm:w-36">
         <TreeSVG info={info} />
       </div>
 
