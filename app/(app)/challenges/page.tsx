@@ -55,19 +55,20 @@ export default function ChallengesPage() {
 
       {/* Starters */}
       <Reveal>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
           {STARTERS.map((s) => (
             <HoverLift key={s.title}>
-              <Card tone="warn" size="compact" className="flex h-full flex-col gap-3 p-5">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-rose/15 text-rose">
-                  <FlagIcon size={20} />
+              <Card tone="warn" size="compact" className="flex h-full flex-col gap-2.5 p-4 sm:p-5">
+                <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-rose/15 text-rose">
+                  <FlagIcon size={18} sm:size={20} />
                 </span>
                 <div className="flex-1">
-                  <p className="font-display text-sm font-bold text-ink">{s.title}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-ink-soft">{s.blurb}</p>
+                  <p className="font-display text-xs sm:text-sm font-bold text-ink">{s.title}</p>
+                  <p className="mt-1 text-[10px] sm:text-xs leading-relaxed text-ink-soft">{s.blurb}</p>
                 </div>
                 <Button
-                  size="sm"
+                  size="xs"
+                  sm:size="sm"
                   variant="secondary"
                   onClick={() => api.addChallenge({ title: s.title, days: s.days, xpReward: s.days * 10 })}
                 >
@@ -81,9 +82,9 @@ export default function ChallengesPage() {
 
       {/* Custom challenge */}
       <Reveal delay={0.05}>
-        <Card tone="violet" className="p-5 sm:p-6">
+        <Card tone="violet" className="p-4 sm:p-5">
           {customOpen ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <Field label="Challenge name" htmlFor="challenge-title" hint="Keep it concrete — one verb, one target.">
                 <Input
                   id="challenge-title"
@@ -95,8 +96,8 @@ export default function ChallengesPage() {
                 />
               </Field>
               <div>
-                <p className="mb-2 text-sm font-semibold text-ink">Length</p>
-                <div role="group" aria-label="Challenge length" className="flex flex-wrap gap-2">
+                <p className="mb-1.5 text-xs sm:text-sm font-semibold text-ink">Length</p>
+                <div role="group" aria-label="Challenge length" className="flex flex-wrap gap-1.5">
                   {DAY_OPTIONS.map((d) => (
                     <button
                       key={d}
@@ -104,7 +105,7 @@ export default function ChallengesPage() {
                       aria-pressed={days === d}
                       onClick={() => setDays(d)}
                       className={[
-                        "rounded-full px-4 py-2 font-mono text-sm font-bold tabular-nums transition-all duration-150",
+                        "rounded-full px-3 py-1.5 font-mono text-xs sm:text-sm font-bold tabular-nums transition-all duration-150",
                         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                         days === d ? "bg-brand text-white shadow-card" : "bg-surface text-ink-soft hover:text-ink",
                       ].join(" ")}
@@ -114,27 +115,27 @@ export default function ChallengesPage() {
                   ))}
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <Button onClick={startCustom} disabled={!title.trim()} icon={<PlusIcon size={16} />}>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button onClick={startCustom} disabled={!title.trim()} size="sm" icon={<PlusIcon size={14} />}>
                   Start challenge · +{days * 10} XP
                 </Button>
-                <Button variant="ghost" onClick={() => setCustomOpen(false)}>
+                <Button variant="ghost" size="sm" onClick={() => setCustomOpen(false)}>
                   Cancel
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <span className="flex size-11 items-center justify-center rounded-xl bg-brand-2/15 text-brand-2">
-                  <PlusIcon size={20} />
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 sm:size-11 items-center justify-center rounded-xl bg-brand-2/15 text-brand-2">
+                  <PlusIcon size={18} sm:size={20} />
                 </span>
                 <div>
                   <p className="font-bold text-ink">Make it yours</p>
-                  <p className="text-sm text-ink-soft">A custom length, a custom habit, your own rules.</p>
+                  <p className="text-xs sm:text-sm text-ink-soft">A custom length, a custom habit, your own rules.</p>
                 </div>
               </div>
-              <Button variant="secondary" onClick={() => setCustomOpen(true)}>
+              <Button variant="secondary" size="sm" onClick={() => setCustomOpen(true)}>
                 New custom challenge
               </Button>
             </div>

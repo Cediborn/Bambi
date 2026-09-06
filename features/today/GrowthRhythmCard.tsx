@@ -98,76 +98,75 @@ export function GrowthRhythmCard() {
   }, [state, today]);
 
   return (
-    <Card tone="emerald" size="featured">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <Card tone="emerald" size="featured" className="p-5 sm:p-6">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-good/80">
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-good/80">
             Your rhythm
           </p>
-          <h2 className="font-display mt-1 text-lg font-extrabold tracking-tight text-ink">
+          <h2 className="font-display mt-0.5 text-base sm:text-lg font-extrabold tracking-tight text-ink">
             Consistency, day by day
           </h2>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-good/10 px-3 py-1.5">
-          <FlameIcon size={15} className="text-good" />
-          <span className="font-mono text-sm font-bold tabular-nums text-good">
+        <div className="flex items-center gap-1.5 rounded-full bg-good/10 px-2.5 py-1.5">
+          <FlameIcon size={14} className="text-good" />
+          <span className="font-mono text-xs sm:text-sm font-bold tabular-nums text-good">
             {activeDays}
           </span>
-          <span className="text-xs font-semibold text-ink-soft">
+          <span className="text-[10px] sm:text-xs font-semibold text-ink-soft">
             active days · {WEEKS} weeks
           </span>
         </div>
       </div>
 
       <div className="overflow-x-auto pb-1" role="img" aria-label={`Consistency heatmap: ${activeDays} active days in the last ${WEEKS} weeks`}>
-        <div className="flex gap-2" style={{ minWidth: WEEKS * 18 + 40 }}>
-          {/* Weekday labels */}
-          <div className="grid grid-rows-7 gap-[5px] pr-1 text-right">
-            {WEEKDAY_LABELS.map((l, i) => (
-              <span key={i} className="h-[13px] text-[10px] font-semibold leading-[13px] text-ink-soft">
-                {l}
-              </span>
-            ))}
-          </div>
-
-          {/* Month labels + dots */}
-          <div className="flex-1">
-            <div className="grid grid-rows-[13px_1fr] gap-[5px]">
-              <div className="grid grid-flow-col grid-rows-1 gap-[5px]">
-                {weekLabels.map((m, i) => (
-                  <span
-                    key={i}
-                    className="h-[13px] truncate text-[10px] font-semibold text-ink-soft"
-                  >
-                    {m}
+        <div className="flex gap-2" style={{ minWidth: WEEKS * 16 + 32 }}>              {/* Weekday labels */}
+              <div className="grid grid-rows-7 gap-[4px] pr-1 text-right">
+                {WEEKDAY_LABELS.map((l, i) => (
+                  <span key={i} className="h-[12px] text-[9px] font-semibold leading-[12px] text-ink-soft">
+                    {l}
                   </span>
                 ))}
               </div>
-              <div className="grid grid-flow-col grid-rows-7 gap-[5px]">
-                {weeks.flatMap((w) =>
-                  w.days.map((d) => (
-                    <span
-                      key={d.key}
-                      title={`${d.key} · ${d.level === 0 ? "rest" : `${d.level} step${d.level === 1 ? "" : "s"} toward growth`}`}
-                      className={[
-                        "size-[13px] rounded-[4px] transition-transform duration-150",
-                        CELL_CLASSES[d.level],
-                        d.isToday ? "ring-2 ring-brand ring-offset-1 ring-offset-transparent" : "",
-                      ].join(" ")}
-                    />
-                  ))
-                )}
+
+              {/* Month labels + dots */}
+              <div className="flex-1">
+                <div className="grid grid-rows-[12px_1fr] gap-[4px]">
+                  <div className="grid grid-flow-col grid-rows-1 gap-[4px]">
+                    {weekLabels.map((m, i) => (
+                      <span
+                        key={i}
+                        className="h-[12px] truncate text-[9px] font-semibold text-ink-soft"
+                      >
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="grid grid-flow-col grid-rows-7 gap-[4px]">
+                    {weeks.flatMap((w) =>
+                      w.days.map((d) => (
+                        <span
+                          key={d.key}
+                          title={`${d.key} · ${d.level === 0 ? "rest" : `${d.level} step${d.level === 1 ? "" : "s"} toward growth`}`}
+                          className={[
+                            "size-[12px] rounded-[3px] transition-transform duration-150",
+                            CELL_CLASSES[d.level],
+                            d.isToday ? "ring-2 ring-brand ring-offset-1 ring-offset-transparent" : "",
+                          ].join(" ")}
+                        />
+                      ))
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center justify-end gap-1.5 text-[10px] font-semibold text-ink-soft">
+      <div className="mt-3 flex items-center justify-end gap-1.5 text-[9px] font-semibold text-ink-soft">
         <span>Less</span>
         {CELL_CLASSES.map((cls, i) => (
-          <span key={i} aria-hidden="true" className={`size-2.5 rounded-[3px] ${cls}`} />
+          <span key={i} aria-hidden="true" className={`size-2 rounded-[2px] ${cls}`} />
         ))}
         <span>More</span>
       </div>

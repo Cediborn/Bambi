@@ -50,8 +50,8 @@ export default function JournalPage() {
 
       {/* Today's entry editor */}
       <Reveal delay={0.05}>
-        <Card className="p-5 sm:p-6">
-          <h2 className="font-display mb-4 text-base font-bold text-ink">
+        <Card className="p-4 sm:p-5">
+          <h2 className="font-display mb-3 text-sm sm:text-base font-bold text-ink">
             {todayEntry ? "Today's entry" : "Write today's entry"}
           </h2>
           <JournalForm entry={todayEntry} />

@@ -58,9 +58,9 @@ export default function TodayPage() {
       </Reveal>
 
       {/* Asymmetric dashboard — wide feature cards left, tight progress rail right */}
-      <div className="grid items-start gap-6 lg:grid-cols-5 lg:gap-8">
+      <div className="grid items-start gap-4 sm:gap-6 lg:grid-cols-5 lg:gap-8">
         {/* Left — the garden & today's work */}
-        <section className="space-y-6 lg:col-span-3" aria-label="Today's quest and focus">
+        <section className="space-y-4 sm:space-y-6 lg:col-span-3" aria-label="Today's quest and focus">
           <div data-tour="today-quest">
             <SlideIn from="left" delay={0.05}>
               <QuestCard />
@@ -126,7 +126,7 @@ export default function TodayPage() {
         </section>
 
         {/* Right — progress & reflection */}
-        <aside className="space-y-6 lg:col-span-2" aria-label="Progress and reflection">
+        <aside className="space-y-4 sm:space-y-6 lg:col-span-2" aria-label="Progress and reflection">
           <div data-tour="today-xp">
             <Reveal delay={0.05}>
               <XpCard />

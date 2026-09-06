@@ -31,7 +31,7 @@ export function RestScene() {
   const total = totalCompletions(state.completions);
 
   return (
-    <div className="relative overflow-hidden px-4 py-8 text-center sm:py-10">
+    <div className="relative overflow-hidden px-3 py-6 sm:py-8 text-center">
       {/* Floating leaves around the scene */}
       {FLOATING_LEAVES.map((l, i) => (
         <LeafIcon
@@ -48,39 +48,39 @@ export function RestScene() {
       ))}
 
       {/* The user's tree, resting */}
-      <div className="animate-breathe mx-auto w-40 sm:w-48">
+      <div className="animate-breathe mx-auto w-36 sm:w-40">
         <TreeSVG info={info} />
       </div>
 
       {/* Momentum chip */}
       {streak > 0 ? (
-        <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-good/10 px-3 py-1.5 text-sm font-bold text-good">
-          <FlameIcon size={15} />
+        <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-good/10 px-2.5 py-1.5 text-xs sm:text-sm font-bold text-good">
+          <FlameIcon size={14} />
           {streak}-day streak — it&apos;s safe today
         </span>
       ) : (
-        <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-sm font-semibold text-brand">
+        <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1.5 text-xs sm:text-sm font-semibold text-brand">
           {total > 0 ? "You&apos;ve been growing" : "Day one"}
         </span>
       )}
 
-      <h3 className="font-display mt-3 text-xl font-extrabold tracking-tight text-ink">
+      <h3 className="font-display mt-2 sm:mt-3 text-lg sm:text-xl font-extrabold tracking-tight text-ink">
         A lighter day.
       </h3>
-      <p className="mx-auto mt-1.5 max-w-sm text-sm leading-relaxed text-ink-soft">
+      <p className="mx-auto mt-1 max-w-xs sm:max-w-sm text-xs sm:text-sm leading-relaxed text-ink-soft">
         Nothing scheduled — the garden is resting, and so can you. Rest is
         part of the routine, not a break from it.
       </p>
 
       {/* CTAs — plan the next day first, add a habit if they prefer */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <Link href="/habits" className={buttonClasses("primary", "md")}>
+      <div className="mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+        <Link href="/habits" className={buttonClasses("primary", "sm")}>
           Plan tomorrow
-          <ArrowRightIcon size={16} />
+          <ArrowRightIcon size={14} />
         </Link>
         <Link
           href="/habits"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           Add a habit
         </Link>

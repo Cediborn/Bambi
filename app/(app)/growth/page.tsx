@@ -54,7 +54,7 @@ export default function GrowthPage() {
       />
 
       {/* Stats — arrive one after another */}
-      <Stagger className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" stagger={0.07}>
+      <Stagger className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4" stagger={0.07}>
         <StaggerItem>
           <StatCard icon={<BoltIcon size={20} />} label="Total XP" value={String(xp)} sub={`Level ${level}`} tone="brand" />
         </StaggerItem>
@@ -76,20 +76,20 @@ export default function GrowthPage() {
 
       {/* Level */}
       <Reveal delay={0.08}>
-        <Card tone="indigo" className="p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <Card tone="indigo" className="p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h2 className="font-display text-base font-bold text-ink">Level {level}</h2>
-              <p className="mt-1 font-mono text-sm tabular-nums text-ink-soft">
+              <h2 className="font-display text-sm sm:text-base font-bold text-ink">Level {level}</h2>
+              <p className="mt-1 font-mono text-xs sm:text-sm tabular-nums text-ink-soft">
                 {xpToNextLevel(xp)} XP to level {level + 1}
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-sm font-bold text-brand">
-              <SparklesIcon size={15} />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1.5 text-xs sm:text-sm font-bold text-brand">
+              <SparklesIcon size={14} />
               {xp} XP
             </span>
           </div>
-          <div className="mt-4">
+          <div className="mt-3">
             <ProgressBar value={levelProgress(xp)} ariaLabel="Level progress" />
           </div>
         </Card>
@@ -109,30 +109,30 @@ export default function GrowthPage() {
             description="Once you plant your first habit, its rhythm shows up here — streaks, totals, and the quiet pattern you're building."
           />
         ) : (
-          <Card className="p-6">
-            <h2 className="font-display text-base font-bold text-ink">Habit breakdown</h2>
-            <div className="mt-5 space-y-5">
+          <Card className="p-5 sm:p-6">
+            <h2 className="font-display text-sm sm:text-base font-bold text-ink">Habit breakdown</h2>
+            <div className="mt-4 space-y-4 sm:space-y-5">
               {bestHabit.map(({ habit, streak, done }) => {
                 const color = habitColor(habit.color);
                 const share = maxDone > 0 ? done / maxDone : 0;
                 return (
-                  <div key={habit.id} className="flex items-center gap-4">
+                  <div key={habit.id} className="flex items-center gap-3">
                     <span
                       aria-hidden="true"
-                      className="flex size-10 shrink-0 items-center justify-center rounded-xl"
+                      className="flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-xl"
                       style={{ backgroundColor: `${color}1A`, color }}
                     >
-                      <HabitGlyph name={habit.icon} size={20} />
+                      <HabitGlyph name={habit.icon} size={16} sm:size={20} />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <p className="truncate text-sm font-bold text-ink">{habit.name}</p>
-                        <p className="shrink-0 text-xs font-semibold text-ink-soft">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="truncate text-xs sm:text-sm font-bold text-ink">{habit.name}</p>
+                        <p className="shrink-0 text-[10px] sm:text-xs font-semibold text-ink-soft">
                           {done} done
                           {streak > 0 ? ` · ${streak}-day streak` : ""}
                         </p>
                       </div>
-                      <div className="mt-1.5">
+                      <div className="mt-1">
                         <ProgressBar value={share} />
                       </div>
                     </div>

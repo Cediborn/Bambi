@@ -11,9 +11,9 @@ interface PageHeaderProps {
 /** Page heading block — large display type, quiet subtitle, optional action slot. */
 export function PageHeader({ title, subtitle, meta, actions }: PageHeaderProps) {
   return (
-    <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <header className="mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0 space-y-1.5">
-        <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-5xl">
           {title}
         </h1>
         {meta ? (
@@ -23,7 +23,11 @@ export function PageHeader({ title, subtitle, meta, actions }: PageHeaderProps) 
           <p className="max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">{subtitle}</p>
         ) : null}
       </div>
-      {actions ? <div className="flex items-center gap-3">{actions}</div> : null}
+      {actions ? (
+        <div className="flex items-center gap-2 sm:gap-3">
+          {actions}
+        </div>
+      ) : null}
     </header>
   );
 }

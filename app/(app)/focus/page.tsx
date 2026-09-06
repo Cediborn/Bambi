@@ -31,12 +31,12 @@ export default function FocusPage() {
         subtitle="Twenty-five quiet minutes beat two distracted hours. The timer is just a container."
       />
 
-      <div className="grid items-start gap-6 lg:grid-cols-5 lg:gap-8">
+      <div className="grid items-start gap-4 sm:gap-6 lg:grid-cols-5 lg:gap-8">
         <Reveal className="lg:col-span-3">
           <PomodoroTimer />
         </Reveal>
 
-        <div className="space-y-6 lg:col-span-2">
+        <div className="space-y-4 sm:space-y-6 lg:col-span-2">
           <Reveal delay={0.05}>
             <div className="grid grid-cols-2 gap-3">
               <StatCard
@@ -64,8 +64,8 @@ export default function FocusPage() {
                 description="Finish one focus round and it will show up here — a quiet log of your best hours."
               />
             ) : (
-            <Card className="p-5 sm:p-6">
-              <h2 className="font-display text-base font-bold text-ink">Recent sessions</h2>
+            <Card className="p-4 sm:p-5">
+              <h2 className="font-display text-sm sm:text-base font-bold text-ink">Recent sessions</h2>
               <ul className="mt-4 space-y-2.5">
                   {sessions.map((s) => (
                     <li key={s.id} className="group flex items-center justify-between gap-3 rounded-xl bg-surface/60 px-3.5 py-2.5">

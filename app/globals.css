@@ -108,6 +108,9 @@
 /* ---------- Base ---------- */
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal overflow on all devices */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -115,6 +118,16 @@ body {
   color: var(--t-ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Prevent viewport bounce on iOS Safari */
+@supports (height: 100dvh) {
+  body {
+    min-height: 100dvh;
+  }
 }
 
 ::selection {

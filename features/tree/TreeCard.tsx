@@ -36,22 +36,22 @@ export function TreeCard() {
   };
 
   return (
-    <Card tone="emerald" size="featured" className="flex flex-col gap-6 sm:flex-row sm:items-center">
+    <Card tone="emerald" size="featured" className="p-5 sm:p-6 flex flex-col gap-4 sm:gap-5 sm:flex-row sm:items-start">
       <div className="order-2 flex-1 sm:order-1">
-        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-good/80">
+        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-good/80">
           Your tree · stage {info.index + 1} of {TREE_STAGES.length}
         </p>
-        <h2 className="font-display mt-1.5 text-2xl font-extrabold tracking-tight text-ink">
+        <h2 className="font-display mt-1 text-lg sm:text-2xl font-extrabold tracking-tight text-ink">
           {info.stage.name}
         </h2>
-        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-ink-soft">{info.stage.blurb}</p>
+        <p className="mt-1 max-w-xs sm:max-w-sm text-xs sm:text-sm leading-relaxed text-ink-soft">{info.stage.blurb}</p>
 
         {/* Next stage progress */}
         {info.daysToNext !== null ? (
-          <div className="mt-5">
-            <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-ink-soft">
+          <div className="mt-4">
+            <div className="mb-1.5 flex items-center justify-between text-[11px] font-semibold text-ink-soft">
               <span className="inline-flex items-center gap-1.5">
-                <SproutIcon size={14} />
+                <SproutIcon size={13} />
                 Next stage
               </span>
               <span className="font-mono">
@@ -61,39 +61,40 @@ export function TreeCard() {
             <ProgressBar value={info.nextProgress} tone="bg-gradient-to-r from-mint to-teal" ariaLabel="Progress to next tree stage" />
           </div>
         ) : (
-          <p className="mt-4 text-sm font-semibold text-good">The canopy is full. Well grown.</p>
+          <p className="mt-3 text-sm font-semibold text-good">The canopy is full. Well grown.</p>
         )}
 
         {/* Leaf + flower + watering stats */}
-        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-          <span className="inline-flex items-center gap-2 font-semibold text-ink-soft">
-            <LeafIcon className="text-good" size={16} />
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs sm:text-sm">
+          <span className="inline-flex items-center gap-1.5 font-semibold text-ink-soft">
+            <LeafIcon className="text-good" size={14} />
             <span className="font-mono text-ink">{info.leaves}</span> leaves
           </span>
-          <span className="inline-flex items-center gap-2 font-semibold text-ink-soft">
-            <FlowerIcon className="text-achievement" size={16} />
+          <span className="inline-flex items-center gap-1.5 font-semibold text-ink-soft">
+            <FlowerIcon className="text-achievement" size={14} />
             <span className="font-mono text-ink">{info.flowers}</span> blossom{info.flowers === 1 ? "" : "s"}
           </span>
-          <span className="inline-flex items-center gap-2 font-semibold text-ink-soft">
-            <DropletIcon className="text-info" size={16} />
+          <span className="inline-flex items-center gap-1.5 font-semibold text-ink-soft">
+            <DropletIcon className="text-info" size={14} />
             <span className="font-mono text-ink">{waterings}</span> watering{waterings === 1 ? "" : "s"}
           </span>
         </div>
 
         {/* Water today */}
-        <div className="relative mt-5">
+        <div className="relative mt-4">
           <Button
             onClick={water}
             disabled={tendedToday}
             variant={tendedToday ? "ghost" : "primary"}
-            icon={tendedToday ? <CheckCircleIcon size={16} /> : <DropletIcon size={16} />}
+            size="sm"
+            icon={tendedToday ? <CheckCircleIcon size={14} /> : <DropletIcon size={14} />}
           >
             {tendedToday ? "Watered today" : "Water the tree"}
           </Button>
           {xpFlash ? (
             <span
               aria-hidden="true"
-              className="animate-xp-float pointer-events-none absolute left-0 top-0 rounded-full bg-info px-2 py-0.5 text-[11px] font-extrabold text-white shadow-card"
+              className="animate-xp-float pointer-events-none absolute left-0 top-0 rounded-full bg-info px-2 py-0.5 text-[10px] font-extrabold text-white shadow-card"
             >
               +{XP_PER_TEND} XP
             </span>
@@ -101,7 +102,7 @@ export function TreeCard() {
         </div>
       </div>
 
-      <div className="animate-breathe order-1 mx-auto w-44 shrink-0 sm:order-2 sm:w-56 lg:w-64">
+      <div className="animate-breathe order-1 mx-auto w-36 sm:w-40 shrink-0 sm:order-2 sm:mx-0">
         <TreeSVG info={info} tended={tendedToday} />
       </div>
     </Card>

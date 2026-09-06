@@ -23,7 +23,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* key forces the fade-up transition on every page change */}
         <main
           key={pathname}
-          className="animate-fade-up mx-auto w-full max-w-6xl px-4 pb-32 pt-6 sm:px-6 lg:px-10 lg:pb-16"
+          className="animate-fade-up mx-auto w-full max-w-6xl px-4 pb-20 pt-6 sm:px-6 lg:px-10 lg:pb-16"
         >
           {children}
         </main>

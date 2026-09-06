@@ -58,7 +58,7 @@ export default function HabitsPage() {
       />
 
       {creating ? (
-        <Card className="animate-fade-up mb-6 p-5 sm:p-6">
+        <Card className="animate-fade-up mb-4 sm:mb-6 p-4 sm:p-5">
           <HabitLibraryPicker
             priorityKeys={state.profile?.interests ?? []}
             ownedNames={existingNames}

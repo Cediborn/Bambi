@@ -221,12 +221,12 @@ export function PomodoroTimer() {
       ) : null}
 
       {/* Timer */}
-      <div className="mt-8">
-        <ProgressRing progress={progress} size={200} stroke={10} tone="text-brand">
+      <div className="mt-6">
+        <ProgressRing progress={progress} size={180} stroke={10} tone="text-brand">
           <div className="text-center">
             <p
-              className={`font-mono font-bold tabular-nums tracking-tight text-ink ${
-                hasHours ? "text-3xl sm:text-4xl" : "text-5xl"
+              className={`font-mono font-bold tabular-nums tracking-tight text-ink${
+                hasHours ? " text-3xl sm:text-4xl" : " text-4xl sm:text-5xl"
               }`}
             >
               {clock}

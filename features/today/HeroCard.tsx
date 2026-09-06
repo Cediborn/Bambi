@@ -65,34 +65,34 @@ export function HeroCard() {
       />
       <div aria-hidden="true" className="grain-overlay absolute inset-0 opacity-[0.08]" />
 
-      <div className="relative p-6 sm:p-8 lg:p-10">
+      <div className="relative p-5 sm:p-6 lg:p-8">
         {/* Greeting */}
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="flex items-end gap-4">
-            <Avatar avatar={avatar} size={60} className="ring-2 ring-white/30" />
+        <div className="flex flex-wrap items-end justify-between gap-3 sm:gap-4">
+          <div className="flex items-end gap-3 sm:gap-4">
+            <Avatar avatar={avatar} size={56} className="ring-2 ring-white/30" />
             <div>
-              <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
+              <h2 className="font-display text-xl font-extrabold tracking-tight sm:text-2xl lg:text-3xl">
                 {timeGreeting()}, {name}.{" "}
-                <span aria-hidden="true" className="inline-flex text-xl sm:text-2xl">
-                  <MoodGlyph name={ctx.glyph} size={24} />
+                <span aria-hidden="true" className="inline-flex text-lg sm:text-xl lg:text-2xl">
+                  <MoodGlyph name={ctx.glyph} size={22} />
                 </span>
               </h2>
-              <p className="mt-1 text-sm text-white/80 sm:text-base">{ctx.line}</p>
+              <p className="mt-1 text-xs sm:text-sm text-white/80 sm:text-base">{ctx.line}</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
               {ctx.chip}
             </span>
-            <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white/85 backdrop-blur-sm">
+            <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-white/85 backdrop-blur-sm">
               {levelTitle(level)}
             </span>
           </div>
         </div>
 
         {/* Editorial split: the day's work wide, the numbers as a tight rail */}
-        <div className="mt-7 grid gap-8 border-t border-white/10 pt-7 lg:grid-cols-3 lg:gap-10">
-          <div className="space-y-6 lg:col-span-2">
+        <div className="mt-6 grid gap-6 border-t border-white/10 pt-6 lg:grid-cols-3 lg:gap-8">
+          <div className="space-y-5 lg:col-span-2">
             {/* Today's quest + reward */}
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">

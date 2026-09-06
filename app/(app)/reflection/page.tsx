@@ -32,24 +32,24 @@ export default function ReflectionPage() {
 
       <Reveal>
         {current ? (
-          <Card tone="sky" size="featured">
-            <div className="mb-5 flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-xl bg-good/15 text-good">
-                <CheckCircleIcon size={20} />
+          <Card tone="sky" size="featured" className="p-5 sm:p-6">
+            <div className="mb-4 flex items-center gap-2.5">
+              <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-good/15 text-good">
+                <CheckCircleIcon size={18} sm:size={20} />
               </span>
               <div>
-                <h2 className="font-display text-base font-bold text-ink">
+                <h2 className="font-display text-sm sm:text-base font-bold text-ink">
                   This week&apos;s reflection
                 </h2>
-                <p className="text-xs text-ink-soft">Saved · week of {fullDate(weekKey)}</p>
+                <p className="text-[10px] sm:text-xs text-ink-soft">Saved · week of {fullDate(weekKey)}</p>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-good/30 bg-good/10 px-4 py-3 text-sm font-semibold text-good">
+            <div className="rounded-2xl border border-good/30 bg-good/10 px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-good">
               Your reflection for this week is complete. The next one opens on {fullDate(nextWeek)}.
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <ReflectionContent reflection={current} />
             </div>
           </Card>

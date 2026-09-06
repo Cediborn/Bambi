@@ -14,10 +14,10 @@ export function WeekStrip() {
   const doneThisWeek = days.reduce((sum, d) => sum + d.completed, 0);
 
   return (
-    <Card tone="emerald" className="p-5">
-      <div className="flex items-center justify-between gap-3">
+    <Card tone="emerald" className="p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="font-display text-base font-bold text-ink">This week</p>
+          <p className="font-display text-sm sm:text-base font-bold text-ink">This week</p>
           <p className="mt-0.5 text-xs text-ink-soft">
             {doneThisWeek > 0 ? (
               <span className="font-mono font-semibold tabular-nums text-ink">{doneThisWeek}</span>
@@ -32,7 +32,7 @@ export function WeekStrip() {
           className="inline-flex items-center gap-1 text-xs font-bold text-good transition-colors hover:text-good/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           Growth
-          <ArrowRightIcon size={13} />
+          <ArrowRightIcon size={12} />
         </Link>
       </div>
 

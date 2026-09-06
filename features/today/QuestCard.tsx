@@ -28,24 +28,24 @@ export function QuestCard() {
   };
 
   return (
-    <Card tone="gold" size="featured" className="relative overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex min-w-0 items-center gap-4">
+    <Card tone="gold" size="featured" className="p-5 sm:p-6 relative overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <span
             className={[
-              "flex size-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300",
+              "flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300",
               done ? "bg-mint/15 text-good" : "bg-achievement/15 text-achievement",
             ].join(" ")}
           >
-            {done ? <CheckCircleIcon size={24} /> : <HabitGlyph name={quest.icon} size={24} />}
+            {done ? <CheckCircleIcon size={20} sm:size={24} /> : <HabitGlyph name={quest.icon} size={20} sm:size={24} />}
           </span>
           <div className="min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-ink-soft">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-soft">
               Today&apos;s quest
             </p>
             <h2
               className={[
-                "font-display mt-0.5 truncate text-lg font-extrabold tracking-tight transition-colors",
+                "font-display mt-0.5 truncate text-base sm:text-lg font-extrabold tracking-tight transition-colors",
                 done ? "text-ink-soft line-through decoration-line" : "text-ink",
               ].join(" ")}
             >
@@ -55,23 +55,24 @@ export function QuestCard() {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-achievement/15 px-3 py-1.5 text-sm font-extrabold text-achievement">
-            <BoltIcon size={15} />
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-achievement/15 px-2.5 py-1.5 text-xs sm:text-sm font-extrabold text-achievement">
+            <BoltIcon size={13} sm:size={15} />
             +{quest.rewardXp} XP
           </span>
           <div className="relative">
             <Button
               onClick={complete}
               disabled={done}
-              icon={done ? <CheckCircleIcon size={16} /> : <SparklesIcon size={16} />}
+              size="sm"
+              icon={done ? <CheckCircleIcon size={14} /> : <SparklesIcon size={14} />}
             >
               {done ? "Done" : "Complete"}
             </Button>
             {xpFlash ? (
               <span
                 aria-hidden="true"
-                className="animate-xp-float pointer-events-none absolute -top-3 right-0 rounded-full bg-achievement px-2 py-0.5 text-[11px] font-extrabold text-ink shadow-card"
+                className="animate-xp-float pointer-events-none absolute -top-2.5 right-0 rounded-full bg-achievement px-2 py-0.5 text-[10px] font-extrabold text-ink shadow-card"
               >
                 +{XP_PER_QUEST} XP
               </span>

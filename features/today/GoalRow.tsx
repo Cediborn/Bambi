@@ -32,11 +32,11 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
   };
 
   return (
-    <div className="group relative flex items-center gap-3.5">
+    <div className="group relative flex items-center gap-2.5">
       {flash ? (
         <span
           aria-hidden="true"
-          className="animate-flash-sweep absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-mint/20 to-transparent"
+          className="animate-flash-sweep absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-mint/20 to-transparent"
         />
       ) : null}
       <button
@@ -45,20 +45,20 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
         aria-pressed={done}
         aria-label={done ? `Mark ${habit.name} as not done` : `Mark ${habit.name} as done`}
         className={[
-          "flex size-9 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200",
+          "flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200",
           "active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
           done
             ? "border-transparent bg-brand text-white shadow-card"
             : "border-line bg-surface text-transparent hover:border-brand hover:text-brand",
         ].join(" ")}
       >
-        <CheckIcon size={18} className={done ? "animate-pop" : ""} />
+        <CheckIcon size={16} sm:size={18} className={done ? "animate-pop" : ""} />
       </button>
 
       {xpFlash ? (
         <span
           aria-hidden="true"
-          className="animate-xp-float pointer-events-none absolute left-8 top-0 rounded-full bg-good px-2 py-0.5 text-[11px] font-extrabold text-white shadow-card"
+          className="animate-xp-float pointer-events-none absolute left-6 top-0 rounded-full bg-good px-2 py-0.5 text-[10px] sm:text-[11px] font-extrabold text-white shadow-card"
         >
           +{XP_PER_GOAL} XP
         </span>
@@ -66,10 +66,10 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
 
       <span
         aria-hidden="true"
-        className="flex size-10 shrink-0 items-center justify-center rounded-xl"
+        className="flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-xl"
         style={{ backgroundColor: `${color}1A`, color }}
       >
-        <HabitGlyph name={habit.icon} size={20} />
+        <HabitGlyph name={habit.icon} size={16} sm:size={20} />
       </span>
 
       <div className="min-w-0 flex-1">

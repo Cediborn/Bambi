@@ -33,12 +33,12 @@ function Prompt({ onCheckIn }: { onCheckIn: (mood: number) => void }) {
 
   return (
     <Card tone="sky" size="featured">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-sky/10 text-sky">
-          <QuoteIcon size={20} />
+      <div className="mb-3 sm:mb-4 flex items-center gap-3">
+        <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-sky/10 text-sky">
+          <QuoteIcon size={18} sm:size={20} />
         </span>
         <div>
-          <p className="font-display text-base font-bold text-ink">How are you feeling?</p>
+          <p className="font-display text-sm sm:text-base font-bold text-ink">How are you feeling?</p>
           <p className="text-xs text-ink-soft">One tap · +{XP_PER_ENTRY} XP</p>
         </div>
       </div>
@@ -66,14 +66,14 @@ const MOOD_LINES: Record<number, string> = {
 
 function Summary({ entry }: { entry: JournalEntry }) {
   return (
-    <Card tone="sky" className="animate-pop p-6 sm:p-7">
-      <div className="flex items-start gap-4">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-mint/15 text-good">
-          <SparklesIcon size={24} />
+    <Card tone="sky" className="animate-pop p-4 sm:p-5">
+      <div className="flex items-start gap-3">
+        <span className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-2xl bg-mint/15 text-good">
+          <SparklesIcon size={20} sm:size={24} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-bold text-ink">Checked in</p>
-          <p className="mt-1 text-sm text-ink-soft">
+          <p className="text-base sm:text-lg font-bold text-ink">Checked in</p>
+          <p className="mt-1 text-xs sm:text-sm text-ink-soft">
             You&apos;re feeling{" "}
             <span className="font-bold text-ink">{moodLabel(entry.mood)}</span>.{" "}
             {MOOD_LINES[entry.mood] ?? MOOD_LINES[3]}{" "}
@@ -81,17 +81,17 @@ function Summary({ entry }: { entry: JournalEntry }) {
               ? "A note too — good."
               : "Want to write a few lines about it?"}
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <Link
               href="/journal"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
-              <QuoteIcon size={15} />
+              <QuoteIcon size={13} sm:size={15} />
               Open journal
-              <ArrowRightIcon size={15} />
+              <ArrowRightIcon size={13} sm:size={15} />
             </Link>
-            <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2.5 py-1 text-xs font-bold text-brand">
-              <BoltIcon size={13} />
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2 py-1 text-[10px] sm:text-xs font-bold text-brand">
+              <BoltIcon size={11} sm:size={13} />
               +{XP_PER_ENTRY} XP
             </span>
           </div>

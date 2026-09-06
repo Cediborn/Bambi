@@ -77,7 +77,7 @@ export function MobileNav() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={[
-                  "flex flex-col items-center gap-1 py-2 text-[11px] font-semibold",
+                  "flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold",
                   "transition-colors duration-200",
                   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                   active ? "" : "text-ink-soft hover:text-ink",
@@ -85,10 +85,10 @@ export function MobileNav() {
                 style={active ? { color: item.accent } : undefined}
               >
                 <span
-                  className="flex h-8 w-12 items-center justify-center rounded-full transition-all duration-200"
+                  className="flex h-7 w-10 items-center justify-center rounded-full transition-all duration-200"
                   style={active ? { backgroundColor: `${item.accent}14` } : undefined}
                 >
-                  <Icon size={21} strokeWidth={active ? 2.5 : 2} />
+                  <Icon size={18} strokeWidth={active ? 2.5 : 2} />
                 </span>
                 {item.label}
               </Link>
@@ -101,7 +101,7 @@ export function MobileNav() {
             aria-expanded={open}
             aria-haspopup="dialog"
             className={[
-              "flex flex-col items-center gap-1 py-2 text-[11px] font-semibold",
+              "flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold",
               "transition-colors duration-200",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
               open ? "text-brand" : "text-ink-soft hover:text-ink",
@@ -109,11 +109,11 @@ export function MobileNav() {
           >
             <span
               className={[
-                "flex h-8 w-12 items-center justify-center rounded-full transition-all duration-200",
+                "flex h-7 w-10 items-center justify-center rounded-full transition-all duration-200",
                 open ? "bg-brand/10" : "",
               ].join(" ")}
             >
-              {open ? <XIcon size={21} /> : <MoreIcon size={21} />}
+              {open ? <XIcon size={18} /> : <MoreIcon size={18} />}
             </span>
             {open ? "Close" : "More"}
           </button>
