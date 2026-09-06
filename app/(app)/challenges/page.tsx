@@ -60,15 +60,14 @@ export default function ChallengesPage() {
             <HoverLift key={s.title}>
               <Card tone="warn" size="compact" className="flex h-full flex-col gap-2.5 p-4 sm:p-5">
                 <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-rose/15 text-rose">
-                  <FlagIcon size={18} sm:size={20} />
+                  <FlagIcon size={18} />
                 </span>
                 <div className="flex-1">
                   <p className="font-display text-xs sm:text-sm font-bold text-ink">{s.title}</p>
                   <p className="mt-1 text-[10px] sm:text-xs leading-relaxed text-ink-soft">{s.blurb}</p>
                 </div>
                 <Button
-                  size="xs"
-                  sm:size="sm"
+                  size="sm"
                   variant="secondary"
                   onClick={() => api.addChallenge({ title: s.title, days: s.days, xpReward: s.days * 10 })}
                 >
@@ -128,7 +127,7 @@ export default function ChallengesPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <span className="flex size-9 sm:size-11 items-center justify-center rounded-xl bg-brand-2/15 text-brand-2">
-                  <PlusIcon size={18} sm:size={20} />
+                  <PlusIcon size={18} />
                 </span>
                 <div>
                   <p className="font-bold text-ink">Make it yours</p>

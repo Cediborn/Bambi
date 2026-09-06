@@ -35,7 +35,7 @@ export default function ReflectionPage() {
           <Card tone="sky" size="featured" className="p-5 sm:p-6">
             <div className="mb-4 flex items-center gap-2.5">
               <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-good/15 text-good">
-                <CheckCircleIcon size={18} sm:size={20} />
+                <CheckCircleIcon size={18} />
               </span>
               <div>
                 <h2 className="font-display text-sm sm:text-base font-bold text-ink">

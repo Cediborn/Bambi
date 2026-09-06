@@ -122,7 +122,7 @@ export default function GrowthPage() {
                       className="flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-xl"
                       style={{ backgroundColor: `${color}1A`, color }}
                     >
-                      <HabitGlyph name={habit.icon} size={16} sm:size={20} />
+                      <HabitGlyph name={habit.icon} size={16} />
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">

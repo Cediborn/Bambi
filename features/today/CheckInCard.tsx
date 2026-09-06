@@ -33,9 +33,8 @@ function Prompt({ onCheckIn }: { onCheckIn: (mood: number) => void }) {
 
   return (
     <Card tone="sky" size="featured">
-      <div className="mb-3 sm:mb-4 flex items-center gap-3">
-        <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-sky/10 text-sky">
-          <QuoteIcon size={18} sm:size={20} />
+      <div className="mb-3 sm:mb-4 flex items-center gap-3">          <span className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-sky/10 text-sky">
+          <QuoteIcon size={18} />
         </span>
         <div>
           <p className="font-display text-sm sm:text-base font-bold text-ink">How are you feeling?</p>
@@ -67,9 +66,8 @@ const MOOD_LINES: Record<number, string> = {
 function Summary({ entry }: { entry: JournalEntry }) {
   return (
     <Card tone="sky" className="animate-pop p-4 sm:p-5">
-      <div className="flex items-start gap-3">
-        <span className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-2xl bg-mint/15 text-good">
-          <SparklesIcon size={20} sm:size={24} />
+      <div className="flex items-start gap-3">          <span className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-2xl bg-mint/15 text-good">
+          <SparklesIcon size={20} />
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-base sm:text-lg font-bold text-ink">Checked in</p>
@@ -86,12 +84,12 @@ function Summary({ entry }: { entry: JournalEntry }) {
               href="/journal"
               className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
-              <QuoteIcon size={13} sm:size={15} />
+              <QuoteIcon size={13} />
               Open journal
-              <ArrowRightIcon size={13} sm:size={15} />
+              <ArrowRightIcon size={13} />
             </Link>
             <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2 py-1 text-[10px] sm:text-xs font-bold text-brand">
-              <BoltIcon size={11} sm:size={13} />
+              <BoltIcon size={11} />
               +{XP_PER_ENTRY} XP
             </span>
           </div>

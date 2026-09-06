@@ -37,7 +37,7 @@ export function QuestCard() {
               done ? "bg-mint/15 text-good" : "bg-achievement/15 text-achievement",
             ].join(" ")}
           >
-            {done ? <CheckCircleIcon size={20} sm:size={24} /> : <HabitGlyph name={quest.icon} size={20} sm:size={24} />}
+            {done ? <CheckCircleIcon size={20} /> : <HabitGlyph name={quest.icon} size={20} />}
           </span>
           <div className="min-w-0">
             <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-soft">
@@ -57,7 +57,7 @@ export function QuestCard() {
 
         <div className="flex shrink-0 items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-achievement/15 px-2.5 py-1.5 text-xs sm:text-sm font-extrabold text-achievement">
-            <BoltIcon size={13} sm:size={15} />
+            <BoltIcon size={13} />
             +{quest.rewardXp} XP
           </span>
           <div className="relative">

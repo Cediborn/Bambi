@@ -123,13 +123,6 @@ body {
   min-height: 100dvh;
 }
 
-/* Prevent viewport bounce on iOS Safari */
-@supports (height: 100dvh) {
-  body {
-    min-height: 100dvh;
-  }
-}
-
 ::selection {
   background-color: color-mix(in srgb, var(--color-brand) 25%, transparent);
 }

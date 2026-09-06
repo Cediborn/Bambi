@@ -52,7 +52,7 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
             : "border-line bg-surface text-transparent hover:border-brand hover:text-brand",
         ].join(" ")}
       >
-        <CheckIcon size={16} sm:size={18} className={done ? "animate-pop" : ""} />
+        <CheckIcon size={16} className={done ? "animate-pop" : ""} />
       </button>
 
       {xpFlash ? (
@@ -69,7 +69,7 @@ export function GoalRow({ habit, done, onToggle }: GoalRowProps) {
         className="flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-xl"
         style={{ backgroundColor: `${color}1A`, color }}
       >
-        <HabitGlyph name={habit.icon} size={16} sm:size={20} />
+        <HabitGlyph name={habit.icon} size={16} />
       </span>
 
       <div className="min-w-0 flex-1">
