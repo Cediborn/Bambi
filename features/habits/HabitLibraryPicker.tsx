@@ -78,7 +78,7 @@ export function HabitLibraryPicker({
       </div>
 
       {/* Category pills — the user's own interests come first */}
-      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Categories">
+      <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Categories">
         {categories.map((cat) => {
           const active = activeKey === cat.key;
           return (
@@ -91,7 +91,7 @@ export function HabitLibraryPicker({
                 setSelected(new Set());
               }}
               className={[
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition-all duration-150",
+                "inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold transition-all duration-150",
                 "active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                 active
                   ? "border-brand/50 bg-brand/10 text-brand"
@@ -99,7 +99,7 @@ export function HabitLibraryPicker({
               ].join(" ")}
             >
               <span aria-hidden="true" className="opacity-80">
-                <HabitGlyph name={cat.glyph} size={14} />
+                <HabitGlyph name={cat.glyph} size={12} />
               </span>
               {cat.label}
             </button>
@@ -117,8 +117,7 @@ export function HabitLibraryPicker({
             <p className="mt-3 rounded-xl bg-surface px-3.5 py-3 text-sm font-semibold text-ink-soft">
               You&apos;ve already added every habit in this category — try another one.
             </p>
-          ) : (
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          ) : (            <div className="mt-2 grid gap-2">
               {available.map((h) => {
                 const on = selected.has(h.id);
                 return (
@@ -128,7 +127,7 @@ export function HabitLibraryPicker({
                     aria-pressed={on}
                     onClick={() => toggle(h.id)}
                     className={[
-                      "flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-all duration-150",
+                      "flex items-center gap-2 rounded-xl border px-2.5 py-2 text-left transition-all duration-150",
                       "active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                       on
                         ? "border-brand/40 bg-brand/5"
@@ -137,52 +136,53 @@ export function HabitLibraryPicker({
                   >
                     <span
                       aria-hidden="true"
-                      className="flex size-8 shrink-0 items-center justify-center rounded-lg"
+                      className="flex size-7 shrink-0 items-center justify-center rounded-lg"
                       style={{ backgroundColor: `${h.color}1A`, color: h.color }}
                     >
-                      <HabitGlyph name={h.icon} size={16} />
+                      <HabitGlyph name={h.icon} size={14} />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-bold leading-tight text-ink">
+                      <span className="block truncate text-sm font-bold leading-tight text-ink">
                         {h.title}
                       </span>
-                      <span className="block text-[11px] text-ink-soft">
+                      <span className="block text-[10px] text-ink-soft">
                         {h.minutes} min · {DIFFICULTY_LABEL[h.difficulty]}
                       </span>
                     </span>
                     <span
                       className={[
-                        "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150",
+                        "flex size-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150",
                         on ? "border-transparent bg-brand text-white" : "border-line text-transparent",
                       ].join(" ")}
                     >
-                      <CheckIcon size={12} />
+                      <CheckIcon size={10} />
                     </span>
                   </button>
-                );
+);
               })}
             </div>
           )}
 
           {owned.length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-1.5">
               {owned.map((h) => (
                 <span
                   key={h.id}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-ink-soft"
+                  className="inline-flex items-center gap-1 rounded-full border border-line bg-surface px-2 py-1 text-[10px] font-semibold text-ink-soft"
                 >
-                  <CheckIcon size={12} className="text-good" />
+                  <CheckIcon size={10} className="text-good" />
                   {h.title}
                 </span>
               ))}
             </div>
           ) : null}
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-2">
             <Button
               onClick={addSelected}
               disabled={selectedCount === 0}
-              icon={<PlusIcon size={15} />}
+              size="sm"
+              icon={<PlusIcon size={14} />}
             >
               Add {selectedCount > 0 ? `${selectedCount} ` : ""}
               {selectedCount === 1 ? "habit" : "habits"}

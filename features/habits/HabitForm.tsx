@@ -65,11 +65,9 @@ export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
           maxLength={48}
           autoFocus
         />
-      </Field>
-
-      <div className="space-y-2">
-        <span className="text-sm font-semibold text-ink">Icon</span>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Icon">
+      </Field>        <div className="space-y-1.5">
+        <span className="text-xs font-semibold text-ink">Icon</span>
+        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Icon">
           {HABIT_ICONS.map((item) => {
             const selected = icon === item.key;
             return (
@@ -81,23 +79,21 @@ export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
                 aria-label={item.label}
                 onClick={() => setIcon(item.key)}
                 className={[
-                  "flex size-11 items-center justify-center rounded-xl border-2 transition-all duration-150",
+                  "flex size-9 sm:size-10 items-center justify-center rounded-xl border-2 transition-all duration-150",
                   "active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                   selected
                     ? "border-brand bg-brand/10 text-brand"
                     : "border-line bg-surface text-ink-soft hover:border-brand/40 hover:text-ink",
                 ].join(" ")}
               >
-                <HabitGlyph name={item.key} size={20} />
+                <HabitGlyph name={item.key} size={16} />
               </button>
-            );
+);
           })}
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <span className="text-sm font-semibold text-ink">Color</span>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Color">
+      </div>        <div className="space-y-1.5">
+        <span className="text-xs font-semibold text-ink">Color</span>
+        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Color">
           {HABIT_COLORS.map((c) => {
             const selected = color === c;
             return (
@@ -109,13 +105,13 @@ export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
                 aria-label={`Color ${c}`}
                 onClick={() => setColor(c)}
                 className={[
-                  "size-9 rounded-full border-2 transition-all duration-150",
+                  "size-8 rounded-full border-2 transition-all duration-150",
                   "active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                   selected ? "scale-110 border-card ring-2 ring-brand" : "border-line/40",
                 ].join(" ")}
                 style={{ backgroundColor: c }}
               />
-            );
+);
           })}
         </div>
       </div>
@@ -130,8 +126,7 @@ export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
           >
             {everyDay ? "Clear all" : "Every day"}
           </button>
-        </div>
-        <div className="grid grid-cols-7 gap-1.5">
+        </div>        <div className="grid grid-cols-7 gap-1">
           {DAY_NAMES.map((day, i) => {
             const selected = schedule.includes(i);
             return (
@@ -142,7 +137,7 @@ export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
                 aria-label={day}
                 onClick={() => toggleDay(i)}
                 className={[
-                  "h-9 rounded-lg text-xs font-bold transition-all duration-150",
+                  "h-8 rounded-lg text-[10px] font-bold transition-all duration-150",
                   "active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
                   selected
                     ? "bg-brand text-white shadow-card"
@@ -151,7 +146,7 @@ export function HabitForm({ habit, onSaved, onCancel }: HabitFormProps) {
               >
                 {day[0]}
               </button>
-            );
+);
           })}
         </div>
       </div>

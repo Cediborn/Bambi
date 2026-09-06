@@ -44,28 +44,28 @@ export function HabitCard({ habit }: { habit: Habit }) {
   }
 
   return (
-    <Card size="compact" className="group flex items-center gap-4">
+    <Card size="compact" className="group flex items-center gap-3 overflow-visible">
       <span
         aria-hidden="true"
-        className="flex size-10 sm:size-12 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105"
+        className="flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105"
         style={{ backgroundColor: `${color}1A`, color }}
       >
-        <HabitGlyph name={habit.icon} size={20} />
+        <HabitGlyph name={habit.icon} size={16} />
       </span>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <h3 className="font-display truncate font-bold text-ink">{habit.name}</h3>
-          <span className="hidden rounded-full bg-line/50 px-2 py-0.5 text-[11px] font-semibold text-ink-soft sm:inline-block">
+        <div className="flex items-center gap-1.5">
+          <h3 className="font-display truncate text-sm sm:text-base font-bold text-ink">{habit.name}</h3>
+          <span className="hidden rounded-full bg-line/50 px-1.5 py-0.5 text-[10px] font-semibold text-ink-soft sm:inline-block">
             {habitIconLabel(habit.icon)}
           </span>
         </div>
-        <p className="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-ink-soft">
+        <p className="mt-0.5 flex items-center gap-1 text-[11px] sm:text-xs font-medium text-ink-soft">
           {scheduleLabel(habit)}
           <span aria-hidden="true">·</span>
           {streak > 0 ? (
             <span className="inline-flex items-center gap-0.5 font-bold text-tangerine">
-              <FlameIcon size={13} />
+              <FlameIcon size={11} />
               {streak} day{streak === 1 ? "" : "s"}
             </span>
           ) : (
@@ -74,7 +74,7 @@ export function HabitCard({ habit }: { habit: Habit }) {
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1.5">
+      <div className="flex shrink-0 items-center gap-1">
         <button
           type="button"
           onClick={() => {
@@ -91,7 +91,7 @@ export function HabitCard({ habit }: { habit: Habit }) {
           }
           aria-pressed={done}
           className={[
-            "flex size-11 items-center justify-center rounded-full border-2 transition-all duration-150",
+            "flex size-9 sm:size-11 items-center justify-center rounded-full border-2 transition-all duration-150",
             "active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
             scheduledToday
               ? done
@@ -100,7 +100,7 @@ export function HabitCard({ habit }: { habit: Habit }) {
               : "cursor-not-allowed border-line/50 bg-line/30 text-line",
           ].join(" ")}
         >
-          <CheckIcon size={20} className={done ? "animate-pop" : ""} />
+          <CheckIcon size={16} className={done ? "animate-pop" : ""} />
         </button>
 
         {canFreeze ? (
@@ -109,9 +109,9 @@ export function HabitCard({ habit }: { habit: Habit }) {
             onClick={applyFreeze}
             aria-label={`Use a freeze to keep ${habit.name}'s streak alive`}
             title={`A missed day (${freezable?.day}) would break the streak. One freeze restores it to ${freezable?.restoredStreak} days.`}
-            className="flex size-9 items-center justify-center rounded-lg text-info transition-colors hover:bg-info/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            className="flex size-7 sm:size-9 items-center justify-center rounded-lg text-info transition-colors hover:bg-info/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
-            <SnowflakeIcon size={16} />
+            <SnowflakeIcon size={12} />
           </button>
         ) : null}
 
@@ -119,9 +119,9 @@ export function HabitCard({ habit }: { habit: Habit }) {
           type="button"
           onClick={() => setEditing(true)}
           aria-label={`Edit ${habit.name}`}
-          className="flex size-9 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="flex size-7 sm:size-9 items-center justify-center rounded-lg text-ink-soft transition-colors hover:bg-surface hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
-          <PencilIcon size={16} />
+          <PencilIcon size={12} />
         </button>
       </div>
     </Card>
