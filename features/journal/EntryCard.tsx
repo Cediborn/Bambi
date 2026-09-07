@@ -84,8 +84,8 @@ export function EntryCard({ entry }: { entry: JournalEntry }) {
             aria-label={`Read the full entry from ${fullDate(entry.date)}`}
             className="mt-4 block w-full rounded-xl text-left transition-colors duration-150 hover:bg-surface/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
-            <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-ink">
-              {preview}
+            <p className="line-clamp-2 break-words text-sm leading-relaxed text-ink">
+              {full}
             </p>
             {truncated ? (
               <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-bold text-brand">
@@ -175,7 +175,7 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
           </button>
         </div>
 
-        <div className="overflow-y-auto px-5 py-5 sm:px-6">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
           <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-ink">
             {entry.content}
           </p>
