@@ -128,7 +128,6 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Today I…"
-          maxLength={1200}
         />
       </Field>
       <div className="flex justify-end">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { JournalEntry } from "@/types";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
@@ -25,6 +26,9 @@ export function EntryCard({ entry }: { entry: JournalEntry }) {
   const { api } = useApp();
   const [confirming, setConfirming] = useState(false);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const full = entry.content.trim();
   const preview = full ? journalPreview(full) : "";
@@ -97,9 +101,14 @@ export function EntryCard({ entry }: { entry: JournalEntry }) {
         ) : null}
       </Card>
 
-      <AnimatePresence>
-        {open ? <EntryDialog entry={entry} onClose={() => setOpen(false)} /> : null}
-      </AnimatePresence>
+      {mounted
+        ? createPortal(
+            <AnimatePresence>
+              {open ? <EntryDialog entry={entry} onClose={() => setOpen(false)} /> : null}
+            </AnimatePresence>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
@@ -110,14 +119,19 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const titleId = `entry-title-${entry.id}`;
 
-  // Focus the dialog and close on Escape, like the other dialogs in the app.
   useEffect(() => {
+    const body = document.body;
+    const prev = body.style.overflow;
+    body.style.overflow = "hidden";
+
     const t = window.setTimeout(() => closeRef.current?.focus(), reduce ? 0 : 120);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
+
     return () => {
+      body.style.overflow = prev;
       window.clearTimeout(t);
       window.removeEventListener("keydown", onKey);
     };
@@ -142,13 +156,14 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
       />
 
       <motion.div
-        className="relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-line bg-card shadow-lift dark:border-white/[0.1] sm:rounded-3xl"
+        className="relative flex w-full max-w-lg flex-col overflow-y-auto rounded-t-3xl border border-line bg-card shadow-lift dark:border-white/[0.1] sm:rounded-3xl"
+        style={{ maxHeight: "calc(100dvh - 1.5rem)" }}
         initial={reduce ? false : { opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.98 }}
         transition={{ duration: 0.28, ease: EASE }}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-line/60 px-5 py-4 dark:border-white/[0.06] sm:px-6">
+        <div className="sticky top-0 z-10 flex shrink-0 items-start justify-between gap-4 border-b border-line/60 bg-card px-5 py-4 dark:border-white/[0.06] sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <span
               aria-hidden="true"
@@ -175,7 +190,7 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+        <div className="px-5 pt-5 pb-5 sm:px-6 sm:pb-6">
           <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-ink">
             {entry.content}
           </p>
