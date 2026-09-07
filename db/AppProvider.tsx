@@ -57,9 +57,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       removeHabit: (id: string) => dispatch({ type: "habits/remove", id }),
       toggleCompletion: (habitId: string, date: string) =>
         dispatch({ type: "completion/toggle", habitId, date }),
-      upsertJournal: (date: string, mood: number, content: string) =>
-        dispatch({ type: "journal/upsert", entry: createJournalEntry(date, mood, content) }),
-      removeJournal: (id: string) => dispatch({ type: "journal/remove", id }),
+        upsertJournal: (date: string, mood: number, content: string) =>
+          dispatch({ type: "journal/upsert", entry: createJournalEntry(date, mood, content) }),
+        updateJournal: (id: string, mood: number, content: string) =>
+          dispatch({ type: "journal/update", id, mood, content }),
+        removeJournal: (id: string) => dispatch({ type: "journal/remove", id }),
       toggleQuest: (date: string) => dispatch({ type: "quest/toggle", date }),
       tendTree: (date: string) => dispatch({ type: "tree/tend", date }),
       useFreeze: (habitId: string, date: string) =>

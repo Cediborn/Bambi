@@ -11,8 +11,9 @@ export interface AppApi {
   updateHabit: (id: string, patch: Partial<Pick<Habit, "name" | "icon" | "color" | "schedule">>) => void;
   removeHabit: (id: string) => void;
   toggleCompletion: (habitId: string, date: string) => void;
-  upsertJournal: (date: string, mood: number, content: string) => void;
-  removeJournal: (id: string) => void;
+    upsertJournal: (date: string, mood: number, content: string) => void;
+    updateJournal: (id: string, mood: number, content: string) => void;
+    removeJournal: (id: string) => void;
   toggleQuest: (date: string) => void;
   /** Water the tree for a given date (toggles). */
   tendTree: (date: string) => void;

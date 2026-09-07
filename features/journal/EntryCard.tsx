@@ -7,10 +7,11 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { MOODS, moodLabel } from "@/components/ui/MoodPicker";
-import { ArrowRightIcon, TrashIcon, XIcon } from "@/components/icons";
+import { ArrowRightIcon, PencilIcon, TrashIcon, XIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
 import { fullDate } from "@/utils/dates";
 import { journalPreview } from "@/utils/journalPreview";
+import { JournalForm } from "./JournalForm";
 
 const MOOD_COLOR: Record<number, string> = Object.fromEntries(MOODS.map((m) => [m.value, m.color]));
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -19,8 +20,9 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
  * EntryCard — a saved journal entry in the list.
  *
  * Cards show only a short preview (first two sentences / ~160 chars, with
- * "…"). Tapping the preview opens the full entry in a dialog; the stored
- * content is never modified, only the preview is shortened.
+ * "…"). Tapping the preview opens the full entry in a dialog, where the user
+ * can read the complete content and edit it. The stored content is never
+ * modified unless the user saves changes.
  */
 export function EntryCard({ entry }: { entry: JournalEntry }) {
   const { api } = useApp();
@@ -118,6 +120,7 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
   const reduce = useReducedMotion();
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const titleId = `entry-title-${entry.id}`;
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     const body = document.body;
@@ -175,7 +178,12 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
                 {fullDate(entry.date)}
               </h2>
               <p className="text-xs font-medium text-ink-soft">
-                Feeling <span className="font-semibold text-ink">{moodLabel(entry.mood)}</span>
+                {editing ? "Editing entry" : (
+                  <>
+                    Feeling{" "}
+                    <span className="font-semibold text-ink">{moodLabel(entry.mood)}</span>
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -190,11 +198,33 @@ function EntryDialog({ entry, onClose }: { entry: JournalEntry; onClose: () => v
           </button>
         </div>
 
-        <div className="px-5 pt-5 pb-5 sm:px-6 sm:pb-6">
-          <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-ink">
-            {entry.content}
-          </p>
-        </div>
+        {editing ? (
+          <div className="px-5 py-5 sm:px-6 sm:py-6">
+            <JournalForm
+              entry={entry}
+              onSaved={() => setEditing(false)}
+              onCancel={() => setEditing(false)}
+            />
+          </div>
+        ) : (
+          <>
+            <div className="px-5 pt-5 pb-4 sm:px-6 sm:pb-4">
+              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-ink">
+                {entry.content}
+              </p>
+            </div>
+            <div className="flex justify-end border-t border-line/60 px-5 py-4 dark:border-white/[0.06] sm:px-6">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setEditing(true)}
+                icon={<PencilIcon size={15} />}
+              >
+                Edit
+              </Button>
+            </div>
+          </>
+        )}
       </motion.div>
     </motion.div>
   );

@@ -6,27 +6,32 @@ import type { JournalEntry } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Field, Textarea } from "@/components/ui/Input";
 import { MoodPicker } from "@/components/ui/MoodPicker";
-import { CheckCircleIcon, PencilIcon, SendIcon } from "@/components/icons";
+import { CheckCircleIcon, CheckIcon, PencilIcon, SendIcon, XIcon } from "@/components/icons";
 import { useApp } from "@/hooks/useApp";
-import { todayKey } from "@/utils/dates";
+import { fullDate, todayKey } from "@/utils/dates";
 
 interface JournalFormProps {
   entry?: JournalEntry;
   onSaved?: () => void;
+  onCancel?: () => void;
 }
 
 /**
- * JournalForm — edit today's journal entry with clear state feedback.
+ * JournalForm — create a new entry or edit today's / any past journal entry.
+ *
+ * When an `entry` is provided, the form updates that exact entry in place
+ * (same id, date, createdAt) via `updateJournal`. When no entry is provided,
+ * it creates a new entry via `upsertJournal`.
  *
  * States:
- * - **editing**: normal form with mood + text + Update entry button
- * - **saved**: entry saved, button shows ✓ Entry Updated (dimmed), Make Changes available
- * - **saving**: briefly while upsert runs (button shows "Saving…")
+ * - **editing**: normal form with mood + text + Save/Update button
+ * - **saved**: entry saved, button shows ✓ Entry Updated, Make Changes available
+ * - **saving**: briefly while the update runs (button shows "Saving…")
  *
  * The component tracks whether the current form content differs from the
- * last-saved snapshot so the Update button is disabled when nothing changed.
+ * last-saved snapshot so the button is disabled when nothing changed.
  */
-export function JournalForm({ entry, onSaved }: JournalFormProps) {
+export function JournalForm({ entry, onSaved, onCancel }: JournalFormProps) {
   const { api } = useApp();
 
   // Form state
@@ -74,12 +79,17 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
       e.preventDefault();
       if (!valid || phase === "saving") return;
       setPhase("saving");
-      api.upsertJournal(entry?.date ?? todayKey(), mood!, content.trim());
-      setSaved({ mood, content: content.trim() });
+      const trimmed = content.trim();
+      if (entry?.id) {
+        api.updateJournal(entry.id, mood!, trimmed);
+      } else {
+        api.upsertJournal(entry?.date ?? todayKey(), mood!, trimmed);
+      }
+      setSaved({ mood, content: trimmed });
       setPhase("saved");
       onSaved?.();
     },
-    [api, entry?.date, mood, content, valid, phase, onSaved]
+    [api, entry?.id, entry?.date, mood, content, valid, phase, onSaved]
   );
 
   const handleMakeChanges = () => {
@@ -96,7 +106,9 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
             <p className="text-sm font-semibold text-good">Entry Updated</p>
           </div>
           <p className="mt-2 text-xs text-ink-soft">
-            Your journal entry for today has been saved.
+            {entry
+              ? `Your journal entry for ${fullDate(entry.date)} has been saved.`
+              : "Your journal entry for today has been saved."}
           </p>
         </div>
 
@@ -117,12 +129,14 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
-        <span className="text-sm font-semibold text-ink">How did today feel?</span>
+        <span className="text-sm font-semibold text-ink">
+          {entry ? `How did you feel on ${fullDate(entry.date)}?` : "How did today feel?"}
+        </span>
         <div className="pt-1">
           <MoodPicker value={mood} onChange={setMood} />
         </div>
       </div>
-      <Field label="Write a few lines" htmlFor="journal-text" hint="What happened today?">
+      <Field label="Write a few lines" htmlFor="journal-text" hint="What happened?">
         <Textarea
           id="journal-text"
           value={content}
@@ -130,17 +144,27 @@ export function JournalForm({ entry, onSaved }: JournalFormProps) {
           placeholder="Today I…"
         />
       </Field>
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        {onCancel ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onCancel}
+            icon={<XIcon size={15} />}
+          >
+            Cancel
+          </Button>
+        ) : null}
         <Button
           type="submit"
           disabled={!valid || !hasChanges}
-          icon={phase === "saving" ? undefined : <SendIcon size={16} />}
+          icon={phase === "saving" ? undefined : entry ? <CheckIcon size={16} /> : <SendIcon size={16} />}
         >
           {phase === "saving"
             ? "Saving…"
             : entry
               ? hasChanges
-                ? "Update entry"
+                ? "Save Changes"
                 : "No changes"
               : "Save entry"}
         </Button>

@@ -52,8 +52,9 @@ export type AppAction =
   | { type: "habits/update"; id: string; patch: Partial<Pick<Habit, "name" | "icon" | "color" | "schedule">> }
   | { type: "habits/remove"; id: string }
   | { type: "completion/toggle"; habitId: string; date: string }
-  | { type: "journal/upsert"; entry: JournalEntry }
-  | { type: "journal/remove"; id: string }
+    | { type: "journal/upsert"; entry: JournalEntry }
+    | { type: "journal/update"; id: string; mood: number; content: string }
+    | { type: "journal/remove"; id: string }
   | { type: "quest/toggle"; date: string }
   | { type: "tree/tend"; date: string }
   | { type: "freeze/use"; habitId: string; date: string }
@@ -119,6 +120,16 @@ export function reducer(state: AppState, action: AppAction): AppState {
       const rest = state.journal.filter((e) => e.date !== action.entry.date);
       return { ...state, journal: [...rest, action.entry] };
     }
+
+    case "journal/update":
+      return {
+        ...state,
+        journal: state.journal.map((e) =>
+          e.id === action.id
+            ? { ...e, mood: action.mood, content: action.content }
+            : e
+        ),
+      };
 
     case "journal/remove":
       return { ...state, journal: state.journal.filter((e) => e.id !== action.id) };

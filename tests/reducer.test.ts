@@ -149,6 +149,33 @@ describe("journal", () => {
     expect(state.journal).toHaveLength(0);
   });
 
+  it("updates an existing entry in place, preserving id and date", () => {
+    const entry = createJournalEntry("2026-08-05", 4, "Good day");
+    const state = run(
+      makeState({ journal: [entry] }),
+      { type: "journal/update", id: entry.id, mood: 5, content: "Amazing day, finished my project" }
+    );
+    expect(state.journal).toHaveLength(1);
+    expect(state.journal[0]).toMatchObject({
+      id: entry.id,
+      date: "2026-08-05",
+      mood: 5,
+      content: "Amazing day, finished my project",
+      createdAt: entry.createdAt,
+    });
+  });
+
+  it("does not duplicate when updating a past entry", () => {
+    const entry = createJournalEntry("2026-08-03", 4, "Good day");
+    const state = run(
+      makeState({ journal: [entry] }),
+      { type: "journal/update", id: entry.id, mood: 4, content: "Edited" },
+      { type: "journal/update", id: entry.id, mood: 5, content: "Edited again" }
+    );
+    expect(state.journal).toHaveLength(1);
+    expect(state.journal[0].content).toBe("Edited again");
+  });
+
   it("persists entries into XP once per day", () => {
     const state = run(
       makeState({ profile: { name: "C", avatar: "fawn", interests: [], onboardedAt: "2026-01-01" } }),

@@ -54,6 +54,36 @@ describe("flow: journal entry → save → reload → still there", () => {
     expect(computeXp(reloaded)).toBe(computeXp(state));
     expect(computeXp(reloaded) - 20 /* welcome */).toBe(5);
   });
+
+  it("edits a past entry in place and persists the change across reload", () => {
+    const past = "2026-08-05";
+    let state = makeState({
+      journal: [{ id: "past-1", date: past, mood: 4, content: "Good day", createdAt: "t0" }],
+    });
+
+    // User edits the old entry's text and mood via the update action (same id/date).
+    state = reducer(state, {
+      type: "journal/update",
+      id: "past-1",
+      mood: 5,
+      content: "Good day. I also finished my project.",
+    });
+
+    expect(state.journal).toHaveLength(1);
+    expect(state.journal[0]).toMatchObject({
+      id: "past-1",
+      date: past, // date preserved, NOT today
+      mood: 5,
+      content: "Good day. I also finished my project.",
+    });
+
+    // Reload and confirm the edit persisted with the original date.
+    const storage = createMemoryStorage();
+    saveState(state, storage);
+    const reloaded = loadState(storage);
+    expect(reloaded.journal).toHaveLength(1);
+    expect(reloaded.journal[0]).toMatchObject({ id: "past-1", date: past, mood: 5 });
+  });
 });
 
 describe("flow: export → reset → import → equivalent state", () => {
