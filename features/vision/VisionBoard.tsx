@@ -150,7 +150,7 @@ export function VisionBoard() {
                       type="button"
                       onClick={() => api.removeVisionItem(item.id)}
                       aria-label={`Remove ${item.text}`}
-                      className="absolute right-1 top-1 rounded p-0.5 text-ink-soft opacity-0 transition-opacity hover:bg-bad/10 hover:text-bad focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bad group-hover:opacity-100 z-20"
+                      className="absolute right-1 top-1 z-20 rounded bg-card/80 p-0.5 text-ink-soft opacity-100 shadow-card backdrop-blur-sm transition-opacity hover:bg-bad/10 hover:text-bad focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bad lg:bg-transparent lg:opacity-0 lg:shadow-none lg:group-hover:opacity-100 lg:focus-visible:opacity-100"
                     >
                       <XIcon size={10} />
                     </button>
